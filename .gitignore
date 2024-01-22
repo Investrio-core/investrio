@@ -1,0 +1,12 @@
+.vercel
+/node_modules
+.next
+yarn.lock
+package-lock.json
+.idea
+.env
+.env.*
+/data
+.DS_Store
+.vscode/launch.json
+.vscode/settings.json
