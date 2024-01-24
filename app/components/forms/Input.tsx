@@ -114,7 +114,7 @@ const Input: React.FC<InputProps> = (props) => {
 
       {error && (
         <small
-          className="absolute -bottom-[25px] ml-2 mt-2 flex items-center text-left text-xs font-semibold text-red-500">
+          className="ml-2 mt-2 flex items-center text-left text-xs font-semibold text-red-500">
           <TbAlertHexagon className="text-md"/>・{error}
         </small>
       )}
