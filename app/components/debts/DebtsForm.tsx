@@ -122,7 +122,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               placeholder="$00.00"
               inline
               required
-              minNumberValue={Number(Math.round(debtValue * 0.03).toFixed(0))} // Minimum payment is at least 3% of the balance
+              minNumberValue={Number((debtValue * 0.03).toFixed(2))} // Minimum payment is at least 3% of the balance
               setFormHasError={setFormHasError}
             />
 
