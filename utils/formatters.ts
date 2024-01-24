@@ -3,6 +3,10 @@ export function formatCurrency(value?: number | string | null) {
     return "";
   }
 
+  if (String(value).includes("$")) {
+    return value
+  }
+
   const valueAsNumber = typeof value === "string" ? parseFloat(value.replaceAll(",", "")) : value;
 
   return Intl.NumberFormat("en-US", {
