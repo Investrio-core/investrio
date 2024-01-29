@@ -55,7 +55,7 @@ export default function DebtsTable({
     }),
     columnHelper.accessor("balance", {
       header: "Outstanding Balance",
-      cell: (info) => info.renderValue(),
+      cell: (info) => formatCurrency(info.renderValue()),
       footer: () => {
         const totalBalance = data.reduce((previous, current) => {
           const balanceValue = Number(current.balance.replace(/[^\d.-]/g, ""));
@@ -84,7 +84,7 @@ export default function DebtsTable({
     }),
     columnHelper.accessor("minPayment", {
       header: "Minimum Payment",
-      cell: (info) => info.renderValue(),
+      cell: (info) => formatCurrency(info.renderValue()),
       footer: () => {
         const totalMinPayment = data.reduce((previous, current) => {
           const minPaymentValue = Number(
