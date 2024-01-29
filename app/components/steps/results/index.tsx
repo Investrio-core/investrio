@@ -6,37 +6,35 @@ import { formatMonthName } from "@/utils/formatters";
 import { ResultsProps } from "./results.types";
 import { Button } from "@/app/components/ui/buttons";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 export const DebtSummary = ({ data }: ResultsProps) => {
-  const infos = data?.map((item) => {
-    return item.data.map((info, index) => ({
-      id: index,
-      label: info.title,
-      subLabel: "Credit Card",
-      value1: info.monthlyPayment,
-      value2: info.remainingBalance,
-      paid: false,
-    }));
-  })
+  const debts = data[0].data.map((info, index) => ({
+    id: index,
+    label: info.title,
+    subLabel: "Credit Card",
+    value1: info.monthlyPayment,
+    value2: info.remainingBalance,
+    paid: false,
+  }));
 
   const snowball = data[0];
-  const debtFreeBy = data[data.length - 1]?.paymentDate;
-  const [year, monthNumber] = debtFreeBy?.split("-") || ["", ""];
-  const month = formatMonthName(parseInt(monthNumber));
 
-
-
-  const monthlyMinimumPayment = snowball?.monthTotalPayment - snowball?.extraPayAmount || 0
+  const debtFreeBy = dayjs(
+    new Date(data[data.length - 1]?.paymentDate).getTime()
+  );
+  const month = debtFreeBy.format("MMMM");
+  const year = debtFreeBy.format("YYYY");
 
   if (!data?.length) {
     return (
       <div className="text-center mx-auto">
         <h2>No Information has been registered yet.</h2>
-        <Link href={'/dashboard/debts/add'}>
-          <Button text="Set up Strategy" classProp="mx-auto"/>
+        <Link href={"/dashboard/debts/add"}>
+          <Button text="Set up Strategy" classProp="mx-auto" />
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -53,7 +51,7 @@ export const DebtSummary = ({ data }: ResultsProps) => {
             label="Extra payment"
             value={snowball?.extraPayAmount}
           />
-          <Card icon="debt-free" label="Debt Free By:" date={{ month, year }}/>
+          <Card icon="debt-free" label="Debt Free By:" date={{ month, year }} />
           <Card
             icon="total-saved"
             label="Total Interest Saved"
@@ -65,10 +63,10 @@ export const DebtSummary = ({ data }: ResultsProps) => {
           <div className="w-full">
             <div className="grid grid-cols-5 gap-9 w-full">
               <div className="col-span-5 md:col-span-2">
-                <CheckboxTable infos={infos[0]} />
+                <CheckboxTable infos={debts} />
               </div>
               <div className="col-span-5 md:col-span-3">
-                <Balance data={data}/>
+                <Balance data={data} />
               </div>
             </div>
             <div className="mt-9">

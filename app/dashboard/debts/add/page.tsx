@@ -86,7 +86,7 @@ export default function DebtsPage() {
                         </span>
                         <hr
                           className={twMerge(
-                            "absolute z-10 mx-auto overflow:hidden ",
+                            "absolute z-10 left-7 mx-auto overflow:hidden ",
                             category.id <= selectedTab ? "border-purple" : "",
                             index < categories.length - 1 ? "md:w-[150px] lg:w-[220px] xl:w-[285px]" : ""
                           )}
