@@ -15,29 +15,28 @@ export type CheckboxTableProps = {
   infos: Info[];
 };
 
-export const CheckboxTable = ({
-                                infos,
-                              }: CheckboxTableProps) => {
-  const [list, setList] = useState<Info[]>(infos)
+export const CheckboxTable = ({ infos }: CheckboxTableProps) => {
+  const [list, setList] = useState<Info[]>(infos);
 
   const handleCheckBoxChange = (id: number) => {
-    const newList = list.map(info => {
+    const newList = list.map((info) => {
       if (info.id === id) {
-        return { ...info, paid: !info.paid }
+        return { ...info, paid: !info.paid };
       }
 
       return info;
-    })
+    });
 
     setList(newList);
   };
 
   return (
-    <div
-      className="rounded-lg w-full border border-[#EDF2F6] display flex flex-col justify-start p-8 py-4 overflow-y-auto h-full">
+    <div className="rounded-lg w-full border border-[#EDF2F6] display flex flex-col justify-start p-8 py-4 overflow-y-auto h-full">
       <div className="flex justify-between mb-6 font-semibold">
         <p>Actual Payments</p>
-        <p className="text-gray-400">{list.filter(l => l.paid).length}/{list.length} done</p>
+        <p className="text-gray-400">
+          {list.filter((l) => l.paid).length}/{list.length} done
+        </p>
       </div>
       {list?.map((info, index) => {
         return (
@@ -47,10 +46,8 @@ export const CheckboxTable = ({
               "line-through text-gray-400": info.paid,
             })}
           >
-            <hr className="bg-grey-400"/>
-            <div
-              className="flex justify-between my-4"
-            >
+            <hr className="bg-grey-400" />
+            <div className="flex justify-between my-4">
               <div className="flex items-center">
                 <input
                   className="checkbox checkbox-primary"

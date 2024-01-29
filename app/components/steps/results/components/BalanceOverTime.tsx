@@ -9,11 +9,14 @@ type Props = {
 };
 
 export const BalanceOverTime = ({ data }: Props) => {
-  const totalBalance = data[0].remainingBalance + data[0].monthTotalPayment
+  const totalBalance = data[0].totalInitialBalance;
 
-  const modifiedData = data?.map((item) => {
+  let modifiedData = data?.map((item) => {
     return {
-      name: new Date(item.paymentDate).toLocaleDateString('en-US', { month: 'short', year: "2-digit" }),
+      name: new Date(item.paymentDate).toLocaleDateString("en-US", {
+        month: "short",
+        year: "2-digit",
+      }),
       label: "oi",
       balance: item.remainingBalance,
     };
@@ -25,7 +28,6 @@ export const BalanceOverTime = ({ data }: Props) => {
   //   if (totalBalance < data[0].remainingBalance)
   //     return `-${(data[0].remainingBalance / totalBalance).toPrecision(3)}`;
   // };
-
 
   // const defaultSelectValue = new Date().getMonth().toLocaleString();
   //
@@ -40,7 +42,6 @@ export const BalanceOverTime = ({ data }: Props) => {
 
   return (
     <div className="card bg-white px-6 pt-6 w-full">
-
       <div className="text-xl leading-5 font-bold text-[#03091D] flex justify-between mb-4 items-center ">
         Balance Over Time
         {/* <Select
@@ -54,10 +55,10 @@ export const BalanceOverTime = ({ data }: Props) => {
       </div>
       <div className="flex justify-start items-center">
         <span className="font-bold text-3xl">
-         ${formatNumberToKFormat(totalBalance)}
+          ${formatNumberToKFormat(totalBalance)}
         </span>
         {/* <div className="flex items-center"> */}
-          {/* <div className="bg-purple-600 rounded-[50%] ml-4 w-4 h-4 flex justify-center items-center mb-4 mr-1">
+        {/* <div className="bg-purple-600 rounded-[50%] ml-4 w-4 h-4 flex justify-center items-center mb-4 mr-1">
             <PiArrowUpBold
               style={{
                 transform: "rotate(28deg)",
@@ -65,14 +66,14 @@ export const BalanceOverTime = ({ data }: Props) => {
               }}
             />
           </div> */}
-          {/* <div className="flex flex-col justify-start"> */}
-            {/* <span className="text-purple-600 font-bold text-sm flex justify-start"> */}
-              {/* {`${balancePercentage()}`} */}
-            {/* </span> */}
-            {/* <span className="text-sm text-[#747682]"> */}
-              {/* Total Balance */}
-            {/* </span> */}
-          {/* </div> */}
+        {/* <div className="flex flex-col justify-start"> */}
+        {/* <span className="text-purple-600 font-bold text-sm flex justify-start"> */}
+        {/* {`${balancePercentage()}`} */}
+        {/* </span> */}
+        {/* <span className="text-sm text-[#747682]"> */}
+        {/* Total Balance */}
+        {/* </span> */}
+        {/* </div> */}
         {/* </div> */}
       </div>
       <div className="w-full">

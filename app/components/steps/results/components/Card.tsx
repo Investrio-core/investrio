@@ -17,23 +17,23 @@ type CardProps = {
  * @returns {JSX.Element} - The rendered Card component.
  */
 export const Card = ({
-                       icon,
-                       value,
-                       label,
-                       date,
-                       sublabel,
-                     }: CardProps): JSX.Element => {
+  icon,
+  value,
+  label,
+  date,
+  sublabel,
+}: CardProps): JSX.Element => {
   /**
    * Renders the correct icon based on the provided icon type.
    * @returns {JSX.Element} - The rendered icon.
    */
   const renderCorrectIcon = () => {
-    if (icon === "calendar") return <Image src={calendar} alt="calendar"/>;
+    if (icon === "calendar") return <Image src={calendar} alt="calendar" />;
     if (icon === "extra-payment")
-      return <Image src={extraPayment} alt="extra payment"/>;
-    if (icon === "debt-free") return <Image src={debtFree} alt="debt free"/>;
+      return <Image src={extraPayment} alt="extra payment" />;
+    if (icon === "debt-free") return <Image src={debtFree} alt="debt free" />;
     if (icon === "total-saved")
-      return <Image src={totalSaved} alt="totalSaved"/>;
+      return <Image src={totalSaved} alt="totalSaved" />;
   };
 
   return (

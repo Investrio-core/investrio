@@ -28,6 +28,7 @@ model PaymentSchedule {
   paymentDate         DateTime        @map("payment_due_date")
   title               String          @map("title")
   monthlyInterestPaid Float           @map("monthly_interest")
+  minPayAmount        Float           @map("minimum_payment")
   monthlyPayment      Float           @map("monthly_payment")
   remainingBalance    Float           @map("remaining_balance")
   extraPayAmount      Float           @default(0) @map("extra_payment")

@@ -1,5 +1,14 @@
 import React from "react";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { formatCurrency } from "@/utils/formatters";
 
 interface DebtData {
@@ -20,7 +29,7 @@ interface MonthlyData {
 
 interface CustomToolTipProps {
   active?: boolean;
-  payload?: { dataKey: string, value: number }[];
+  payload?: { dataKey: string; value: number }[];
   label?: string;
   data: MonthlyData[];
 }
@@ -35,43 +44,58 @@ type Props = {
   data: MonthlyData[];
 };
 
-const COLORS = ['#f72585', '#b5179e', '#7209b7', '#560bad', '#480ca8', '#3a0ca3', '#3f37c9', '#4361ee', '#4895ef', '#4cc9f0', '#9E383B', '#DA6C6A', '#00C896', '#BE8120'];
+const COLORS = [
+  "#f72585",
+  "#b5179e",
+  "#7209b7",
+  "#560bad",
+  "#480ca8",
+  "#3a0ca3",
+  "#3f37c9",
+  "#4361ee",
+  "#4895ef",
+  "#4cc9f0",
+  "#9E383B",
+  "#DA6C6A",
+  "#00C896",
+  "#BE8120",
+];
 
 const formatYAxis = (value: number): string => {
   return value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString();
 };
 
 const getColorForKey = (key: string, data: MonthlyData[]): string => {
-  const uniqueKeys = new Set(data.flatMap(d => d.data.map(dd => dd.title)));
+  const uniqueKeys = new Set(data.flatMap((d) => d.data.map((dd) => dd.title)));
   const keyIndex = Array.from(uniqueKeys).indexOf(key);
   return COLORS[keyIndex % COLORS.length] || COLORS[0];
 };
 
 const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
-  
   if (active && payload && payload.length) {
     return (
       <div className="bg-black text-white p-3 rounded">
         <span className="font-bold">{label}</span>
-        <hr/>
+        <hr />
         {payload.map((item, index: number) => (
-          <div className="flex flex-col my-2">
+          <div key={item.value + index} className="flex flex-col my-2">
             <span className="font-bold">{item.dataKey}</span>
             <span>{formatCurrency(item.value)}</span>
-            {index < payload.length - 1 && (
-              <hr/>
-            )}
+            {index < payload.length - 1 && <hr />}
           </div>
         ))}
       </div>
-    )
+    );
   }
   return null;
 };
 
 export const CustomBarChart = ({ data }: Props) => {
   const transformedData: ChartDataEntry[] = data.map((item) => ({
-    name: new Date(item.paymentDate).toLocaleDateString('en-US', { month: 'short', year: "2-digit" }),
+    name: new Date(item.paymentDate).toLocaleDateString("en-US", {
+      month: "short",
+      year: "2-digit",
+    }),
     ...item.data.reduce((acc, curr) => {
       acc[curr.title] = curr.monthlyPayment;
       return acc;
@@ -80,20 +104,23 @@ export const CustomBarChart = ({ data }: Props) => {
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={transformedData} margin={{ top: -10, right: 0, left: -20 }}>
-        <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis dataKey="name" className="text-sm"/>
-        <YAxis tickFormatter={formatYAxis} className="text-sm"/>
+      <BarChart
+        data={transformedData}
+        margin={{ top: -10, right: 0, left: -20 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" className="text-sm" />
+        <YAxis tickFormatter={formatYAxis} className="text-sm" />
         <Tooltip
-          cursor={{ fill: '#451B8010' }}
+          cursor={{ fill: "#451B8010" }}
           allowEscapeViewBox={{ x: false, y: true }}
-          content={<CustomTooltip data={data}/>}
+          content={<CustomTooltip data={data} />}
           wrapperStyle={{ zIndex: 9999 }}
         />
-        <Legend layout="horizontal" verticalAlign="top" align="right"/>
+        <Legend layout="horizontal" verticalAlign="top" align="right" />
         {Object.keys(transformedData[0])
-          .filter(key => key !== 'name')
-          .map(key => (
+          .filter((key) => key !== "name")
+          .map((key) => (
             <Bar
               key={key}
               dataKey={key}

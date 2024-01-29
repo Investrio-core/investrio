@@ -57,3 +57,12 @@ export const formatMonthName = (monthNumber: number) => {
 export const formatNumberToKFormat = (value: number): string => {
   return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toString();
 };
+
+export const toFixed = (value: number | string, digits: number = 2): number => {
+  let parsedValue = Number(Number(value).toFixed(digits + 1));
+  parsedValue = parseFloat(
+    (Math.round(parsedValue * 100) / 100).toFixed(digits)
+  );
+
+  return parsedValue;
+};
