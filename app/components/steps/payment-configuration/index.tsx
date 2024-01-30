@@ -61,6 +61,8 @@ export const PaymentConfiguration = ({ userId }: Props) => {
   const withInvestrioGraph = useMemo(() => generateGraphData(withInvestrio), [withInvestrio])
   const withoutInvestrioGraph = useMemo(() => generateGraphData(withoutPlanning), [withoutPlanning])
 
+  console.log(withoutInvestrioGraph);
+
   if (!userId || isLoadingPaymentConfiguration) return <Loading/>
 
   return (

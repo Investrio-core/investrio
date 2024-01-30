@@ -25,10 +25,16 @@ function monthDiff(d1: Date, d2: Date) {
 }
 
 // This function just calculates the schedule for every debt record without taking in consideration the EXTRA PAYMENT AMOUNT - this should be handled in another function
-export async function allUserFinancialRecords(userId: string) {
+export async function allUserFinancialRecords(userId: string, dataForCreation?: unknown[]) {
+  let query: {title?: {in: string[]}} = {}
+
+  if (dataForCreation) {
+    query['title'] = { in: dataForCreation?.map((e: any) => e.title)}
+  }
+
   try {
     const userDebts = await prisma.financialRecord.findMany({
-      where: { userId: userId },
+      where: { userId, ...query },
       orderBy: {
         initialBalance: "asc",
       },

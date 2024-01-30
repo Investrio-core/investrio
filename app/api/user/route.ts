@@ -3,7 +3,6 @@ import * as bcrypt from "bcrypt";
 import * as yup from "yup";
 import { Prisma } from '@prisma/client';
 
-
 interface RequestBody {
     name: string;
     email: string;
