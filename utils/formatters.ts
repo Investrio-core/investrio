@@ -1,10 +1,10 @@
-export function formatCurrency(value?: number | string | null) {
+export function formatCurrency(value?: number | string | null): string {
   if (!value) {
     return "";
   }
 
   if (String(value).includes("$")) {
-    return value
+    return value.toString()
   }
 
   const valueAsNumber = typeof value === "string" ? parseFloat(value.replaceAll(",", "")) : value;
