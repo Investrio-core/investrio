@@ -9,7 +9,7 @@ import Link from "next/link";
 import dayjs from "dayjs";
 
 export const DebtSummary = ({ data }: ResultsProps) => {
-  const debts = data[0].data.map((info, index) => ({
+  const debts = data[0]?.data?.map((info, index) => ({
     id: index,
     label: info.title,
     subLabel: "Credit Card",
