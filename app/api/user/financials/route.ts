@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     periodicity: debtRecord.periodicity,
     initialBalance: debtRecord.initialBalance,
     minPayAmount: debtRecord.minPayAmount,
-    payDueDate: new Date(debtRecord.payDueDate),
+    payDueDate: new Date(),
     extraPayAmount: debtRecord.extraPayAmount,
     userId: debtRecord.userId,
   }));
@@ -68,29 +68,31 @@ export async function POST(request: Request) {
   });
 
   try {
-    const recordsResponse = await allUserFinancialRecords(userId);
+    const recordsResponse = await allUserFinancialRecords(userId, dataForCreation);
     if ("error" in recordsResponse) {
       return new Response(
         JSON.stringify({ message: "Record Created Successfully." }),
         { status: 201 }
       );
     }
-    const saveTasks = recordsResponse.flatMap((record) =>
-      record.data.map((payment: any) =>
-        prisma.paymentSchedule.create({
-          data: {
-            FinancialRecordId: record.id,
-            title: record.title,
-            extraPayAmount: record.extraPayAmount,
-            paymentDate: new Date(payment.currentDate),
-            monthlyInterestPaid: payment.monthlyInterestPaid,
-            monthlyPayment: payment.monthlyPayment,
-            remainingBalance: payment.remainingBalance,
-            minPayAmount: record.minPayAmount,
-          },
-        })
-      )
-    );
+    const saveTasks = recordsResponse.flatMap((record) => {
+      const dataToCreate = record.data.map((payment: any) => {
+        return {
+          FinancialRecordId: record.id,
+          title: record.title,
+          extraPayAmount: record.extraPayAmount,
+          paymentDate: new Date(payment.currentDate),
+          monthlyInterestPaid: payment.monthlyInterestPaid,
+          monthlyPayment: payment.monthlyPayment,
+          remainingBalance: payment.remainingBalance,
+          minPayAmount: record.minPayAmount,
+        }})
+
+      return prisma.paymentSchedule.createMany({
+        data: dataToCreate,
+        skipDuplicates: true
+      })
+  });
     try {
       // Execute all save operations in parallel
       await Promise.all(saveTasks);

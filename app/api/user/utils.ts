@@ -25,10 +25,16 @@ function monthDiff(d1: Date, d2: Date) {
 }
 
 // This function just calculates the schedule for every debt record without taking in consideration the EXTRA PAYMENT AMOUNT - this should be handled in another function
-export async function allUserFinancialRecords(userId: string) {
+export async function allUserFinancialRecords(userId: string, dataForCreation?: unknown[]) {
+  let query: {title?: {in: string[]}} = {}
+
+  if (dataForCreation) {
+    query['title'] = { in: dataForCreation?.map((e: any) => e.title)}
+  }
+
   try {
     const userDebts = await prisma.financialRecord.findMany({
-      where: { userId: userId },
+      where: { userId, ...query },
       orderBy: {
         initialBalance: "asc",
       },
@@ -328,8 +334,8 @@ function calculateXPayment(
       if (result.data.length < paymentResultsLength) {
         const titles = debts.map((e: any) => e.title);
 
-        titles.forEach((_el: unknown, idx: number) => {
-          if (!titles.includes(result.data[idx]?.title)) {
+        titles.forEach((_el: string, idx: number) => {
+          if(!result.data.some((el => el.title === _el))) {
             result.data.push({
               title: debts[idx].title,
               id: "",
@@ -343,6 +349,7 @@ function calculateXPayment(
           }
         });
       }
+
       return result;
     });
 
@@ -396,7 +403,7 @@ function recalculateExtra(
       : data.remainingBalance - data.monthlyInterestPaid + data.minPayAmount;
     balanceToPay = toFixed(balanceToPay);
     const interest = toFixed(balanceToPay * data.monthlyInterestRate, 3);
-    console.log("interest", interest);
+
     const balanceWithInterest = toFixed(balanceToPay + interest);
 
     let balanceWithPayment = toFixed(
@@ -428,7 +435,13 @@ function applyExtraPaymentsToBalance(
 ): PaymentCalculationResult[] {
   let prevPayment: PaymentCalculationResult | null = null;
 
+
   for (let i = 0; i < payments.length; i++) {
+    
+    if (prevPayment?.balance === 0) {
+      break
+    }
+
     let payment = payments[i];
 
     if (i > 0) {
@@ -455,6 +468,11 @@ function applyExtraPaymentsToBalance(
 
     // Update total interest paid for the payment schedule
     updateTotalInterestPaid(payment);
+
+    if (payment.balance === 0) {
+      payments = payments.slice(0, i + 1)
+      break;
+    }
   }
 
   // Additional check for the last schedule
@@ -465,10 +483,8 @@ function applyExtraPaymentsToBalance(
     }
   }
 
-  const filteredPayments = payments.filter((v) => v.totalPayment !== 0);
-
-  upsertSnowballSchedule(filteredPayments);
-  return filteredPayments;
+  upsertSnowballSchedule(payments);
+  return payments;
 }
 
 function recalculateTotalPayment(payment: PaymentCalculationResult): void {
@@ -621,37 +637,28 @@ function updateTotalInterestPaid(payment: PaymentCalculationResult): void {
 
 async function upsertSnowballSchedule(payments: PaymentCalculationResult[]) {
   try {
-    const batchUpsert = payments.map((payment) => {
-      return prisma.snowballPaymentSchedule.upsert({
-        where: {
-          userId_paymentDate: {
-            userId: payment.userId,
-            paymentDate: new Date(payment.paymentDate),
-          },
-        },
-        update: {
-          // Fields to update
-          totalInitialBalance: payment.totalInitialBalance,
-          monthTotalPayment: payment.totalPayment,
-          extraPayAmount: payment.extraPayAmount,
-          totalInterestPaid: payment.totalInterestPaid,
-          remainingBalance: payment.balance,
-          data: payment.data, // Assuming direct JSON assignment works
-        },
-        create: {
-          // Fields for a new record
-          userId: payment.userId,
-          paymentDate: new Date(payment.paymentDate),
-          totalInitialBalance: payment.totalInitialBalance,
-          monthTotalPayment: payment.totalPayment,
-          extraPayAmount: payment.extraPayAmount,
-          totalInterestPaid: payment.totalInterestPaid,
-          remainingBalance: payment.balance,
-          data: payment.data, // Assuming direct JSON assignment works
-        },
-      });
-    });
-    await prisma.$transaction(batchUpsert);
+
+    await prisma.snowballPaymentSchedule.deleteMany({
+      where: {
+        userId: payments[0].userId
+      }
+    })
+    
+    const data = payments.map(payment => ({
+      userId: payment.userId,
+      paymentDate: new Date(payment.paymentDate),
+      totalInitialBalance: payment.totalInitialBalance,
+      monthTotalPayment: payment.totalPayment,
+      extraPayAmount: payment.extraPayAmount,
+      totalInterestPaid: payment.totalInterestPaid,
+      remainingBalance: payment.balance,
+      data: payment.data,
+    }))
+    
+    await prisma.snowballPaymentSchedule.createMany({
+      data,
+      skipDuplicates: true
+    })
   } catch (error) {
     console.log(error);
   } finally {
