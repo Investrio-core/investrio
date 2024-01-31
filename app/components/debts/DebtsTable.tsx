@@ -23,7 +23,7 @@ type DebtsTableProps = {
 
 const debtTypesMapper = {
   DebitCard: "/images/card.png",
-  CreditCArd: "/images/card.png",
+  CreditCard: "/images/card.png",
   StudentLoan: "/images/student.png",
 };
 

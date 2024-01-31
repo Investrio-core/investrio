@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { ToastComponent } from "@/app/components/toast";
 import { ButtonWithIcon } from "@/app/components/ui/buttons";
 
+const DEFAULT_PERIODICITY = "MONTH"
+
 type DebtsFormProps = {
   debts: DebtFormType[];
   setDebts: Dispatch<SetStateAction<DebtFormType[]>>;
@@ -32,6 +34,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
   };
 
   const submit = (values: DebtFormType) => {
+    values.periodicity = DEFAULT_PERIODICITY
     const isDuplicate = debts.some(debt => debt.debtName === values.debtName);
 
     if (isDuplicate) {
@@ -70,22 +73,14 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               label="Debt Type"
               name="debtType"
               options={[
-                // {
-                //   label: "Debit Card",
-                //   value: "DebitCard",
-                // },
                 {
                   label: "Credit Card",
-                  value: "CreditCArd",
-                },
-                {
-                  label: "Student Loan",
-                  value: "StudentLoan",
+                  value: "CreditCard",
                 },
               ]}
               inline
               required
-              defaultValue="CreditCArd"
+              defaultValue="CreditCard"
             />
 
           </div>
@@ -127,7 +122,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
             />
 
           </div>
-          <div className="col-span-4 md:col-span-3">
+          {/* <div className="col-span-4 md:col-span-3">
             <Select
               disabled
               label="Periodicity"
@@ -150,8 +145,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               inline
               required
             />
-
-          </div>
+          </div> */}
           <div className="col-span-4 md:col-span-3">
             <Input
               defaultValue={new Date().toISOString().split("T")[0]}

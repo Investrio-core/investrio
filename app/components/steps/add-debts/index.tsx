@@ -350,6 +350,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                 <Select
                                   label="Debt Type"
                                   name="debtType"
+                                  disabled
                                   options={[
                                     // {
                                     //   label: "Debit Card",
@@ -357,12 +358,12 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                     // },
                                     {
                                       label: "Credit Card",
-                                      value: "CreditCArd",
+                                      value: "CreditCard",
                                     },
-                                    {
-                                      label: "Student Loan",
-                                      value: "StudentLoan",
-                                    },
+                                    // {
+                                    //   label: "Student Loan",
+                                    //   value: "StudentLoan",
+                                    // },
                                   ]}
                                   inline
                                   required
