@@ -72,13 +72,9 @@ model User {
 }
 
 enum DebitType {
-  CreditCArd
-  DebitCard
-  StudentLoan
+  CreditCard
 }
 
 enum Periodicity {
-  WEEK
   MONTH
-  YEAR
 }
