@@ -17,7 +17,7 @@ const schema = yup.object().shape({
 });
 
 
-function handleError(error: Error) {
+function handleError(error: Error | Prisma.PrismaClientKnownRequestError) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
             return new Response(JSON.stringify({ error: 'Email already exists' }), { status: 400 });
