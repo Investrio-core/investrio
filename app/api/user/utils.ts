@@ -336,7 +336,6 @@ function calculateXPayment(
 
         titles.forEach((_el: string, idx: number) => {
           if(!result.data.some((el => el.title === _el))) {
-            console.log(result.data[idx]?.title);
             result.data.push({
               title: debts[idx].title,
               id: "",
@@ -350,7 +349,7 @@ function calculateXPayment(
           }
         });
       }
-      console.log("res", result.data);
+
       return result;
     });
 
@@ -404,7 +403,7 @@ function recalculateExtra(
       : data.remainingBalance - data.monthlyInterestPaid + data.minPayAmount;
     balanceToPay = toFixed(balanceToPay);
     const interest = toFixed(balanceToPay * data.monthlyInterestRate, 3);
-    console.log("interest", interest);
+
     const balanceWithInterest = toFixed(balanceToPay + interest);
 
     let balanceWithPayment = toFixed(
@@ -436,7 +435,6 @@ function applyExtraPaymentsToBalance(
 ): PaymentCalculationResult[] {
   let prevPayment: PaymentCalculationResult | null = null;
 
-  console.log(payments.length);
 
   for (let i = 0; i < payments.length; i++) {
     
@@ -472,7 +470,6 @@ function applyExtraPaymentsToBalance(
     updateTotalInterestPaid(payment);
 
     if (payment.balance === 0) {
-      console.log("HERE", i);
       payments = payments.slice(0, i + 1)
       break;
     }
@@ -485,9 +482,6 @@ function applyExtraPaymentsToBalance(
       lastPayment.balance = 0;
     }
   }
-
-  console.log(payments.length);
-  // const filteredPayments = payments.filter((v) => v.totalPayment !== 0 || v.balance !== 0);
 
   upsertSnowballSchedule(payments);
   return payments;
@@ -672,16 +666,6 @@ async function upsertSnowballSchedule(payments: PaymentCalculationResult[]) {
   }
   return payments;
 }
-
-// export const newSnowballCalculator = async (records:any) => {
-//   const {initialBalance, interestRate, minPayAmount, payDueDate} = records[0]
-
-//   const data = {initialBalance, balanceToPay: initialBalance, monthlyInterestRate: interestRate / 12, paymentDate: payDueDate}
-
-//   records.forEach(record => {
-
-//   }) 
-// }
 
 export async function snowBallPaymentScheduleCalculator(userId: string) {
   try {
