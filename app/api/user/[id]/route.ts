@@ -13,8 +13,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     try {
         recordsResponse = await allUserFinancialRecords(params.id);
-
-        console.log(recordsResponse);
     } catch (error) {
         console.error("Error fetching financial records:", error);
         return new Response(JSON.stringify({ error: "Failed to fetch financial records" }), { status: 500 });
