@@ -51,7 +51,7 @@ export async function allUserFinancialRecords(userId: string) {
 
     const responseArray: any[] = [];
     // needs to be optimized <>
-    userDebts.forEach((debt) => {
+    userDebts.forEach((debt: any) => {
       let balance = debt.initialBalance;
       let monthly_ir = debt.interestRate / 12;
       let currentDate = new Date();
