@@ -370,11 +370,11 @@ function recalculatePrevious(payment: PaymentCalculationResult, extra: number) {
 
     if (data.remainingBalance > 0) {
       const newBalance = data.remainingBalance - available;
-
+      
       if (newBalance < 0) {
         available = Math.abs(newBalance);
-        data.remainingBalance = 0;
         data.monthlyPayment = data.monthlyPayment + data.remainingBalance;
+        data.remainingBalance = 0;
       } else {
         data.monthlyPayment = data.monthlyPayment + available;
         data.remainingBalance = newBalance;
@@ -387,7 +387,7 @@ function recalculatePrevious(payment: PaymentCalculationResult, extra: number) {
 function recalculateExtra(
   payment: PaymentCalculationResult,
   extra: number,
-  prevPayment: PaymentCalculationResult | null
+  prevPayment: PaymentCalculationResult | null,
 ) {
   let available = extra;
 
@@ -402,7 +402,7 @@ function recalculateExtra(
       ? prevData.remainingBalance
       : data.remainingBalance - data.monthlyInterestPaid + data.minPayAmount;
     balanceToPay = toFixed(balanceToPay);
-    const interest = toFixed(balanceToPay * data.monthlyInterestRate, 3);
+    const interest = toFixed(balanceToPay * data.monthlyInterestRate, 5);
 
     const balanceWithInterest = toFixed(balanceToPay + interest);
 
@@ -436,8 +436,7 @@ function applyExtraPaymentsToBalance(
   let prevPayment: PaymentCalculationResult | null = null;
 
 
-  for (let i = 0; i < payments.length; i++) {
-    
+  for (let i = 0; i < payments.length; i++) {    
     if (prevPayment?.balance === 0) {
       break
     }
