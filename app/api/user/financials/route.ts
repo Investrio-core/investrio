@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     periodicity: debtRecord.periodicity,
     initialBalance: debtRecord.initialBalance,
     minPayAmount: debtRecord.minPayAmount,
-    payDueDate: new Date(debtRecord.payDueDate),
+    payDueDate: new Date(),
     extraPayAmount: debtRecord.extraPayAmount,
     userId: debtRecord.userId,
   }));

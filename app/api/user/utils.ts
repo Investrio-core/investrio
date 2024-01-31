@@ -334,8 +334,9 @@ function calculateXPayment(
       if (result.data.length < paymentResultsLength) {
         const titles = debts.map((e: any) => e.title);
 
-        titles.forEach((_el: unknown, idx: number) => {
-          if (!titles.includes(result.data[idx]?.title)) {
+        titles.forEach((_el: string, idx: number) => {
+          if(!result.data.some((el => el.title === _el))) {
+            console.log(result.data[idx]?.title);
             result.data.push({
               title: debts[idx].title,
               id: "",
@@ -349,6 +350,7 @@ function calculateXPayment(
           }
         });
       }
+      console.log("res", result.data);
       return result;
     });
 
@@ -434,7 +436,14 @@ function applyExtraPaymentsToBalance(
 ): PaymentCalculationResult[] {
   let prevPayment: PaymentCalculationResult | null = null;
 
+  console.log(payments.length);
+
   for (let i = 0; i < payments.length; i++) {
+    
+    if (prevPayment?.balance === 0) {
+      break
+    }
+
     let payment = payments[i];
 
     if (i > 0) {
@@ -461,6 +470,12 @@ function applyExtraPaymentsToBalance(
 
     // Update total interest paid for the payment schedule
     updateTotalInterestPaid(payment);
+
+    if (payment.balance === 0) {
+      console.log("HERE", i);
+      payments = payments.slice(0, i + 1)
+      break;
+    }
   }
 
   // Additional check for the last schedule
@@ -471,10 +486,11 @@ function applyExtraPaymentsToBalance(
     }
   }
 
-  const filteredPayments = payments.filter((v) => v.totalPayment !== 0);
+  console.log(payments.length);
+  // const filteredPayments = payments.filter((v) => v.totalPayment !== 0 || v.balance !== 0);
 
-  upsertSnowballSchedule(filteredPayments);
-  return filteredPayments;
+  upsertSnowballSchedule(payments);
+  return payments;
 }
 
 function recalculateTotalPayment(payment: PaymentCalculationResult): void {
@@ -627,37 +643,28 @@ function updateTotalInterestPaid(payment: PaymentCalculationResult): void {
 
 async function upsertSnowballSchedule(payments: PaymentCalculationResult[]) {
   try {
-    const batchUpsert = payments.map((payment) => {
-      return prisma.snowballPaymentSchedule.upsert({
-        where: {
-          userId_paymentDate: {
-            userId: payment.userId,
-            paymentDate: new Date(payment.paymentDate),
-          },
-        },
-        update: {
-          // Fields to update
-          totalInitialBalance: payment.totalInitialBalance,
-          monthTotalPayment: payment.totalPayment,
-          extraPayAmount: payment.extraPayAmount,
-          totalInterestPaid: payment.totalInterestPaid,
-          remainingBalance: payment.balance,
-          data: payment.data, // Assuming direct JSON assignment works
-        },
-        create: {
-          // Fields for a new record
-          userId: payment.userId,
-          paymentDate: new Date(payment.paymentDate),
-          totalInitialBalance: payment.totalInitialBalance,
-          monthTotalPayment: payment.totalPayment,
-          extraPayAmount: payment.extraPayAmount,
-          totalInterestPaid: payment.totalInterestPaid,
-          remainingBalance: payment.balance,
-          data: payment.data, // Assuming direct JSON assignment works
-        },
-      });
-    });
-    await prisma.$transaction(batchUpsert);
+
+    await prisma.snowballPaymentSchedule.deleteMany({
+      where: {
+        userId: payments[0].userId
+      }
+    })
+    
+    const data = payments.map(payment => ({
+      userId: payment.userId,
+      paymentDate: new Date(payment.paymentDate),
+      totalInitialBalance: payment.totalInitialBalance,
+      monthTotalPayment: payment.totalPayment,
+      extraPayAmount: payment.extraPayAmount,
+      totalInterestPaid: payment.totalInterestPaid,
+      remainingBalance: payment.balance,
+      data: payment.data,
+    }))
+    
+    await prisma.snowballPaymentSchedule.createMany({
+      data,
+      skipDuplicates: true
+    })
   } catch (error) {
     console.log(error);
   } finally {
@@ -665,6 +672,16 @@ async function upsertSnowballSchedule(payments: PaymentCalculationResult[]) {
   }
   return payments;
 }
+
+// export const newSnowballCalculator = async (records:any) => {
+//   const {initialBalance, interestRate, minPayAmount, payDueDate} = records[0]
+
+//   const data = {initialBalance, balanceToPay: initialBalance, monthlyInterestRate: interestRate / 12, paymentDate: payDueDate}
+
+//   records.forEach(record => {
+
+//   }) 
+// }
 
 export async function snowBallPaymentScheduleCalculator(userId: string) {
   try {
