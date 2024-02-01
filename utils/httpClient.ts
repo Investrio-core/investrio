@@ -40,7 +40,7 @@ export async function get(url: string) {
   }
 }
 
-export async function post(url: string, data: any) {
+export async function post(url: string, data?: any) {
   try {
     const parsedUrl = url.startsWith("/") ? url : `/${url}`;
     const response = await fetch(`${BASE_URL}${parsedUrl}`, {

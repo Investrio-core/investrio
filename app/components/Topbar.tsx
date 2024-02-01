@@ -1,9 +1,10 @@
 import { cookies } from "next/headers";
 import SignOutButton from "@/app/components/SignOutButton";
 import Image from "next/image";
+import { DeleteButton } from "./ui/DeleteAllButton";
 
 export default function Topbar() {
-  const { name, image, email } = JSON.parse(
+  const { name, image, email, id } = JSON.parse(
     cookies().get("next-auth.user")?.value || "{}"
   );
 
@@ -16,6 +17,7 @@ export default function Topbar() {
         </h3>
       </div>
       <div className="flex flex-row gap-2 items-center">
+        {process.env.NODE_ENV !== "production" && <DeleteButton userId={id} />}
         <div className="flex flex-row gap-2 bg-white lg:mr-4 items-center">
           <Image
             className="rounded-[50%]"
@@ -28,11 +30,15 @@ export default function Topbar() {
             <span className="text-sm text-[#03091D]">
               {name?.split(" ")[0] || "username"}
             </span>
-            {<span className="hidden sm:block text-[12px] text-[#747682]">{email}</span>}
+            {
+              <span className="hidden sm:block text-[12px] text-[#747682]">
+                {email}
+              </span>
+            }
           </div>
         </div>
         <div>
-          <SignOutButton/>
+          <SignOutButton />
         </div>
       </div>
     </div>
