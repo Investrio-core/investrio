@@ -42,7 +42,7 @@ model PaymentSchedule {
 
 model FinancialRecord {
   id              String            @id @default(cuid())
-  title           String?           @unique
+  title           String?           
   type            DebitType
   periodicity     Periodicity
   initialBalance  Float             @map("initial_outstanding_balance")
