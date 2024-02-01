@@ -46,7 +46,7 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.SECRET_KEY,
-  debug: process.env.NODE_ENV === "development",
+  debug: process.env.ENV === "development",
   pages: {
     signIn: "/auth/login",
   },

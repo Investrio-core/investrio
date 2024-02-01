@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   let cookieName = 'next-auth.session-token';
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.ENV === 'production') {
     cookieName = '__Secure-next-auth.session-token';
   }
   
