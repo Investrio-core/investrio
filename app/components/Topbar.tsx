@@ -17,7 +17,7 @@ export default function Topbar() {
         </h3>
       </div>
       <div className="flex flex-row gap-2 items-center">
-        {process.env.NODE_ENV !== "production" && <DeleteButton userId={id} />}
+        {process.env.ENV !== "production" && <DeleteButton userId={id} />}
         <div className="flex flex-row gap-2 bg-white lg:mr-4 items-center">
           <Image
             className="rounded-[50%]"
