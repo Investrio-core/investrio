@@ -330,7 +330,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                 setEditModal({ id: "", open: false });
                                 setDebts((prev) => {
                                   const updatedDebts = [...prev];
-                                  updatedDebts[parseInt(editModal.id)] = data;
+                                  updatedDebts[parseInt(editModal.id)] = {...updatedDebts[parseInt(editModal.id)] , ...data};
                                   return updatedDebts;
                                 });
                               }}
@@ -370,7 +370,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                   defaultValue={selectedDebt?.debtType}
                                 />
                               </div>
-                              <div className="col-span-12">
+                              {/* <div className="col-span-12">
                                 <Select
                                   disabled
                                   label="Periodicity"
@@ -381,19 +381,19 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                       label: "Monthly",
                                       value: "MONTH",
                                     },
-                                    // {
-                                    //   label: "Annual",
-                                    //   value: "YEAR",
-                                    // },
-                                    // {
-                                    //   label: "Weekly",
-                                    //   value: "WEEK",
-                                    // },
+                                    {
+                                      label: "Annual",
+                                      value: "YEAR",
+                                    },
+                                    {
+                                      label: "Weekly",
+                                      value: "WEEK",
+                                    },
                                   ]}
                                   inline
                                   required
                                 />
-                              </div>
+                              </div> */}
                               <div className="col-span-6">
                                 <Input
                                   label="Interest Rate"
