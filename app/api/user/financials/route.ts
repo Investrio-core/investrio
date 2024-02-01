@@ -78,6 +78,7 @@ export async function POST(request: Request) {
     const saveTasks = recordsResponse.flatMap((record) => {
       const dataToCreate = record.data.map((payment: any) => {
         return {
+          userId: userId,
           FinancialRecordId: record.id,
           title: record.title,
           extraPayAmount: record.extraPayAmount,
