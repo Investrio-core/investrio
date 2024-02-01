@@ -32,17 +32,17 @@ model PaymentSchedule {
   monthlyPayment      Float           @map("monthly_payment")
   remainingBalance    Float           @map("remaining_balance")
   extraPayAmount      Float           @default(0) @map("extra_payment")
-  FinancialRecordId   String          @map("financial_record_id")
+  FinancialRecordId   String?          @map("financial_record_id")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
   userId              String?
-  financialRecord     FinancialRecord @relation(fields: [FinancialRecordId], references: [id])
-  user                User?           @relation(fields: [userId], references: [id])
+  financialRecord     FinancialRecord? @relation(fields: [FinancialRecordId], references: [id])
+  user                User?            @relation(fields: [userId], references: [id])
 }
 
 model FinancialRecord {
   id              String            @id @default(cuid())
-  title           String?
+  title           String?           @unique
   type            DebitType
   periodicity     Periodicity
   initialBalance  Float             @map("initial_outstanding_balance")
