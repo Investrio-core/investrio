@@ -61,7 +61,7 @@ export async function allUserFinancialRecords(userId: string, dataForCreation?: 
       let balance = debt.initialBalance;
       let monthly_ir = debt.interestRate / 12;
       let currentDate = new Date();
-      currentDate.setMonth(currentDate.getMonth() + 1);
+      currentDate.setMonth(currentDate.getMonth());
       currentDate.setDate(1);
       currentDate.setHours(0, 0, 0, 0);
 
@@ -136,7 +136,7 @@ export async function extraPaymentGraph(userId: string) {
 
     // Group data by date
     userData.forEach((item) => {
-      const dateString = item.paymentDate.toISOString().split("T")[0];
+      const dateString = item.paymentDate.toISOString();
       if (!item.data || !Array.isArray(item.data)) {
         return;
       }

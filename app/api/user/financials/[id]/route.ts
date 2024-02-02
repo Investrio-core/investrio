@@ -53,7 +53,6 @@ export async function POST(
 
     return new Response(JSON.stringify(res), { status: 200 });
   } catch (error) {
-    console.log("Error", error);
     return new Response(
       JSON.stringify({ error: "An unexpected error occurred" }),
       { status: 500 }

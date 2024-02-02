@@ -122,41 +122,6 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
             />
 
           </div>
-          {/* <div className="col-span-4 md:col-span-3">
-            <Select
-              disabled
-              label="Periodicity"
-              name="periodicity"
-              defaultValue="MONTH"
-              options={[
-                {
-                  label: "Monthly",
-                  value: "MONTH",
-                },
-                {
-                  label: "Annual",
-                  value: "YEAR",
-                },
-                {
-                  label: "Weekly",
-                  value: "WEEK",
-                },
-              ]}
-              inline
-              required
-            />
-          </div> */}
-          <div className="col-span-4 md:col-span-3">
-            <Input
-              defaultValue={new Date().toISOString().split("T")[0]}
-              label="Payment Due Date"
-              name="dueDate"
-              type="date"
-              inline
-              required
-            />
-
-          </div>
           <div className="col-span-4 md:col-span-12">
             <div className="mt-5 flex justify-end">
               <ButtonWithIcon

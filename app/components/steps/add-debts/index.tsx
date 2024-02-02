@@ -428,7 +428,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                   defaultValue={selectedDebt?.minPayment}
                                 />
                               </div>
-                              <div className="col-span-6">
+                              {/* <div className="col-span-6">
                                 <Input
                                   defaultValue={selectedDebt?.dueDate}
                                   label="Payment Due Date"
@@ -437,7 +437,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                   inline
                                   required
                                 />
-                              </div>
+                              </div> */}
                               <div className="col-span-12 mt-3">
                                 <SimpleButton type="submit" text="Save"/>
                                 <LightButton
