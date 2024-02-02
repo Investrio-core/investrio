@@ -96,10 +96,10 @@ export default function DebtsTable({
       },
     }),
     columnHelper.accessor("dueDate", {
-      header: "Next Payment Due on",
+      header: "Start Month",
       cell: (info) => (
         <div className="flex items-center justify-between">
-          <span>{dayjs(info.renderValue()).format("MM/DD")}</span>
+          <span>{dayjs().format("MMM")}</span>
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="inline-flex w-full justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">

@@ -80,7 +80,8 @@ export default function AddDebts({ onChangeStatus }: Props) {
             <Disclosure.Button className="flex w-full items-center justify-between py-2">
               <span className="font-light text-[#747682] text-left">
                 Manually enter your outstanding debts. We will ask you the
-                following details for the most accurate payment plan
+                following details for the most accurate payment plan.
+                Note that the strategy for paying off debts will start from the current month
               </span>
               <IoIosArrowDown
                 className={`${
@@ -428,7 +429,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                   defaultValue={selectedDebt?.minPayment}
                                 />
                               </div>
-                              <div className="col-span-6">
+                              {/* <div className="col-span-6">
                                 <Input
                                   defaultValue={selectedDebt?.dueDate}
                                   label="Payment Due Date"
@@ -437,7 +438,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                   inline
                                   required
                                 />
-                              </div>
+                              </div> */}
                               <div className="col-span-12 mt-3">
                                 <SimpleButton type="submit" text="Save"/>
                                 <LightButton
