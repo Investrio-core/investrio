@@ -23,9 +23,7 @@ const useAxiosAuth = () => {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        console.log("ERROR", error);
         if (error?.response?.status === 401 && !prevRequest?.sent) {
-            console.log('WWWWOOOW');
           prevRequest.sent = true;
           await refreshToken();
           prevRequest.headers["Authorization"] = `Bearer ${session?.user.accessToken}`;

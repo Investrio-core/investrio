@@ -15,9 +15,6 @@ interface TopbarProps {
 }
 
 export default function Topbar({user}: TopbarProps) {
-
-
-  console.log(user);
   const { image, name, email, id} = user
 
   return (

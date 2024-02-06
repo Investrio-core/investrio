@@ -18,8 +18,6 @@ export type CheckboxTableProps = {
 export const CheckboxTable = ({ infos }: CheckboxTableProps) => {
   const [list, setList] = useState<Info[]>(infos);
 
-  console.log(infos);
-
   const handleCheckBoxChange = (id: number) => {
     const newList = list.map((info) => {
       if (info.id === id) {

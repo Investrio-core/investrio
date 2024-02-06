@@ -37,7 +37,6 @@ export function convertGraphDataToDisplayData({ graphData, summary, withPlanning
 
 
 export function generateGraphData(graphData?: PaymentScheduleGraphType) {
-  console.log(graphData);
   if (!graphData || !graphData?.data?.length) return [];
 
   return graphData.data.map((item) => ({

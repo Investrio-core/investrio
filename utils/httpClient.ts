@@ -51,8 +51,6 @@ export async function post(url: string, data?: any) {
       body: JSON.stringify(data),
     });
 
-    console.log(response.ok);
-
     if (response.status === 401) {
       // Clears cookies (after this, the middleware will trigger a redirect to the login page)
       toast.warning("Your session expired. Please, sign in again.")
@@ -60,7 +58,6 @@ export async function post(url: string, data?: any) {
     }
 
     const jsonResponse = await response.json();
-    console.log(jsonResponse);
 
     if (!response.ok) {
       return Promise.reject(jsonResponse.error || "Something went wrong");

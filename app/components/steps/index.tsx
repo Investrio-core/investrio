@@ -25,8 +25,6 @@ export const Steps = () => {
     enabled: !!session?.user?.id
   });
 
-  console.log(data);
-
   if (isLoading || !session?.user?.id || !data) return <Loading/>;
 
 
