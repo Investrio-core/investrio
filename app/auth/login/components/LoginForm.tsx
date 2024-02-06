@@ -33,7 +33,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      saveSession(session.data);
+      // saveSession(session.data);
     } else {
       clearSession();
     }

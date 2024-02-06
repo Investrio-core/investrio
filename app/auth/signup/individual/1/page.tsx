@@ -7,6 +7,8 @@ import SigninButton from "@/app/components/SigninButton";
 import axios, { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 export default function Individual1Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export default function Individual1Page() {
 
       setIsLoading(true)
       setError('');
-      await axios.post('/api/user', data);
+      await axios.post(`${API_URL}/user/signup`, {...data, type: 'credentials' }, {withCredentials: true});
       await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -28,7 +30,8 @@ export default function Individual1Page() {
         // redirect: false,
       })
     } catch (err: AxiosError | any) {
-      setError("An error ocurred. Please, try again later.")
+      console.log(err.message);
+      setError(err.response.data)
     } finally {
       setIsLoading(false)
     }

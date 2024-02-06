@@ -11,9 +11,7 @@ export type Debt = {
   periodicity: string;
 };
 
-export const formatDebtsForApi = ( debts: Debt[], extraPayAmount: string ) => {
-  
-  const userId = JSON.parse(getCookie(document.cookie, "next-auth.user")).id;
+export const formatDebtsForApi = ( userId: string ,debts: Debt[], extraPayAmount: string ) => {
   let result = debts.map((debt) => ({
     userId,
     debtTitle: debt.debtName,

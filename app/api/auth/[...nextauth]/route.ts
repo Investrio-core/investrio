@@ -2,11 +2,32 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/lib/prisma";
+import { parse } from "cookie";
 import { cookies } from "next/headers";
-import * as bcrypt from "bcrypt";
-import { signJwtAccessToken } from "@/lib/jwt";
+import { AuthOptions } from "next-auth";
 
-const handler = NextAuth({
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+const setRefreshCookie = (cookiesToSet: string[]) => {
+  const cookie = cookiesToSet.find((cookie: string) =>
+    cookie.includes("refreshToken")
+  );
+  if (cookie) {
+    const [cookieName, cookieValue]: any = Object.entries(parse(cookie))[0];
+
+    cookies().set({
+      name: cookieName,
+      value: cookieValue,
+      httpOnly: true,
+      maxAge: parseInt(cookieValue["Max-Age"]),
+      path: cookieValue.path,
+      sameSite: cookieValue.samesite,
+      expires: new Date(cookieValue.expires),
+    });
+  }
+};
+
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -19,28 +40,36 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
-          });
+        if (credentials) {
+          try {
+            const pass = credentials.password;
 
-          if (!res.ok) {
-            throw new Error("Failed to login");
+            const res = await fetch(`${API_URL}/user/login`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: credentials.email,
+                password: pass,
+                type: "credentials",
+              }),
+            });
+
+            const cookiesToSet = res.headers.getSetCookie();
+
+            setRefreshCookie(cookiesToSet);
+
+            if (!res.ok) {
+              throw new Error("Failed to login");
+            }
+            const user = await res.json();
+
+            return user || null;
+          } catch (error: any) {
+            console.error("Authorization error:", error.message);
+            return null;
           }
-
-          const user = await res.json();
-          cookies().set("next-auth.user", JSON.stringify(user));
-          return user || null;
-        } catch (error: any) {
-          console.error("Authorization error:", error.message);
-          return null;
         }
       },
     }),
@@ -54,100 +83,109 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
-    async session({ session, token }: { session: any, token: any }) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: token.email,
-        },
-      });
-
-      // Generate accessToken
-      const { password, ...userWithoutPass } = user!;
-      const accessToken = signJwtAccessToken(userWithoutPass);
-
-      session.user.accessToken = accessToken;
-      session.user.id = user!.id;
-
+    async session({ session, token }: { session: any; token: any }) {
+      session.user = token as any;
       return session;
     },
 
-    async signIn({ profile, credentials }) {
-      try {
-        const emailToSignInWith = profile ? profile.email : credentials?.email as string;
-        const userExist = await prisma.user.findUnique({
-          where: {
-            email: emailToSignInWith,
-          },
-        });
+    async signIn({ account, user, profile, credentials }) {
+      if (user && account?.type === "credentials") {
+        return true;
+      }
 
-        // If profile object is not null, it means that the user is trying to sign up with Google. In this case, create
-        // a new  account if the user does not exist.
-        if (!userExist && profile) {
-          const user = await prisma.user
-            .create({
-              data: {
-                name: profile?.name,
-                email: profile?.email,
-                password: await bcrypt.hash("google-login", 10),
-              },
-            })
-            .then(async (response) => {
-              const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  email: response?.email,
-                  password: "google-login",
-                }),
-              });
+      const emailToSignInWith = profile
+        ? profile.email
+        : (credentials?.email as string);
 
-              if (!res.ok) {
-                throw new Error("Failed to login");
-              }
+      const userExist = await prisma.user.findUnique({
+        where: {
+          email: emailToSignInWith,
+        },
+      });
 
-              const user = await res.json();
-              cookies().set("next-auth.user", JSON.stringify(user));
-            });
-        }
+      //Login
+      if (userExist && account && account.type !== "credentials") {
+        let body: any = {
+          email: user.email,
+          name: user.name,
+          type: account.provider,
+          googleAccessToken: account.access_token
+        };
 
-        // If the user does not exist, and there is no profile object, the user is trying to log in with email/pass
-        // to an account that hasn't been created yet. In this case, throw an error.
-        if (!userExist && !profile) {
-          throw new Error("This account isn't registered. Please, sign up first.")
-        }
-
-        // If the user exists, just try to sign in with the email.
-        if (userExist) {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
+        try {
+          const response = await fetch(`${API_URL}/user/login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              email: userExist?.email,
-              password: profile ? "google-login" : credentials?.password as string,
-            }),
+            body: JSON.stringify(body),
           });
 
-          if (!res.ok) {
-            throw new Error("Failed to login");
-          }
+          const cookiesToSet = response.headers.getSetCookie();
 
-          let userJson = await res.json();
-          userJson = { ...userJson, image: (profile as { picture: string })?.picture };
+          setRefreshCookie(cookiesToSet);
 
-          cookies().set("next-auth.user", JSON.stringify(userJson));
+          const authUser = await response.json();
+
+
+
+          user.id = authUser.id;
+          // @ts-ignore
+          user.accessToken = authUser.accessToken;
+          return true;
+        } catch (err) {
+          // throw new Error("Error")
+          return false;
         }
-
-        return true;
-      } catch (error) {
-        console.error(error);
-        return false;
       }
+
+      //SignUp
+      if (!userExist && profile && account) {
+        let body: any = {
+          email: user.email,
+          name: user.name,
+          type: account.provider,
+        };
+
+        try {
+          const response = await fetch(`${API_URL}/user/signup`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+
+          const cookiesToSet = response.headers.getSetCookie();
+
+          setRefreshCookie(cookiesToSet);
+
+          const createdUser = await response.json();
+
+
+          user.id = createdUser.id 
+          // @ts-ignore
+          user.accessToken = createdUser.accessToken
+          return true;
+        } catch (err) {
+          console.log(err);
+          return false;
+        }
+      }
+
+      return false;
     },
   },
-});
+  session: {
+    maxAge: 60 * 60 * 24
+  },
+  events: {
+    signOut() {
+      cookies().delete("refreshToken");
+    },
+  },
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

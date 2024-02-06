@@ -1,15 +1,14 @@
 "use client";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 import { Button } from "./buttons";
 import { post } from "@/utils/httpClient";
 
-const deleteAll = async (userId: string) => {
-  const res = await post(`/api/user/financials/${userId}`);
-  location.reload();
-};
-
 export const DeleteButton = ({ userId }: { userId: string }) => {
+  const axiosAuth = useAxiosAuth()
+
   const handleDeleteButton = async () => {
-    await deleteAll(userId);
+    const res = await axiosAuth.delete(`/user/strategy/deleteAll`);
+    location.reload();
   };
 
   return (

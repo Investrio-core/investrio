@@ -1,4 +1,5 @@
-import { cookies } from "next/headers";
+"use client";
+
 import DebtStatCard from "@/app/components/debts/DebtStatCard";
 import { CiCalendar } from "react-icons/ci";
 import { BiDollar, BiPlus } from "react-icons/bi";
@@ -6,27 +7,29 @@ import Link from "next/link";
 import { DebtType } from "@/types/debtFormType";
 import dayjs from "dayjs";
 import { formatCurrency } from "@/utils/formatters";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
+import { useSession } from "next-auth/react";
+import { Loading } from "@/app/components/loading/Loading";
 
-async function getData(): Promise<DebtType[]> {
-  const user = JSON.parse(cookies().get("next-auth.user")!.value || "{}");
-
-  const res = await fetch(`http://localhost:3000/api/user/${user.id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: user.accessToken,
-    },
+async function getData(userId: string): Promise<DebtType[]> {
+  const axiosAuth = useAxiosAuth();
+  const res = await axiosAuth.get(`/user/dashboard/${userId}`, {
+    withCredentials: true,
   });
 
-  if (!res.ok) {
-    throw new Error(res.statusText || "Something went wrong!");
-  }
+  const json = await res.data;
 
-  return res.json();
+  return json;
 }
 
 export default async function DebtsDashboardPage() {
-  const debts = await getData();
+  const { data } = useSession();
+
+  if (!data?.user) {
+    return <Loading />;
+  }
+
+  const debts = await getData(data.user.id);
 
   const debtFreeDate = debts
     .flatMap((debt) =>
@@ -34,7 +37,7 @@ export default async function DebtsDashboardPage() {
         if (debtItem.remainingBalance === 0) {
           return debtItem.currentDate;
         }
-      }),
+      })
     )
     .filter((debt) => debt !== undefined)
     .map((debt) => debt!)
