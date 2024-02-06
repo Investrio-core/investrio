@@ -25,7 +25,7 @@ export default function Error({
         toastId: 'session-expired',
       });
 
-      signOut().then(() => router.push('/auth/login'));
+      // signOut().then(() => router.push('/auth/login'));
     }
   }, [error, session])
 

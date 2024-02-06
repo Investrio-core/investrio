@@ -15,12 +15,22 @@ import { useMutation } from "@tanstack/react-query";
 import { formatDebtsForApi } from "@/app/lib/formatDebtsForApi";
 import { post } from "@/utils/httpClient";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { Loading } from "../../loading/Loading";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 
 type Props = {
   onChangeStatus: (status: string) => void;
 };
 
 export default function AddDebts({ onChangeStatus }: Props) {
+  const {data: sessionData} = useSession()
+
+  if (!sessionData?.user) {
+    return <Loading/>
+  }
+  
+  const axiosAuth = useAxiosAuth()
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   let [isOpen, setIsOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ open: false, id: "" });
@@ -40,9 +50,9 @@ export default function AddDebts({ onChangeStatus }: Props) {
     mutationKey: ["financials"],
     mutationFn: async () => {
       const data = {
-        debts: formatDebtsForApi(debts, extraPayAmount),
+        debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
-      return await post("/api/user/financials", data.debts);
+      return await axiosAuth.post(`/user/strategy/create/${sessionData.user.id}`, data.debts);
     },
   });
 

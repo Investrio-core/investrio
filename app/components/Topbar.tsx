@@ -1,12 +1,24 @@
+'use client'
 import { cookies } from "next/headers";
 import SignOutButton from "@/app/components/SignOutButton";
 import Image from "next/image";
 import { DeleteButton } from "./ui/DeleteAllButton";
+import { useSession } from "next-auth/react";
 
-export default function Topbar() {
-  const { name, image, email, id } = JSON.parse(
-    cookies().get("next-auth.user")?.value || "{}"
-  );
+interface TopbarProps {
+  user: {
+    image?: string,
+    email: string,
+    name: string,
+    id: string,
+  }
+}
+
+export default function Topbar({user}: TopbarProps) {
+
+
+  console.log(user);
+  const { image, name, email, id} = user
 
   return (
     <div className="flex flex-row justify-between items-center px-5 py-2 lg:border-b lg:shadow-sm bg-white">

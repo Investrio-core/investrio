@@ -1,12 +1,8 @@
 import { getCookie } from "@/utils/session";
 import { signOut } from "next-auth/react";
 import { toast } from "react-toastify";
-
-let BASE_URL = "";
-
-if (typeof window !== "undefined") {
-  BASE_URL = window.location.origin;
-}
+import { config } from "process";
+import { getToken } from "next-auth/jwt";
 
 export async function get(url: string) {
   try {
@@ -20,17 +16,18 @@ export async function get(url: string) {
       getCookie(document.cookie, "next-auth.user") || "{}"
     );
 
-    const response = await fetch(`${BASE_URL}${parsedUrl}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${parsedUrl}`, {
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     if (response.status === 401) {
       // Clears cookies (after this, the middleware will trigger a redirect to the login page)
       toast.warning("Your session expired. Please, sign in again.")
-      signOut();
+      // signOut();
     }
 
     return response.json();
@@ -43,23 +40,27 @@ export async function get(url: string) {
 export async function post(url: string, data?: any) {
   try {
     const parsedUrl = url.startsWith("/") ? url : `/${url}`;
-    const response = await fetch(`${BASE_URL}${parsedUrl}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${parsedUrl}`, {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
-        Authorization: JSON.parse(getCookie(document.cookie, "next-auth.user"))
-          .accessToken,
+        Authorization: `Bearer ${JSON.parse(getCookie(document.cookie, "next-auth.user"))
+          .accessToken}`,
       },
       body: JSON.stringify(data),
     });
 
+    console.log(response.ok);
+
     if (response.status === 401) {
       // Clears cookies (after this, the middleware will trigger a redirect to the login page)
       toast.warning("Your session expired. Please, sign in again.")
-      signOut();
+      // signOut();
     }
 
     const jsonResponse = await response.json();
+    console.log(jsonResponse);
 
     if (!response.ok) {
       return Promise.reject(jsonResponse.error || "Something went wrong");

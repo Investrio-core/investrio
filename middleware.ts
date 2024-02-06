@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "./app/api/auth/[...nextauth]/route";
 import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  // const session = await getServerSession()
+  // console.log(session);
   let cookieName = 'next-auth.session-token';
 
   if (process.env.NODE_ENV === 'production') {

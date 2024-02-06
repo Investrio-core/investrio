@@ -10,9 +10,10 @@ import { formatCurrency } from "@/utils/formatters";
 import { Area } from "recharts";
 import { Loading } from "../../loading/Loading";
 import Image from "next/image";
-import { PaymentScheduleGraphType } from "@/types/financial";
+import { PaymentScheduleGraphType, IPaymentScheduleGraphType } from "@/types/financial";
 import { convertGraphDataToDisplayData, generateGraphData } from "@/app/components/steps/payment-configuration/utils";
 import Link from "next/link";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 
 type Props = {
   userId?: string;
@@ -20,26 +21,27 @@ type Props = {
 
 export const PaymentConfiguration = ({ userId }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
+  const axiosAuth = useAxiosAuth()
 
   const { data: withInvestrio, isLoading: isWithInvestrioLoading } =
-    useQuery<PaymentScheduleGraphType>({
+    useQuery<IPaymentScheduleGraphType>({
       queryKey: ["extra-payments"],
-      queryFn: async () => await get(`/api/user/${userId}?graph=extra_pay_graph`),
+      queryFn: async () => await axiosAuth.get(`/user/extra-pay-graph/${userId}`),
       staleTime: Infinity,
       enabled: !!userId
     });
 
-  const { data: withoutPlanning, isLoading: isWithoutPlanningLoading } =
-    useQuery<PaymentScheduleGraphType>({
+  const { data: withoutPlanning, isLoading: isWithoutPlanningLoading} =
+    useQuery<IPaymentScheduleGraphType>({
       queryKey: ["no-extra-payments"],
-      queryFn: async () => await get(`/api/user/${userId}?graph=no_extra_pay_graph`),
+      queryFn: async () => await axiosAuth.get(`/user/no-extra-pay-graph/${userId}`),
       staleTime: Infinity,
       enabled: !!userId
     });
 
   const { data: paymentConfigurationSummary, isLoading: isLoadingPaymentConfiguration } = useQuery({
     queryKey: ["paymentConfigurationSummary"],
-    queryFn: async () => await get(`/api/user/${userId}?step=3`),
+    queryFn: async () => await axiosAuth.get(`/user/step-three/${userId}`),
     staleTime: Infinity,
     enabled: !!userId
   });
@@ -47,19 +49,19 @@ export const PaymentConfiguration = ({ userId }: Props) => {
   const { withInvestrioData, withoutPlanningData } = useMemo(() => {
     return {
       withInvestrioData: convertGraphDataToDisplayData({
-        graphData: withInvestrio,
-        summary: paymentConfigurationSummary
+        graphData: withInvestrio?.data,
+        summary: paymentConfigurationSummary?.data
       }),
       withoutPlanningData: convertGraphDataToDisplayData({
-        graphData: withoutPlanning,
-        summary: paymentConfigurationSummary,
+        graphData: withoutPlanning?.data,
+        summary: paymentConfigurationSummary?.data,
         withPlanning: false,
       })
     }
   }, [withInvestrio, withoutPlanning, paymentConfigurationSummary]);
 
-  const withInvestrioGraph = useMemo(() => generateGraphData(withInvestrio), [withInvestrio])
-  const withoutInvestrioGraph = useMemo(() => generateGraphData(withoutPlanning), [withoutPlanning])
+  const withInvestrioGraph = useMemo(() => generateGraphData(withInvestrio?.data), [withInvestrio])
+  const withoutInvestrioGraph = useMemo(() => generateGraphData(withoutPlanning?.data), [withoutPlanning])
 
   if (!userId || isLoadingPaymentConfiguration) return <Loading/>
 
