@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { formatCurrency } from "@/utils/formatters";
 
@@ -18,6 +18,8 @@ export type CheckboxTableProps = {
 export const CheckboxTable = ({ infos }: CheckboxTableProps) => {
   const [list, setList] = useState<Info[]>(infos);
 
+  console.log(infos);
+
   const handleCheckBoxChange = (id: number) => {
     const newList = list.map((info) => {
       if (info.id === id) {
@@ -29,6 +31,10 @@ export const CheckboxTable = ({ infos }: CheckboxTableProps) => {
 
     setList(newList);
   };
+
+  useEffect(() => {
+    setList(infos)
+  }, [infos])
 
   return (
     <div className="rounded-lg w-full border border-[#EDF2F6] display flex flex-col justify-start p-8 py-4 overflow-y-auto h-full">

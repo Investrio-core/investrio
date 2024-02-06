@@ -13,6 +13,7 @@ import { Loading } from "@/app/components/loading/Loading";
 
 async function getData(userId: string): Promise<DebtType[]> {
   const axiosAuth = useAxiosAuth();
+  
   const res = await axiosAuth.get(`/user/dashboard/${userId}`, {
     withCredentials: true,
   });

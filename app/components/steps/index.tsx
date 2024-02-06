@@ -19,13 +19,13 @@ export const Steps = () => {
   } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
     queryFn: async () => await axiosAuth.get(`/user/dashboard/${session?.user?.id}`, {withCredentials: true}),
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
-    retry: false,
-    // staleTime: Infinity,
     enabled: !!session?.user?.id
   });
+
+  console.log(data);
 
   if (isLoading || !session?.user?.id || !data) return <Loading/>;
 

@@ -27,7 +27,8 @@ export const PaymentConfiguration = ({ userId }: Props) => {
     useQuery<IPaymentScheduleGraphType>({
       queryKey: ["extra-payments"],
       queryFn: async () => await axiosAuth.get(`/user/extra-pay-graph/${userId}`),
-      staleTime: Infinity,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
       enabled: !!userId
     });
 
@@ -35,14 +36,16 @@ export const PaymentConfiguration = ({ userId }: Props) => {
     useQuery<IPaymentScheduleGraphType>({
       queryKey: ["no-extra-payments"],
       queryFn: async () => await axiosAuth.get(`/user/no-extra-pay-graph/${userId}`),
-      staleTime: Infinity,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
       enabled: !!userId
     });
 
   const { data: paymentConfigurationSummary, isLoading: isLoadingPaymentConfiguration } = useQuery({
     queryKey: ["paymentConfigurationSummary"],
     queryFn: async () => await axiosAuth.get(`/user/step-three/${userId}`),
-    staleTime: Infinity,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     enabled: !!userId
   });
 
