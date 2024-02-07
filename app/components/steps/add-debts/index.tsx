@@ -352,7 +352,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                             <Input
                               label=""
                               name="extraPayAmount"
-                              type="number"
+                              type="currency"
                               placeholder="$00.00"
                               inline
                               required

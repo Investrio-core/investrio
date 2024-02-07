@@ -109,7 +109,7 @@ export const CustomBarChart = ({ data }: Props) => {
         margin={{ top: -10, right: 0, left: -20 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" className="text-sm" />
+        <XAxis dataKey="name" className="text-sm" interval={'preserveStartEnd'} />
         <YAxis tickFormatter={formatYAxis} className="text-sm" />
         <Tooltip
           cursor={{ fill: "#451B8010" }}
