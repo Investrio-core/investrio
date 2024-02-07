@@ -76,12 +76,6 @@ export default function DebtsPage() {
     }
   }, [isRefetching || isLoading]);
 
-  useEffect(() => {
-    if (debt.length > 0) {
-      handleTabSelect(1);
-    }
-  }, [debt]);
-
   return (
     <>
       <div className="m-2 mx-3 rounded-lg p-3 bg-white text-center">

@@ -25,7 +25,7 @@ type Props = {
   records: any[];
 };
 
-export default function AddDebts({ onChangeStatus, records }: Props) {
+export default function AddDebts({ onChangeStatus, records=[] }: Props) {
   const { data: sessionData } = useSession();
   const router = useRouter()
 
@@ -96,8 +96,6 @@ export default function AddDebts({ onChangeStatus, records }: Props) {
       await deleteRecords()
     }
     if (debts.length > 0) {
-
-      console.log('object');
       update()
     }
   };
@@ -132,6 +130,7 @@ export default function AddDebts({ onChangeStatus, records }: Props) {
       if (debts.length === 0) {
         toast.warning("Debts deleted successfully");
         router.push('/dashboard/debts')
+        router.refresh()
       } 
     }
   }, [deleteIsSuccess]);
@@ -150,7 +149,13 @@ export default function AddDebts({ onChangeStatus, records }: Props) {
   }, [debts]);
 
   useEffect(() => {
-    if (records) {
+    if (Array.isArray(records)) {
+      const defaultExtraPayAmount = records[0]?.extraPayAmount
+
+      if ( defaultExtraPayAmount ){
+        setExtraPayAmount(defaultExtraPayAmount)
+      }
+
       setDebts(
         records.map((r) => {
           return {
