@@ -96,6 +96,8 @@ export default function AddDebts({ onChangeStatus, records }: Props) {
       await deleteRecords()
     }
     if (debts.length > 0) {
+
+      console.log('object');
       update()
     }
   };
@@ -120,6 +122,7 @@ export default function AddDebts({ onChangeStatus, records }: Props) {
     
     if (updateIsSuccess) {
       toast.success("Debts updated successfully");
+      console.log('object');
       onChangeStatus("payment-config");
     }
   }, [isSuccess || updateIsSuccess]);

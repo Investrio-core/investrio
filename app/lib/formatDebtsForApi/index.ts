@@ -2,6 +2,7 @@ import { getCookie } from "@/utils/session";
 import { Session } from "next-auth";
 
 export type Debt = {
+  id?: string,
   debtName: string;
   minPayment: string;
   rate: string;
@@ -14,6 +15,7 @@ export type Debt = {
 export const formatDebtsForApi = ( userId: string ,debts: Debt[], extraPayAmount: string ) => {
   let result = debts.map((debt) => ({
     userId,
+    id: debt.id,
     debtTitle: debt.debtName,
     minPayAmount: parseFloat(debt.minPayment.replace("$", "").replaceAll(",", "")),
     interestRate: parseFloat(debt.rate.replace("%", "")) / 100,

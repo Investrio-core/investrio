@@ -14,24 +14,25 @@ import { DebtType } from "@/types/debtFormType";
 export default function DebtsPage() {
   const { data: session } = useSession();
 
-  const axiosAuth = useAxiosAuth()
+  const axiosAuth = useAxiosAuth();
+  const [debt, setDebts] = useState([]);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [status, setStatus] = useState("choose-methods");
 
-  const { data, isLoading, refetch, isRefetching } =
-    useQuery({
-      queryKey: ["extra-payments"],
-      queryFn: async () => await axiosAuth.get(`/user/records/${session?.user?.id}`, {
+  const { data, isLoading, refetch, isRefetching } = useQuery({
+    queryKey: ["extra-payments"],
+    queryFn: async () =>
+      await axiosAuth.get(`/user/records/${session?.user?.id}`, {
         withCredentials: true,
       }),
-      refetchOnMount: status !== 'payment-config',
-      refetchOnWindowFocus: status !== 'payment-config',
-      enabled: !!session?.user.id || status !== 'payment-config'
-    });
+    refetchOnMount: status !== "payment-config",
+    refetchOnWindowFocus: status !== "payment-config",
+    enabled: !!session?.user.id || status !== "payment-config",
+  });
 
-    if (!session?.user?.id) return <Loading/>;
-  
+  if (!session?.user?.id) return <Loading />;
+
   let [categories] = useState([
     {
       id: 1,
@@ -55,8 +56,8 @@ export default function DebtsPage() {
   };
 
   useEffect(() => {
-    if (status !== 'payment-config' ) {
-      refetch()
+    if (status !== "payment-config") {
+      refetch();
     }
     if (status === "choose-methods") {
       setSelectedTab(0);
@@ -69,12 +70,17 @@ export default function DebtsPage() {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (data?.data) {
+      setDebts(data.data);
+    }
+  }, [isRefetching || isLoading]);
 
   useEffect(() => {
-    if (data?.data.length > 0) {
-      handleTabSelect(1) 
+    if (debt.length > 0) {
+      handleTabSelect(1);
     }
-  }, [isLoading, isRefetching])
+  }, [debt]);
 
   return (
     <>
@@ -82,7 +88,7 @@ export default function DebtsPage() {
         <div className="border-b-2 border-gray-100 p-3">
           <h1 className="title text-left text-[#03091D]">Add Information</h1>
           <h2 className="text-left text-[#747682]">
-          We do the hard work, so you can focus on what matters most.
+            We do the hard work, so you can focus on what matters most.
           </h2>
         </div>
 
@@ -90,10 +96,13 @@ export default function DebtsPage() {
           <Tab.List className="hidden md:flex justify-evenly md:w-[600px] lg:w-[900px] xl:w-[1200px] mx-auto">
             {categories.map((category, index) => {
               return (
-                <Tab disabled={data?.data.length > 0 ? false : index > selectedTab} className="disabled:cursor-not-allowed max-w-[800px]" key={category?.id}
-                     onClick={() => handleTabSelect(index)}>
-                  <div
-                    className="relative flex flex-col items-center justify-center pb-8 text-[#8833FF] outline-0 disabled:cursor-not-allowed">
+                <Tab
+                  disabled={data?.data.length > 0 ? false : index > selectedTab}
+                  className="disabled:cursor-not-allowed max-w-[800px]"
+                  key={category?.id}
+                  onClick={() => handleTabSelect(index)}
+                >
+                  <div className="relative flex flex-col items-center justify-center pb-8 text-[#8833FF] outline-0 disabled:cursor-not-allowed">
                     {selectedTab === index && (
                       <img
                         alt="Current step"
@@ -106,7 +115,9 @@ export default function DebtsPage() {
                         <span
                           className={twMerge(
                             `z-50 rounded-full h-8 w-8 text-sm font-light flex justify-center items-center`,
-                            selectedTab >= index ? "bg-purple text-white" : "bg-[#F5F5F5] text-[#747682]"
+                            selectedTab >= index
+                              ? "bg-purple text-white"
+                              : "bg-[#F5F5F5] text-[#747682]"
                           )}
                         >
                           {category?.id}
@@ -115,7 +126,9 @@ export default function DebtsPage() {
                           className={twMerge(
                             "absolute z-10 left-7 mx-auto overflow:hidden ",
                             category.id <= selectedTab ? "border-purple" : "",
-                            index < categories.length - 1 ? "md:w-[150px] lg:w-[220px] xl:w-[285px]" : ""
+                            index < categories.length - 1
+                              ? "md:w-[150px] lg:w-[220px] xl:w-[285px]"
+                              : ""
                           )}
                         />
                       </div>
@@ -127,8 +140,8 @@ export default function DebtsPage() {
                             : "text-[#747682]"
                         }`}
                       >
-                      {category.title}
-                    </span>
+                        {category.title}
+                      </span>
                     </div>
                   </div>
                 </Tab>
@@ -136,10 +149,14 @@ export default function DebtsPage() {
             })}
           </Tab.List>
           <Tab.Panels>
-            <Tab.Panel><ChooseMethods onChangeStatus={setStatus}/></Tab.Panel>
-            <Tab.Panel><AddDebts onChangeStatus={setStatus} records={data?.data}/></Tab.Panel>
             <Tab.Panel>
-              <PaymentConfiguration userId={session?.user?.id}/>
+              <ChooseMethods onChangeStatus={setStatus} />
+            </Tab.Panel>
+            <Tab.Panel>
+              <AddDebts onChangeStatus={setStatus} records={debt} />
+            </Tab.Panel>
+            <Tab.Panel>
+              <PaymentConfiguration userId={session?.user?.id} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
