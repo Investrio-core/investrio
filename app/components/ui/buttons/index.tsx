@@ -37,15 +37,20 @@ export const SimpleButton = ({
   text,
   onClick,
   className,
+  disabled = false,
   loading,
 }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
       type="submit"
+      disabled={disabled}
       className={clsx(
-        "flex w-full items-center justify-center gap-2 rounded-lg bg-[#8833FF] p-3 text-[#EDF2F6]",
-        className
+        "flex w-full items-center justify-center gap-2 rounded-lg p-3 text-[#EDF2F6]",
+        className,
+        disabled
+          ? "cursor-not-allowed bg-[#747682]"
+          : "bg-[#8833FF] hover:bg-[#9248F8]"
       )}
     >
       {loading && (

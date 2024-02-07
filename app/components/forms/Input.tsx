@@ -1,5 +1,5 @@
 "use client";
-import React, { InputHTMLAttributes, useMemo, useState } from "react";
+import React, { InputHTMLAttributes, useEffect, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { TbAlertHexagon } from "react-icons/tb";
 import { formatCurrency, formatPercent } from "@/utils/formatters";
@@ -17,6 +17,7 @@ type InputProps = {
   maxNumberValue?: number;
   minNumberValue?: number;
   setFormHasError?: (value: boolean) => void;
+  error?: string;
 };
 
 const inputClass = (inline?: boolean, error?: boolean): string => twMerge(
@@ -33,12 +34,15 @@ const Input: React.FC<InputProps> = (props) => {
     inline,
     onChange,
     maxNumberValue, setFormHasError,
-    minNumberValue
+    minNumberValue,
+    error: validationError
   } = props;
   const [error, setError] = useState<string | null>(null);
   const isNumericField = type === "currency" || type === "percentage" || type === "number"
+  const ref = useRef(null)
 
   const validateInput = (value: string, maxNumberValue?: number) => {
+
     if (required && !value.trim()) {
       setError("You need to fill this field!");
       return false;
@@ -83,6 +87,8 @@ const Input: React.FC<InputProps> = (props) => {
   }
 
   const onBlur = (event: React.FocusEventHandler & { target: HTMLInputElement }) => {
+    const validated = validateInput(event.target.value, maxNumberValue)
+    setFormHasError?.(!validated);
     if (type === "percentage") {
       event.target.value = formatPercent(event.target.value)
     } else if (type === "currency") {
@@ -98,6 +104,17 @@ const Input: React.FC<InputProps> = (props) => {
     }
   }
 
+  useEffect(() => {
+    if (validationError) {
+      setError(validationError)
+      setFormHasError?.(true)
+    } else {
+      setFormHasError?.(false)
+      setError(null)
+    }
+  }, [validationError])
+
+
   return (
     <div className={twMerge("form-control relative w-full", inline ? "flex flex-col" : "")}>
       {label && <label className="text-left"><span
@@ -105,6 +122,7 @@ const Input: React.FC<InputProps> = (props) => {
 
       <input
         {...props as InputHTMLAttributes<HTMLInputElement>}
+        ref={ref}
         className={inputClass(props.inline, error !== null)}
         type={inputType}
         onChange={onChangeInput as any}

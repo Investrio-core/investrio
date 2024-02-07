@@ -25,9 +25,9 @@ type Props = {
   records: any[];
 };
 
-export default function AddDebts({ onChangeStatus, records=[] }: Props) {
+export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const { data: sessionData } = useSession();
-  const router = useRouter()
+  const router = useRouter();
 
   if (!sessionData?.user) {
     return <Loading />;
@@ -41,12 +41,12 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
   const [editModal, setEditModal] = useState({ open: false, id: "" });
   const [totalMinPayment, setTotalMinPayment] = useState("");
   const [extraPayAmount, setExtraPayAmount] = useState("");
+  const [editFormHasError, setEditFormHasError] = useState<boolean>(false);
+  const [editMinPaymentHasError, setEditMinPaymentHasError] = useState<string>('');
 
   const closeModal = () => {
     setIsOpen(false);
   };
-
-
 
   const { mutate, isSuccess, isPending } = useMutation({
     mutationKey: ["financials"],
@@ -78,31 +78,25 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
     },
   });
 
-  const {
-    mutate: deleteRecords,
-    isSuccess: deleteIsSuccess,
-  } = useMutation({
+  const { mutate: deleteRecords, isSuccess: deleteIsSuccess } = useMutation({
     mutationKey: ["financials"],
     mutationFn: async () => {
-      return await axiosAuth.post(
-        `/user/strategy/delete`,
-        deletedIds
-      );
+      return await axiosAuth.post(`/user/strategy/delete`, deletedIds);
     },
   });
 
   const handleUpdate = async () => {
     if (deletedIds.length) {
-      await deleteRecords()
+      await deleteRecords();
     }
     if (debts.length > 0) {
-      update()
+      update();
     }
   };
 
   const handleProceedClick = () => {
-    if ( records.length ) {
-      handleUpdate()
+    if (records.length) {
+      handleUpdate();
     } else {
       setIsOpen(true);
     }
@@ -117,21 +111,20 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
       toast.success("Debt created successfully");
       onChangeStatus("payment-config");
     }
-    
+
     if (updateIsSuccess) {
       toast.success("Debts updated successfully");
-      console.log('object');
       onChangeStatus("payment-config");
     }
   }, [isSuccess || updateIsSuccess]);
-  
+
   useEffect(() => {
     if (deleteIsSuccess) {
       if (debts.length === 0) {
         toast.warning("Debts deleted successfully");
-        router.push('/dashboard/debts')
-        router.refresh()
-      } 
+        router.push("/dashboard/debts");
+        router.refresh();
+      }
     }
   }, [deleteIsSuccess]);
 
@@ -150,10 +143,10 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
 
   useEffect(() => {
     if (Array.isArray(records)) {
-      const defaultExtraPayAmount = records[0]?.extraPayAmount
+      const defaultExtraPayAmount = records[0]?.extraPayAmount;
 
-      if ( defaultExtraPayAmount ){
-        setExtraPayAmount(defaultExtraPayAmount)
+      if (defaultExtraPayAmount) {
+        setExtraPayAmount(defaultExtraPayAmount);
       }
 
       setDebts(
@@ -431,6 +424,15 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
                             </Dialog.Title>
                             <Form
                               onSubmit={(data) => {
+                                const minPayment = parseFloat(data.minPayment.replace('$', ''))
+                                let balance = data.balance
+                                balance =parseFloat(data.balance.replace('$', '').replace(',', ''))
+                                if (minPayment <  Number((balance * 0.03).toFixed(2))) {
+                                  setEditMinPaymentHasError(`The minimum value for this field is ${Number((balance * 0.03).toFixed(2))}`)
+                                  return
+                                } else {
+                                  setEditMinPaymentHasError('')
+                                }
                                 setEditModal({ id: "", open: false });
                                 setDebts((prev) => {
                                   const updatedDebts = [...prev];
@@ -451,6 +453,7 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
                                   inline
                                   required
                                   defaultValue={selectedDebt?.debtName}
+                                  setFormHasError={setEditFormHasError}
                                 />
                               </div>
                               <div className="col-span-12">
@@ -507,20 +510,24 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
                                   name="rate"
                                   type="percentage"
                                   placeholder="00.00%"
+                                  minNumberValue={0.01}
                                   inline
                                   required
                                   defaultValue={selectedDebt?.rate}
+                                  setFormHasError={setEditFormHasError}
                                 />
                               </div>
                               <div className="col-span-6">
                                 <Input
                                   label="Outstanding Balance"
                                   name="balance"
-                                  type="number"
+                                  type="currency"
                                   placeholder="$ 00.00"
                                   inline
                                   required
                                   defaultValue={selectedDebt?.balance}
+                                  minNumberValue={0.01}
+                                  setFormHasError={setEditFormHasError}
                                 />
                               </div>
 
@@ -528,33 +535,28 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
                                 <Input
                                   label="Minimum Payment"
                                   name="minPayment"
-                                  type="number"
+                                  type="currency"
                                   placeholder="$ 00.00"
                                   inline
                                   required
                                   defaultValue={selectedDebt?.minPayment}
+                                  error={editMinPaymentHasError}
+                                  minNumberValue={0.01}
+                                  setFormHasError={setEditFormHasError}
                                 />
                               </div>
-                              {/* <div className="col-span-6">
-                                <Input
-                                  defaultValue={selectedDebt?.dueDate}
-                                  label="Payment Due Date"
-                                  name="dueDate"
-                                  type="date"
-                                  inline
-                                  required
-                                />
-                              </div> */}
                               <div className="col-span-12 mt-3">
-                                <SimpleButton type="submit" text="Save" />
+                                <SimpleButton type="submit" text="Save" disabled={editFormHasError} />
                                 <LightButton
                                   className="col-span-12"
-                                  onClick={() =>
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault()
                                     setEditModal((prev) => ({
                                       ...prev,
                                       open: false,
-                                    }))
-                                  }
+                                    }));
+                                  }}
                                   text="Cancel"
                                 />
                               </div>
@@ -575,9 +577,10 @@ export default function AddDebts({ onChangeStatus, records=[] }: Props) {
                   const indexToDelete = parseInt(deleteModal.id);
                   setDeletedIds((prev) => {
                     if (debts[indexToDelete]?.id) {
-                      const id = debts[indexToDelete]?.id as string
+                      const id = debts[indexToDelete]?.id as string;
                       return [...prev, id];
-                    } return [...prev]
+                    }
+                    return [...prev];
                   });
 
                   setDebts((prev) => [
