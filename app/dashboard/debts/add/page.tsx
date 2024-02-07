@@ -7,12 +7,31 @@ import AddDebts from "@/app/components/steps/add-debts";
 import { PaymentConfiguration } from "@/app/components/steps/payment-configuration";
 import { Loading } from "@/app/components/loading/Loading";
 import { twMerge } from "tailwind-merge";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
+import { DebtType } from "@/types/debtFormType";
 
 export default function DebtsPage() {
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [status, setStatus] = useState("choose-methods");
   const { data: session } = useSession();
 
+  const axiosAuth = useAxiosAuth()
+
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [status, setStatus] = useState("choose-methods");
+
+  const { data, isLoading, refetch, isRefetching } =
+    useQuery({
+      queryKey: ["extra-payments"],
+      queryFn: async () => await axiosAuth.get(`/user/records/${session?.user?.id}`, {
+        withCredentials: true,
+      }),
+      refetchOnMount: status !== 'payment-config',
+      refetchOnWindowFocus: status !== 'payment-config',
+      enabled: !!session?.user.id || status !== 'payment-config'
+    });
+
+    if (!session?.user?.id) return <Loading/>;
+  
   let [categories] = useState([
     {
       id: 1,
@@ -36,6 +55,9 @@ export default function DebtsPage() {
   };
 
   useEffect(() => {
+    if (status !== 'payment-config' ) {
+      refetch()
+    }
     if (status === "choose-methods") {
       setSelectedTab(0);
     }
@@ -47,7 +69,12 @@ export default function DebtsPage() {
     }
   }, [status]);
 
-  if (!session?.user?.id) return <Loading/>;
+
+  useEffect(() => {
+    if (data?.data.length > 0) {
+      handleTabSelect(1) 
+    }
+  }, [isLoading, isRefetching])
 
   return (
     <>
@@ -63,7 +90,7 @@ export default function DebtsPage() {
           <Tab.List className="hidden md:flex justify-evenly md:w-[600px] lg:w-[900px] xl:w-[1200px] mx-auto">
             {categories.map((category, index) => {
               return (
-                <Tab disabled={index > selectedTab} className="disabled:cursor-not-allowed max-w-[800px]" key={category?.id}
+                <Tab disabled={data?.data.length > 0 ? false : index > selectedTab} className="disabled:cursor-not-allowed max-w-[800px]" key={category?.id}
                      onClick={() => handleTabSelect(index)}>
                   <div
                     className="relative flex flex-col items-center justify-center pb-8 text-[#8833FF] outline-0 disabled:cursor-not-allowed">
@@ -110,7 +137,7 @@ export default function DebtsPage() {
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel><ChooseMethods onChangeStatus={setStatus}/></Tab.Panel>
-            <Tab.Panel><AddDebts onChangeStatus={setStatus}/></Tab.Panel>
+            <Tab.Panel><AddDebts onChangeStatus={setStatus} records={data?.data}/></Tab.Panel>
             <Tab.Panel>
               <PaymentConfiguration userId={session?.user?.id}/>
             </Tab.Panel>

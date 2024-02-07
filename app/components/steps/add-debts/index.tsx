@@ -6,7 +6,7 @@ import { DebtFormType } from "@/types/debtFormType";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import { IoIosArrowDown } from "react-icons/io";
 
-import { Button, LightButton, SimpleButton, } from "../../ui/buttons";
+import { Button, LightButton, SimpleButton } from "../../ui/buttons";
 import Select from "../../forms/Select";
 import Input from "../../forms/Input";
 import Form from "../../forms/Form";
@@ -18,22 +18,26 @@ import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { Loading } from "../../loading/Loading";
 import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
+import { redirect, useRouter } from "next/navigation";
 
 type Props = {
   onChangeStatus: (status: string) => void;
+  records: any[];
 };
 
-export default function AddDebts({ onChangeStatus }: Props) {
-  const {data: sessionData} = useSession()
+export default function AddDebts({ onChangeStatus, records }: Props) {
+  const { data: sessionData } = useSession();
+  const router = useRouter()
 
   if (!sessionData?.user) {
-    return <Loading/>
+    return <Loading />;
   }
-  
-  const axiosAuth = useAxiosAuth()
+
+  const axiosAuth = useAxiosAuth();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   let [isOpen, setIsOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ open: false, id: "" });
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [editModal, setEditModal] = useState({ open: false, id: "" });
   const [totalMinPayment, setTotalMinPayment] = useState("");
   const [extraPayAmount, setExtraPayAmount] = useState("");
@@ -42,9 +46,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
     setIsOpen(false);
   };
 
-  const handleModalAddDebt = () => {
-    setIsOpen(true);
-  };
+
 
   const { mutate, isSuccess, isPending } = useMutation({
     mutationKey: ["financials"],
@@ -52,11 +54,61 @@ export default function AddDebts({ onChangeStatus }: Props) {
       const data = {
         debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
-      return await axiosAuth.post(`/user/strategy/create/${sessionData.user.id}`, data.debts);
+      return await axiosAuth.post(
+        `/user/strategy/create/${sessionData.user.id}`,
+        data.debts
+      );
     },
   });
 
-  const handleSubmit = () => {
+  const {
+    mutate: update,
+    isSuccess: updateIsSuccess,
+    isPending: updateIsPending,
+  } = useMutation({
+    mutationKey: ["financials"],
+    mutationFn: async () => {
+      const data = {
+        debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
+      };
+      return await axiosAuth.post(
+        `/user/strategy/update/${sessionData.user.id}`,
+        data.debts
+      );
+    },
+  });
+
+  const {
+    mutate: deleteRecords,
+    isSuccess: deleteIsSuccess,
+  } = useMutation({
+    mutationKey: ["financials"],
+    mutationFn: async () => {
+      return await axiosAuth.post(
+        `/user/strategy/delete`,
+        deletedIds
+      );
+    },
+  });
+
+  const handleUpdate = async () => {
+    if (deletedIds.length) {
+      await deleteRecords()
+    }
+    if (debts.length > 0) {
+      update()
+    }
+  };
+
+  const handleProceedClick = () => {
+    if ( records.length ) {
+      handleUpdate()
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const handleSubmit = async () => {
     mutate();
   };
 
@@ -65,7 +117,21 @@ export default function AddDebts({ onChangeStatus }: Props) {
       toast.success("Debt created successfully");
       onChangeStatus("payment-config");
     }
-  }, [isSuccess]);
+    
+    if (updateIsSuccess) {
+      toast.success("Debts updated successfully");
+      onChangeStatus("payment-config");
+    }
+  }, [isSuccess || updateIsSuccess]);
+  
+  useEffect(() => {
+    if (deleteIsSuccess) {
+      if (debts.length === 0) {
+        toast.warning("Debts deleted successfully");
+        router.push('/dashboard/debts')
+      } 
+    }
+  }, [deleteIsSuccess]);
 
   const calculateMinimumPayment = () => {
     return debts
@@ -80,6 +146,25 @@ export default function AddDebts({ onChangeStatus }: Props) {
     setTotalMinPayment(calculateMinimumPayment());
   }, [debts]);
 
+  useEffect(() => {
+    if (records) {
+      setDebts(
+        records.map((r) => {
+          return {
+            id: r.id,
+            debtName: r.title,
+            balance: String(r.initialBalance),
+            periodicity: r.periodicity,
+            debtType: r.type,
+            dueDate: r.payDueDate,
+            rate: String(r.interestRate * 100) + "%",
+            minPayment: String(r.minPayAmount),
+          };
+        })
+      );
+    }
+  }, [records]);
+
   const selectedDebt = debts[parseInt(editModal.id)];
 
   return (
@@ -90,8 +175,9 @@ export default function AddDebts({ onChangeStatus }: Props) {
             <Disclosure.Button className="flex w-full items-center justify-between py-2">
               <span className="font-light text-[#747682] text-left">
                 Manually enter your outstanding debts. We will ask you the
-                following details for the most accurate payment plan.
-                Note that the strategy for paying off debts will start from the current month
+                following details for the most accurate payment plan. Note that
+                the strategy for paying off debts will start from the current
+                month
               </span>
               <IoIosArrowDown
                 className={`${
@@ -114,12 +200,12 @@ export default function AddDebts({ onChangeStatus }: Props) {
                   className="origin-top transform transition-transform"
                 >
                   <Disclosure.Panel>
-                    <div className="border-b-2 border-[#F2F4FA] p-3"/>
+                    <div className="border-b-2 border-[#F2F4FA] p-3" />
 
                     <div className="mt-12">
-                      <DebtsForm debts={debts} setDebts={setDebts}/>
+                      <DebtsForm debts={debts} setDebts={setDebts} />
                     </div>
-                    <div className="border-b-2 border-[#F2F4FA] p-3"/>
+                    <div className="border-b-2 border-[#F2F4FA] p-3" />
                   </Disclosure.Panel>
                 </div>
               )}
@@ -141,7 +227,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                 />
               </div>
             )}
-            <div className="border-b-2 border-[#F2F4FA]"/>
+            <div className="border-b-2 border-[#F2F4FA]" />
 
             <div className="mt-8">
               <div className="rounded-xl overflow:auto">
@@ -155,12 +241,12 @@ export default function AddDebts({ onChangeStatus }: Props) {
                   data={debts}
                 />
               </div>
-              <div className="my-12 border-b-2 border-[#F2F4FA]"/>
+              <div className="my-12 border-b-2 border-[#F2F4FA]" />
               <div className="mt-5 flex w-full justify-center gap-7">
                 {/*<ButtonReturn text="Return"/>*/}
                 <Button
-                  onClick={handleModalAddDebt}
-                  disabled={!debts.length}
+                  onClick={handleProceedClick}
+                  disabled={!records.length && !debts.length}
                   text="Proceed"
                 />
 
@@ -179,7 +265,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
-                      <div className="fixed inset-0 bg-black/25 backdrop-blur-[2px]"/>
+                      <div className="fixed inset-0 bg-black/25 backdrop-blur-[2px]" />
                     </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
@@ -193,8 +279,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                           leaveFrom="opacity-100 scale-100"
                           leaveTo="opacity-0 scale-95"
                         >
-                          <Dialog.Panel
-                            className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                          <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                             <Dialog.Title
                               as="h3"
                               className="text-center text-3xl font-normal leading-6 text-gray-900"
@@ -255,7 +340,8 @@ export default function AddDebts({ onChangeStatus }: Props) {
                             </div> */}
 
                             <div className="mt-5 text-base font-light">
-                              Pay more than the minimum payment to speed up debt repayment. 
+                              Pay more than the minimum payment to speed up debt
+                              repayment.
                             </div>
 
                             <div className="py-4 text-sm font-light text-gray-500">
@@ -288,7 +374,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                 onClick={handleSubmit}
                                 text="Calculate"
                               />
-                              <LightButton onClick={closeModal} text="Cancel"/>
+                              <LightButton onClick={closeModal} text="Cancel" />
                             </div>
                           </Dialog.Panel>
                         </Transition.Child>
@@ -314,7 +400,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
-                      <div className="fixed inset-0 bg-black/25 backdrop-blur-[2px]"/>
+                      <div className="fixed inset-0 bg-black/25 backdrop-blur-[2px]" />
                     </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
@@ -328,8 +414,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                           leaveFrom="opacity-100 scale-100"
                           leaveTo="opacity-0 scale-95"
                         >
-                          <Dialog.Panel
-                            className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                          <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                             <Dialog.Title
                               as="h3"
                               className="text-center text-3xl font-normal leading-6 text-gray-900"
@@ -341,7 +426,10 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                 setEditModal({ id: "", open: false });
                                 setDebts((prev) => {
                                   const updatedDebts = [...prev];
-                                  updatedDebts[parseInt(editModal.id)] = {...updatedDebts[parseInt(editModal.id)] , ...data};
+                                  updatedDebts[parseInt(editModal.id)] = {
+                                    ...updatedDebts[parseInt(editModal.id)],
+                                    ...data,
+                                  };
                                   return updatedDebts;
                                 });
                               }}
@@ -450,7 +538,7 @@ export default function AddDebts({ onChangeStatus }: Props) {
                                 />
                               </div> */}
                               <div className="col-span-12 mt-3">
-                                <SimpleButton type="submit" text="Save"/>
+                                <SimpleButton type="submit" text="Save" />
                                 <LightButton
                                   className="col-span-12"
                                   onClick={() =>
@@ -477,6 +565,13 @@ export default function AddDebts({ onChangeStatus }: Props) {
                 show={deleteModal.open}
                 onConfirm={() => {
                   const indexToDelete = parseInt(deleteModal.id);
+                  setDeletedIds((prev) => {
+                    if (debts[indexToDelete]?.id) {
+                      const id = debts[indexToDelete]?.id as string
+                      return [...prev, id];
+                    } return [...prev]
+                  });
+
                   setDebts((prev) => [
                     ...prev.slice(0, indexToDelete),
                     ...prev.slice(indexToDelete + 1),

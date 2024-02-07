@@ -80,7 +80,11 @@ export const authOptions: AuthOptions = {
     signIn: "/auth/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === 'update') {
+        token.accessToken = session.accessToken
+      }
+
       return { ...token, ...user };
     },
     async session({ session, token }: { session: any; token: any }) {

@@ -5,7 +5,7 @@ import axios from "../axios";
 import { signIn, useSession, signOut } from "next-auth/react";
 
 export const useRefreshToken = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const refreshToken = async () => {
     try { 
@@ -15,6 +15,7 @@ export const useRefreshToken = () => {
         await signOut()
       }
 
+      update({accessToken: res.data.accessToken})
       if (session) session.user.accessToken = res.data.accessToken;
       else redirect('/auth/login');
     } catch (err) {

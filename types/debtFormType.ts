@@ -1,4 +1,5 @@
 export type DebtFormType = {
+  id?: string;
   debtType: string;
   debtName: string;
   balance: string;

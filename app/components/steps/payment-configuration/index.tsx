@@ -23,7 +23,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
   const axiosAuth = useAxiosAuth()
 
-  const { data: withInvestrio, isLoading: isWithInvestrioLoading } =
+  const { data: withInvestrio, isLoading: isWithInvestrioLoading} =
     useQuery<IPaymentScheduleGraphType>({
       queryKey: ["extra-payments"],
       queryFn: async () => await axiosAuth.get(`/user/extra-pay-graph/${userId}`),
@@ -41,7 +41,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
       enabled: !!userId
     });
 
-  const { data: paymentConfigurationSummary, isLoading: isLoadingPaymentConfiguration } = useQuery({
+  const { data: paymentConfigurationSummary, isLoading: isLoadingPaymentConfiguration, isRefetching } = useQuery({
     queryKey: ["paymentConfigurationSummary"],
     queryFn: async () => await axiosAuth.get(`/user/step-three/${userId}`),
     refetchOnMount: true,
@@ -63,10 +63,11 @@ export const PaymentConfiguration = ({ userId }: Props) => {
     }
   }, [withInvestrio, withoutPlanning, paymentConfigurationSummary]);
 
+  
   const withInvestrioGraph = useMemo(() => generateGraphData(withInvestrio?.data), [withInvestrio])
   const withoutInvestrioGraph = useMemo(() => generateGraphData(withoutPlanning?.data), [withoutPlanning])
-
-  if (!userId || isLoadingPaymentConfiguration) return <Loading/>
+  
+  if (!userId || !withInvestrioGraph || !withoutInvestrioGraph || isRefetching) return <Loading/>
 
   return (
     <>
