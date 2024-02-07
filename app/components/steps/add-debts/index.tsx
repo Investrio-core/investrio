@@ -94,16 +94,30 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
     }
   };
 
-  const handleProceedClick = () => {
-    if (records.length) {
+  const handleProceedClick = async () => {
+    const hasExistedDebts = !!debts.find((e) => e.id)
+
+    if (hasExistedDebts) {
       handleUpdate();
+    } else if (!debts.length) {
+      await deleteRecords()
     } else {
       setIsOpen(true);
     }
   };
 
   const handleSubmit = async () => {
-    mutate();
+    if (deletedIds.length) {
+      await deleteRecords();
+    }
+    
+    if (records.length) {
+      console.log("THIS");
+      update()
+    } else {
+      console.log("NOT THIS");
+      mutate();
+    }
   };
 
   useEffect(() => {
@@ -424,7 +438,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                             </Dialog.Title>
                             <Form
                               onSubmit={(data) => {
-                                const minPayment = parseFloat(data.minPayment.replace('$', ''))
+                                const minPayment = parseFloat(data.minPayment.replace('$', '').replace(',', ''))
                                 let balance = data.balance
                                 balance =parseFloat(data.balance.replace('$', '').replace(',', ''))
                                 if (minPayment <  Number((balance * 0.03).toFixed(2))) {

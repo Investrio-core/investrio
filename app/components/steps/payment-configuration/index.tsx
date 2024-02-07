@@ -141,7 +141,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                       <Image width={30} height={30} alt="Money Icon" src="/images/dashboard/money.svg"/>
                       <div>
                         <span>Save money! </span>
-                        <h1 className="text-2xl font-black">{formatCurrency(withInvestrioData.saved)}</h1>
+                        <h1 className="text-2xl font-black">{formatCurrency(withInvestrioData.saved) || '$0'}</h1>
                       </div>
                     </div>
                     <div className="flex gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">

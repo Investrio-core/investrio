@@ -12,10 +12,23 @@ export type Debt = {
   periodicity: string;
 };
 
+export type FinancialRecord = {
+  userId: string;
+  id?: string;
+  debtTitle: string;
+  minPayAmount: number;
+  interestRate: number;
+  debtType: string;
+  initialBalance: number;
+  extraPayAmount: number;
+  periodicity: string;
+}
+
 export const formatDebtsForApi = ( userId: string ,debts: Debt[], extraPayAmount: string ) => {
-  let result = debts.map((debt) => ({
+  let result = debts.map((debt) => {
+
+    const data: FinancialRecord = {
     userId,
-    id: debt.id,
     debtTitle: debt.debtName,
     minPayAmount: parseFloat(debt.minPayment.replace("$", "").replaceAll(",", "")),
     interestRate: parseFloat(debt.rate.replace("%", "")) / 100,
@@ -25,6 +38,15 @@ export const formatDebtsForApi = ( userId: string ,debts: Debt[], extraPayAmount
     ),
     extraPayAmount: parseFloat(extraPayAmount),
     periodicity: "MONTH",
-  })); 
+  }
+
+  if (debt?.id) {
+    data['id'] = debt.id
+  }
+
+  return data
+}); 
+
+  console.log(result);
   return result;
 };

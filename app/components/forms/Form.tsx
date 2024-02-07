@@ -16,7 +16,6 @@ export default function Form({ children, onSubmit, id, className }: FormProps) {
     const formElement = event.target as HTMLFormElement
     const isValid = formElement.checkValidity()
     
-    console.log(isValid);
     if (!isValid) {
       const firstInvalidField = formElement.querySelector(":invalid") as HTMLInputElement
       firstInvalidField.focus()

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Tab } from "@headlessui/react";
 import { ChooseMethods } from "@/app/components/steps/choose-methods";
@@ -10,9 +10,11 @@ import { twMerge } from "tailwind-merge";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 import { DebtType } from "@/types/debtFormType";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function DebtsPage() {
   const { data: session } = useSession();
+  const params = useSearchParams()
 
   const axiosAuth = useAxiosAuth();
   const [debt, setDebts] = useState([]);
@@ -75,6 +77,13 @@ export default function DebtsPage() {
       setDebts(data.data);
     }
   }, [isRefetching || isLoading]);
+
+  useEffect(() => {
+    const step = params.get('step')
+    if (step) {
+      handleTabSelect(1)
+    }
+  }, [])
 
   return (
     <>
