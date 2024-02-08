@@ -47,6 +47,5 @@ export const formatDebtsForApi = ( userId: string ,debts: Debt[], extraPayAmount
   return data
 }); 
 
-  console.log(result);
   return result;
 };

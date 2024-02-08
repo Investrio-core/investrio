@@ -2,13 +2,10 @@
 
 import { redirect } from "next/navigation";
 import axios from "../axios";
-import { signIn, useSession, signOut } from "next-auth/react";
-import { getCookie } from "cookies-next";
+import { useSession, signOut } from "next-auth/react";
 
 export const useRefreshToken = () => {
   const { data: session, update } = useSession();
-  const refreshTokenValue = getCookie('refreshToken')
-
   const refreshToken = async () => {
     try { 
       const res = await axios.post("/user/refresh", {}, { withCredentials: true });

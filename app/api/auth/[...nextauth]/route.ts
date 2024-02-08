@@ -17,8 +17,6 @@ const setRefreshCookie = (cookiesToSet: string[]) => {
   if (cookie) {
     const [cookieName, cookieValue]: any = Object.entries(parse(cookie))[0];
 
-    console.log("COOKIE", cookieName, cookie);
-
     cookies().set({
       name: cookieName,
       value: cookieValue,

@@ -112,10 +112,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
     }
     
     if (records.length) {
-      console.log("THIS");
       update()
     } else {
-      console.log("NOT THIS");
       mutate();
     }
   };
