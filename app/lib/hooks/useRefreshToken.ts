@@ -3,30 +3,22 @@
 import { redirect } from "next/navigation";
 import axios from "../axios";
 import { signIn, useSession, signOut } from "next-auth/react";
-import { getCookies } from "cookies-next";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-console.log(BASE_URL);
+import { getCookie } from "cookies-next";
 
 export const useRefreshToken = () => {
   const { data: session, update } = useSession();
+  const refreshTokenValue = getCookie('refreshToken')
 
   const refreshToken = async () => {
     try { 
-      const res = await fetch(`${BASE_URL}/user/refresh`, { credentials: 'include', method: "POST"});
+      const res = await axios.post("/user/refresh", {}, { withCredentials: true });
 
-      const token = await res.json() as any
-
-
-      console.log(token);
-
-      if (!token.accessToken) {
-        // await signOut()
-        return 
+      if (!res.data.accessToken) {
+        await signOut()
       }
 
-      update({accessToken: token.accessToken.accessToken})
-      if (session) session.user.accessToken = token.accessToken.accessToken;
+      update({accessToken: res.data.accessToken})
+      if (session) session.user.accessToken = res.data.accessToken;
       else redirect('/auth/login');
     } catch (err) {
       await signOut()
