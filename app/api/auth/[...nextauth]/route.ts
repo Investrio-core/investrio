@@ -8,6 +8,8 @@ import { AuthOptions } from "next-auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+const MAX_AGE = 60 * 60 * 24 * 2
+
 const setRefreshCookie = (cookiesToSet: string[]) => {
   const cookie = cookiesToSet.find((cookie: string) =>
     cookie.includes("refreshToken")
@@ -15,13 +17,16 @@ const setRefreshCookie = (cookiesToSet: string[]) => {
   if (cookie) {
     const [cookieName, cookieValue]: any = Object.entries(parse(cookie))[0];
 
+    console.log("COOKIE", cookieName, cookie);
+
     cookies().set({
       name: cookieName,
       value: cookieValue,
       httpOnly: true,
-      maxAge: parseInt(cookieValue["Max-Age"]),
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: MAX_AGE * 1000, 
       path: cookieValue.path,
-      sameSite: cookieValue.samesite,
+      sameSite: 'lax',
       expires: new Date(cookieValue.expires),
     });
   }
@@ -181,7 +186,7 @@ export const authOptions: AuthOptions = {
     },
   },
   session: {
-    maxAge: 60 * 60 * 24
+    maxAge: MAX_AGE
   },
   events: {
     signOut() {
