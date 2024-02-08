@@ -9,7 +9,7 @@ export const useRefreshToken = () => {
 
   const refreshToken = async () => {
     try { 
-      const res = await axios.post("/user/refresh", {}, { withCredentials: true });
+      const res = await axios.post("/user/refresh", {}, { withCredentials: true, headers: {Cookies: ['refreshToken=kek']} });
 
       if (!res.data.accessToken) {
         await signOut()
