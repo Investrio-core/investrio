@@ -25,6 +25,7 @@
     "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "cookie": "^0.6.0",
+    "cookies-next": "^4.1.1",
     "dayjs": "^1.11.10",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
