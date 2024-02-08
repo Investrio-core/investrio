@@ -146,7 +146,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                     </div>
                     <div className="flex gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">
                       <div className="text-left">
-                        <span className="text-sm">Save time, pay</span>
+                        <span>Save time, pay</span>
                         <br/>
                         <span className="text-sm">
                           <span className="text-2xl font-extrabold">{withInvestrioData.monthsFaster}</span> months faster!

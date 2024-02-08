@@ -57,6 +57,44 @@ export default function DebtsPage() {
     if (index === 2) return setStatus("payment-config");
   };
 
+  const handleTabHeaderTitle = () => {
+    switch (status) {
+      case 'choose-methods':
+        return 'Get Started'
+        break;
+
+      case 'add-debts':
+        return 'Add Information'
+        break;
+
+      case 'payment-config':
+        return 'Discover how Investrio saves you money'
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  const handleTabHeaderDescription = () => {
+    switch (status) {
+      case 'choose-methods':
+        return 'We do the hard work, so you can focus on what matters most.'
+        break;
+
+      case 'add-debts':
+        return 'The first step to creating a solid strategy is to assess your current financial situation. Please take a moment to enter your debts manually.'
+        break;
+
+      case 'payment-config':
+        return 'We compared the results of your debt repayment with and without the Investrio method, and the difference is significant!'
+        break;
+    
+      default:
+        break;
+    }
+  }
+
   useEffect(() => {
     if (status !== "payment-config") {
       refetch();
@@ -89,9 +127,9 @@ export default function DebtsPage() {
     <>
       <div className="m-2 mx-3 rounded-lg p-3 bg-white text-center">
         <div className="border-b-2 border-gray-100 p-3">
-          <h1 className="title text-left text-[#03091D]">Add Information</h1>
+          <h1 className="title text-left text-[#03091D]">{handleTabHeaderTitle()}</h1>
           <h2 className="text-left text-[#747682]">
-            We do the hard work, so you can focus on what matters most.
+          {handleTabHeaderDescription()}
           </h2>
         </div>
 

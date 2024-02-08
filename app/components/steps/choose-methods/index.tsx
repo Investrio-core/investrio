@@ -11,7 +11,7 @@ export const ChooseMethods = ({ onChangeStatus }: Props) => {
   return (
     <>
       <div className="my-12 flex flex-col md:flex-row w-full justify-center gap-9">
-        <div className="lg:w-1/3 xl:w-3/12 rounded-lg">
+        <div className="lg:w-2/3 xl:w-7/12 rounded-lg">
           <div
             onClick={() => setSelected("snowball")}
             className={`relative flex h-full flex-col gap-5
@@ -22,15 +22,12 @@ export const ChooseMethods = ({ onChangeStatus }: Props) => {
             }`}
           >
             <div className="text-left">
-              <h2 className="title">Investrio Method</h2>
-              <p className="text-sm text-[#242A3E]">
-                The quickest way to become debt-free.
-              </p>
+              <h2 className="title">Investrio Method Monitor</h2>
             </div>
             <ul className="list-disc flex-col text-left text-[#242A3E]">
-              <li>Discover your debt-free date and accelerate your progress with the Investrio method.</li>
-              <li className="py-5">Based on snowball debt elimination calculation.</li>
-              <li>First and best of many to come strategies for paying off debt.</li>
+              <li><strong className="text-[#502FF5]"> Your Progress:</strong> Track your progress and speed up the journey towards financial freedom.</li>
+              <li className="py-5"><strong className="text-[#502FF5]">Save Time and Money:</strong> We're here to offer you the guidance and motivation you need to achieve your goal.</li>
+              <li><strong className="text-[#502FF5]">Set Your Debt-Free Date:</strong> Discover when you'll be debt-free and and start seeing your savings grow.</li>
             </ul>
           </div>
         </div>

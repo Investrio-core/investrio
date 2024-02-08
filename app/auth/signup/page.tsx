@@ -59,6 +59,10 @@ export default function SignUpPage() {
           </div>
         </div>
       </div>
+      <div className="color-gray-200 text-left text-base mt-5">
+          For the best Investrio experience, we suggest using a desktop.<br/> Good
+          news: our mobile version is on its way!
+        </div>
     </div>
   );
 }

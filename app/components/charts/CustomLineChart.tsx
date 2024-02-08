@@ -70,6 +70,7 @@ export default function CustomLineChart({ data, area, showPayloadNameOnLabel = t
           ))}
         </defs>
         <XAxis
+        interval={'preserveStartEnd'}
           className="text-xs"
           dataKey="name"
           axisLine={false}

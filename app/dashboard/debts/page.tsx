@@ -15,6 +15,7 @@ export default function Dashboard() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
+
     queryFn: async () =>
       await axiosAuth.get(`/user/dashboard/${session?.user?.id}`, {
         withCredentials: true,
@@ -40,7 +41,7 @@ export default function Dashboard() {
             We do the hard work, so you can focus on what matters most.
           </h2>
         </div>
-        {data.data && <Button onClick={onEditClick} classProp={"!w-32 !h-12"} text="Edit" />}
+        {data?.data?.length ? <Button onClick={onEditClick} classProp={"!w-32 !h-12"} text="Edit" /> : null}
       </div>
 
       <Steps data={data.data}/>

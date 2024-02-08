@@ -227,9 +227,9 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
               <div className="flex h-60 flex-col items-center justify-center">
                 <span className="font-light text-[#747682]">
                   <h1 className="mb-1 text-xl font-semibold text-[#03091D]">
-                    You haven't added any debt yet
+                    You haven’t added any debts
                   </h1>
-                  add some to proceed
+                  Add a debt to proceed
                 </span>
                 <img
                   src="/images/dashboard/emptystate.svg"
@@ -352,13 +352,12 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                               </div>
                             </div> */}
 
-                            <div className="mt-5 text-base font-light">
-                              Pay more than the minimum payment to speed up debt
-                              repayment.
+                            <div className="mt-5 text-base font-bold text-center">
+                            This is where the magic happens!
                             </div>
 
-                            <div className="py-4 text-sm font-light text-gray-500">
-                              Our experts recommend adding at least $100/month.
+                            <div className="py-4 text-base font-normal text-gray-500 text-center">
+                            To move faster towards your next financial goals, and pay less interest to the banks, our experts recommend adding at least $100 extra per month
                             </div>
 
                             <Input
