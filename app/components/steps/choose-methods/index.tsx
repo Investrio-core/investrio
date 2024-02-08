@@ -27,7 +27,7 @@ export const ChooseMethods = ({ onChangeStatus }: Props) => {
             <ul className="list-disc flex-col text-left text-[#242A3E]">
               <li><strong className="text-[#502FF5]"> Your Progress:</strong> Track your progress and speed up the journey towards financial freedom.</li>
               <li className="py-5"><strong className="text-[#502FF5]">Save Time and Money:</strong> We're here to offer you the guidance and motivation you need to achieve your goal.</li>
-              <li><strong className="text-[#502FF5]">Set Your Debt-Free Date:</strong> Discover when you'll be debt-free and and start seeing your savings grow.</li>
+              <li><strong className="text-[#502FF5]">Set Your Debt-Free Date:</strong> Discover when you'll be debt-free and start seeing your savings grow.</li>
             </ul>
           </div>
         </div>

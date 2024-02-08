@@ -105,6 +105,7 @@ const Input: React.FC<InputProps> = (props) => {
   }
 
   useEffect(() => {
+    console.log(validationError);
     if (validationError) {
       setError(validationError)
       setFormHasError?.(true)

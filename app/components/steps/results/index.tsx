@@ -37,6 +37,8 @@ export const DebtSummary = ({ data }: ResultsProps) => {
     );
   }
 
+  const minPayment = snowball?.data?.reduce((prev, curr) => prev + curr.minPayAmount, 0)
+
   return (
     <div>
       <div className="my-12 w-full gap-9">
@@ -44,7 +46,7 @@ export const DebtSummary = ({ data }: ResultsProps) => {
           <Card
             icon="calendar"
             label="Min. Payment"
-            value={snowball?.monthTotalPayment - snowball?.extraPayAmount || 0}
+            value={minPayment || 0}
           />
           <Card
             icon="extra-payment"

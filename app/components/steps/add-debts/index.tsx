@@ -43,6 +43,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const [extraPayAmount, setExtraPayAmount] = useState("");
   const [editFormHasError, setEditFormHasError] = useState<boolean>(false);
   const [editMinPaymentHasError, setEditMinPaymentHasError] = useState<string>('');
+  const [editOutstandingBalance, setEditOutstandingBalance] = useState(0)
+  const [editMinimumPayment, setEditMinimumPayment] = useState(0)
 
   const closeModal = () => {
     setIsOpen(false);
@@ -179,6 +181,13 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   }, [records]);
 
   const selectedDebt = debts[parseInt(editModal.id)];
+
+  useEffect(() => {
+    if (editMinimumPayment < Number((editOutstandingBalance * 0.03).toFixed(2))) {
+      setEditMinPaymentHasError(`The minimum value for this field is ${Number((editOutstandingBalance * 0.03).toFixed(2))}`)
+      return
+    }
+  }, [editMinimumPayment])
 
   return (
     <div className="mx-auto p-6">
@@ -537,6 +546,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   inline
                                   required
                                   defaultValue={selectedDebt?.balance}
+                                  onChange={setEditOutstandingBalance}
                                   minNumberValue={0.01}
                                   setFormHasError={setEditFormHasError}
                                 />
@@ -552,7 +562,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   required
                                   defaultValue={selectedDebt?.minPayment}
                                   error={editMinPaymentHasError}
-                                  minNumberValue={0.01}
+                                  onChange={setEditMinimumPayment}
+                                  minNumberValue={Number((editOutstandingBalance * 0.03).toFixed(2)) || 0.01}
                                   setFormHasError={setEditFormHasError}
                                 />
                               </div>
@@ -563,6 +574,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   type="button"
                                   onClick={(e) => {
                                     e.preventDefault()
+                                    setEditFormHasError(false)
+                                    setEditMinPaymentHasError('')
                                     setEditModal((prev) => ({
                                       ...prev,
                                       open: false,

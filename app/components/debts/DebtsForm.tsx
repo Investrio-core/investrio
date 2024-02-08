@@ -39,6 +39,11 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
     values.periodicity = DEFAULT_PERIODICITY
     const isDuplicate = debts.some(debt => debt.debtName === values.debtName);
 
+    if (minimumPayment < Number((debtValue * 0.03).toFixed(2))) {
+      setMinPaymentError(`The minimum value for this field is ${Number((debtValue * 0.03).toFixed(2))}`)
+      return
+    }
+
     if (isDuplicate) {
       toast.error("A debt with this name is already registered.");
       return;
@@ -61,7 +66,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
       return
     }
     setMinPaymentError('')
-  }, [debtValue])
+  }, [minimumPayment])
 
 
   return (

@@ -126,12 +126,12 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                 <div className="flex flex-col gap-3 gap-y-6">
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
-                    <div className="text-2xl">
+                    <div className="text-2xl w-[200px]">
                       Total Interest: <br/> {formatCurrency(withInvestrioData.totalInterest)}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
 
-                    <div className="text-2xl">
+                    <div className="text-2xl w-[200px]">
                       Debt Free By: <br/> {withInvestrioData.debtFreeDate}
                     </div>
                   </div>
@@ -216,14 +216,14 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                 <div className="flex flex-col gap-3 gap-y-6">
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
-                    <div className="text-2xl">
+                    <div className="text-2xl w-[200px]">
                       Total Interest: <br/> {formatCurrency(
                       withoutPlanningData?.totalInterest
                     )}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
 
-                    <div className="text-2xl">
+                    <div className="text-2xl w-[200px]">
                       Debt Free Date: <br/> {withoutPlanningData?.debtFreeDate}
                     </div>
                   </div>

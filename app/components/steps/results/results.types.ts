@@ -1,4 +1,5 @@
 export type Info = {
+  minPayAmount: number;
   monthlyInterestPaid: number;
   monthlyInterestRate: number;
   monthlyPayment: number;
