@@ -6,10 +6,20 @@ import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "@/app/components/loading/Loading";
 import { useRouter } from "next/navigation";
+import { useRefreshToken } from "@/app/lib/hooks/useRefreshToken";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const router = useRouter()
+
+  const refreshToken = useRefreshToken();
+  console.log('here2');
+
+
+  useEffect(() => {
+    refreshToken()
+  }, [])
 
   const axiosAuth = useAxiosAuth();
 
