@@ -26,7 +26,7 @@ export default function Topbar({ user }: TopbarProps) {
         </h3>
       </div>
       <div className="flex flex-row gap-2 items-center">
-        {process.env.ENV !== "production" && <DeleteButton userId={id} />}
+        {process.env.NEXT_PUBLIC_ENV !== "production" ? <DeleteButton userId={id} /> : null}
         <div className="flex flex-row gap-2 bg-white lg:mr-4 items-center">
           <Image
             className="rounded-[50%]"

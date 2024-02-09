@@ -9,6 +9,9 @@ const nextConfig = {
         hostname: 'lh3.googleusercontent.com',
       }
     ]
+  },
+  env: {
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV
   }
 }
 
