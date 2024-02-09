@@ -11,9 +11,7 @@ interface RequestBody {
 export async function POST(request: Request) {
     try {
 
-        console.log(cookies().get('refreshToken'));
         const refreshToken = cookies().get('refreshToken')
-        console.log(refreshToken);
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/refresh`, {}, {withCredentials: true, headers: {Cookie: `refreshToken=${refreshToken?.value}`}})
 
         console.log(response.data);

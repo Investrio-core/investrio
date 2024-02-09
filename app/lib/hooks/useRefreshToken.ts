@@ -8,24 +8,21 @@ export const useRefreshToken = () => {
   const { data: session, update } = useSession();
   const refreshToken = async () => {
     try { 
-      console.log('here');
       const res = await fetch("/api/user/refresh", {credentials: 'include', method: "POST" });
-      console.log(res.ok);
 
       const data = await res.json();
 
-      // if (!data.accessToken) {
-        // signOut()
-      // }
-      console.log(data);
+      if (!data.accessToken) {
+        signOut()
+      }
 
-      update({accessToken: data.accessToken})
-      if (session) session.user.accessToken = data.accessToken;
-      // else redirect('/auth/login');
+      
+      if (session) update({accessToken: data.accessToken})
+      else redirect('/auth/login');
     } catch (err) {
       console.log(err);
-      // await signOut()
-      // redirect('/auth/login');
+      await signOut()
+      redirect('/auth/login');
     }
   };
   return refreshToken;
