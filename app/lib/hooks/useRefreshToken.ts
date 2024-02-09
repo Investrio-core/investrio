@@ -9,10 +9,10 @@ export const useRefreshToken = () => {
   const refreshToken = async () => {
     try { 
       console.log('here');
-      const res = await axios.post("/user/refresh", {}, {withCredentials: true });
-      console.log(res.data);
+      const res = await fetch("/api/user/refresh", {credentials: 'include', method: "POST" });
+      console.log(res.ok);
 
-      const data = await res.data;
+      const data = await res.json();
 
       // if (!data.accessToken) {
         // signOut()
