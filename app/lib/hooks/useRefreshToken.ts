@@ -14,17 +14,18 @@ export const useRefreshToken = () => {
 
       const data = await res.data;
 
-      if (!data.accessToken) {
-        signOut()
-      }
+      // if (!data.accessToken) {
+        // signOut()
+      // }
       console.log(data);
 
       update({accessToken: data.accessToken})
       if (session) session.user.accessToken = data.accessToken;
-      else redirect('/auth/login');
+      // else redirect('/auth/login');
     } catch (err) {
-      await signOut()
-      redirect('/auth/login');
+      console.log(err);
+      // await signOut()
+      // redirect('/auth/login');
     }
   };
   return refreshToken;
