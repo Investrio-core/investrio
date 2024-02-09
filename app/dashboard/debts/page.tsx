@@ -13,14 +13,6 @@ export default function Dashboard() {
   const { data: session } = useSession();
   const router = useRouter()
 
-  const refreshToken = useRefreshToken();
-  console.log('here2');
-
-
-  useEffect(() => {
-    refreshToken()
-  }, [])
-
   const axiosAuth = useAxiosAuth();
 
   const { data, isLoading } = useQuery({
