@@ -1,0 +1,7 @@
+
+
+
+.iconButton:hover > svg path {
+    transition: 0.2s all;
+    stroke: #8833FF;
+}

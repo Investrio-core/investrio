@@ -19,6 +19,7 @@ import { useSession } from "next-auth/react";
 import { Loading } from "../../loading/Loading";
 import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
 import { redirect, useRouter } from "next/navigation";
+import AdditionalPaymentModal from "../../AdditionalPaymentModal";
 
 type Props = {
   onChangeStatus: (status: string) => void;
@@ -272,137 +273,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                   text="Proceed"
                 />
 
-                <Transition appear show={isOpen} as={Fragment}>
-                  <Dialog
-                    as="div"
-                    className="relative z-50"
-                    onClose={closeModal}
-                  >
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <div className="fixed inset-0 bg-black/25 backdrop-blur-[2px]" />
-                    </Transition.Child>
-
-                    <div className="fixed inset-0 overflow-y-auto">
-                      <div className="flex min-h-full items-center justify-center p-4 text-center">
-                        <Transition.Child
-                          as={Fragment}
-                          enter="ease-out duration-300"
-                          enterFrom="opacity-0 scale-95"
-                          enterTo="opacity-100 scale-100"
-                          leave="ease-in duration-200"
-                          leaveFrom="opacity-100 scale-100"
-                          leaveTo="opacity-0 scale-95"
-                        >
-                          <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                            <Dialog.Title
-                              as="h3"
-                              className="text-center text-3xl font-normal leading-6 text-gray-900"
-                            >
-                              Additional Payment
-                            </Dialog.Title>
-                            <div className="my-5 flex justify-center">
-                              <img
-                                className="w-26"
-                                src="/images/dashboard/percent.svg"
-                                alt="Percent icon"
-                              />
-                            </div>
-
-                            {/* <div className="flex items-center justify-between">
-                              <span className="w-8/12 text-sm">
-                                Are you currently paying the minimum amount of{" "}
-                                <span className="font-bold text-[#8833FF]">
-                                  {`$${totalMinPayment}`}
-                                </span>{" "}
-                                each month?
-                              </span>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-light text-gray-500">
-                                  No
-                                </span>
-                                <Switch
-                                  checked={enabled}
-                                  onChange={setEnabled}
-                                  className={`${
-                                    enabled ? "bg-[#8833FF]" : "bg-gray-500"
-                                  }
-                                  relative inline-flex h-[18px] w-[30px]
-                                  shrink-0 cursor-pointer rounded-full border-2
-                                  border-transparent transition-colors duration-200 ease-in-out
-                                  focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
-                                >
-                                  <span
-                                    aria-hidden="true"
-                                    className={`${
-                                      enabled
-                                        ? "translate-x-3"
-                                        : "translate-x-0"
-                                    }
-                                    pointer-events-none inline-block h-[14px] w-[14px]
-                                    transform rounded-full bg-white shadow-lg ring-0 transition
-                                    duration-200 ease-in-out`}
-                                  />
-                                </Switch>
-                                <span
-                                  className={`text-sm font-light ${
-                                    enabled ? "text-[#8833FF]" : "text-gray-500"
-                                  }`}
-                                >
-                                  Yes
-                                </span>
-                              </div>
-                            </div> */}
-
-                            <div className="mt-5 text-base font-bold text-center">
-                            This is where the magic happens!
-                            </div>
-
-                            <div className="py-4 text-base font-normal text-gray-500 text-center">
-                            To move faster towards your next financial goals, and pay less interest to the banks, our experts recommend adding at least $100 extra per month
-                            </div>
-
-                            <Input
-                              label=""
-                              name="extraPayAmount"
-                              type="currency"
-                              placeholder="$00.00"
-                              inline
-                              required
-                              onChange={setExtraPayAmount}
-                            />
-
-                            {/*<input*/}
-                            {/*  type="number"*/}
-                            {/*  onChange={(e) =>*/}
-                            {/*    setExtraPayAmount(e.target.value)*/}
-                            {/*  }*/}
-                            {/*  name="extraPayAmount"*/}
-                            {/*  placeholder="$00.00"*/}
-                            {/*  className="focus:border-primary-700 input w-full border-[#EDF2F6] bg-[#F8F8F8] placeholder-[#656565] transition focus:outline-none"*/}
-                            {/*/>*/}
-
-                            <div className="mt-9 flex flex-col gap-2">
-                              <SimpleButton
-                                loading={isPending}
-                                onClick={handleSubmit}
-                                text="Calculate"
-                              />
-                              <LightButton onClick={closeModal} text="Cancel" />
-                            </div>
-                          </Dialog.Panel>
-                        </Transition.Child>
-                      </div>
-                    </div>
-                  </Dialog>
-                </Transition>
+                <AdditionalPaymentModal open={isOpen} onChange={setExtraPayAmount} onClose={closeModal} onSubmit={handleSubmit}/>
 
                 <Transition appear show={editModal.open} as={Fragment}>
                   <Dialog

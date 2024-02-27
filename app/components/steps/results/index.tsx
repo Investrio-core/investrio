@@ -4,11 +4,53 @@ import { BalanceOverTime } from "./components/BalanceOverTime";
 import { Balance } from "./components/Balance";
 import { formatMonthName } from "@/utils/formatters";
 import { ResultsProps } from "./results.types";
+import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { Button } from "@/app/components/ui/buttons";
 import Link from "next/link";
 import dayjs from "dayjs";
 
+import { useState } from "react";
+import AdditionalPaymentModal from "../../AdditionalPaymentModal";
+import { Loading } from "../../loading/Loading";
+
 export const DebtSummary = ({ data }: ResultsProps) => {
+  const axiosAuth = useAxiosAuth();
+  const queryClient = useQueryClient()
+  const { data: sessionData } = useSession();
+  const [isAdditionalPaymentModalOpen, setIsAdditionalPaymentModalOpen] =
+    useState(false);
+
+  if (!sessionData?.user) {
+    return <Loading />;
+  }
+
+  const handleChangeAdditionalPaymentModalOpen = () => {
+    setIsAdditionalPaymentModalOpen(!isAdditionalPaymentModalOpen);
+  };
+
+  const {
+    mutate: update,
+    isPending
+  } = useMutation({
+    mutationKey: ["extra"],
+    mutationFn: async (extraPayAmount: number) => {
+      return await axiosAuth.post(
+        `/user/strategy/update-extra/${sessionData.user.id}`,
+        {extraPayAmount: extraPayAmount}
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['dashboard']})
+    }
+  });
+
+  const handleSubmitAdditionalPaymentModal = (extraPayAmount: number) => {
+    update(extraPayAmount)
+    setIsAdditionalPaymentModalOpen(false)
+  };
+
   const debts = data[0]?.data?.map((info, index) => ({
     id: index,
     label: info.title,
@@ -37,21 +79,24 @@ export const DebtSummary = ({ data }: ResultsProps) => {
     );
   }
 
-  const minPayment = snowball?.data?.reduce((prev, curr) => prev + curr.minPayAmount, 0)
+  const minPayment = snowball?.data?.reduce(
+    (prev, curr) => prev + curr.minPayAmount,
+    0
+  );
 
   return (
     <div>
+      {isPending && <Loading />}
+      
       <div className="my-12 w-full gap-9">
         <div className="flex gap-9 overflow-x-auto min-w-full">
-          <Card
-            icon="calendar"
-            label="Min. Payment"
-            value={minPayment || 0}
-          />
+          <Card icon="calendar" label="Min. Payment" value={minPayment || 0} />
           <Card
             icon="extra-payment"
             label="Extra payment"
             value={snowball?.extraPayAmount}
+            onEditClick={handleChangeAdditionalPaymentModalOpen}
+            withEdit
           />
           <Card icon="debt-free" label="Debt Free By:" date={{ month, year }} />
           <Card
@@ -72,25 +117,17 @@ export const DebtSummary = ({ data }: ResultsProps) => {
               </div>
             </div>
             <div className="mt-9">
-              <BalanceOverTime
-                // onChangeMonth={(month) => {
-                //   const index = data.findIndex(
-                //     (item) =>
-                //       parseInt(item.paymentDate.split("-")[1]) ===
-                //       parseInt(month)
-                //   );
-                //   if (index >= 0) return setIndex(index);
-                //   if (!index)
-                //     return toast.error(
-                //       "We are currently experiencing an issue with the database for this month. Please try again later."
-                //     );
-                // }}
-                data={data}
-              />
+              <BalanceOverTime data={data} />
             </div>
           </div>
         </div>
       </div>
+      <AdditionalPaymentModal
+        onSubmit={handleSubmitAdditionalPaymentModal}
+        value={snowball?.extraPayAmount}
+        open={isAdditionalPaymentModalOpen}
+        onClose={handleChangeAdditionalPaymentModalOpen}
+      />
     </div>
   );
 };
