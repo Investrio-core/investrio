@@ -7,7 +7,7 @@ type YourToastProps = {
   onClose: () => void;
 };
 
-export const ToastComponent: React.FC<YourToastProps> = ({
+const ToastComponent: React.FC<YourToastProps> = ({
   message,
   description,
   type,
@@ -53,3 +53,5 @@ export const ToastComponent: React.FC<YourToastProps> = ({
     )
   );
 };
+
+export default ToastComponent
