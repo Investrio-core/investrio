@@ -3,11 +3,12 @@
 import { RxAvatar } from "react-icons/rx";
 import { AiOutlineLock } from "react-icons/ai";
 import { useRouter, useSearchParams } from "next/navigation";
-import SigninButton from "@/app/components/SigninButton";
+import SigninButton from "@/app/components/ui/buttons/GoogleSignInButton";
 import Form from "@/app/components/ui/Form";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { clearSession, saveSession } from "@/app/utils/session";
+import Link from "next/link";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -62,8 +63,7 @@ export default function LoginForm() {
 
   return (
     <>
-    <SigninButton/>
-    <div className="divider">OR</div>
+    
       <Form onSubmit={onSubmit}>
         <div className="flex flex-col gap-5">
           <div className="form-control">
@@ -105,10 +105,12 @@ export default function LoginForm() {
             >
               {isLoading ? "Loading..." : "Login"}
             </button>
+            <p className="mt-5 text-base">Don’t have an account? Register <Link href={"/auth/signup/individual/1"} className="font-bold text-purple-1">Here</Link></p>
           </div>
         </div>
       </Form>
-      {/* <SigninButton/> */}
+      <div className="divider">OR</div>
+      <SigninButton/>
     </>
   );
 }
