@@ -31,7 +31,7 @@ const config: Config = {
         purple: {
           DEFAULT: "#8833FF",
         },
-        blue: "#4318FF",
+        "purple-1": "#4318FF",
       },
     },
   },
