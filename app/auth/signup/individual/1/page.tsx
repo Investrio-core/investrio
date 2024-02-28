@@ -3,9 +3,10 @@
 import Form from "@/app/components/ui/Form";
 import Input from "@/app/components/ui/Input";
 import { useState } from "react";
-import SigninButton from "@/app/components/SigninButton";
+import SigninButton from "@/app/components/ui/buttons/GoogleSignInButton";
 import axios, { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -55,6 +56,7 @@ export default function Individual1Page() {
         <button className="btn btn-primary mt-4 w-full" type="submit" disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Register Account'}
         </button>
+        <p className="mt-5 text-center text-base">Already have an account? <Link href={"/auth/login"} className="font-bold text-purple-1">Sign in</Link></p>
       </Form>
       <div className="divider text-xs">Or</div>
       <SigninButton/>

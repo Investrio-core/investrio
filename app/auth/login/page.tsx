@@ -1,5 +1,6 @@
 import Image from "next/image";
 import LoginForm from "@/app/auth/login/components/LoginForm";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -18,7 +19,6 @@ export default function Login() {
           For the best Investrio experience, we suggest using a desktop.<br/> Good
           news: our mobile version is on its way!
         </div>
-        {/* <p>Need an account? <Link href={"/auth/signup/individual/1"} className="font-bold">Sign Up</Link></p> */}
       </div>
     </div>
   );
