@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import SignOutButton from "@/app/components/SignOutButton";
 import Image from "next/image";
-import { DeleteButton } from "./ui/DeleteAllButton";
+import { DeleteButton } from "./ui/buttons/DeleteAllButton";
 import { useSession } from "next-auth/react";
 
 interface TopbarProps {

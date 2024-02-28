@@ -1,7 +1,7 @@
 'use client';
 
-import Form from "@/app/components/forms/Form";
-import Input from "@/app/components/forms/Input";
+import Form from "@/app/components/ui/Form";
+import Input from "@/app/components/ui/Input";
 import { useState } from "react";
 import SigninButton from "@/app/components/SigninButton";
 import axios, { AxiosError } from "axios";
@@ -27,7 +27,6 @@ export default function Individual1Page() {
         email: data.email,
         password: data.password,
         callbackUrl: "/dashboard/debts/add",
-        // redirect: false,
       })
     } catch (err: AxiosError | any) {
       console.log(err.message);

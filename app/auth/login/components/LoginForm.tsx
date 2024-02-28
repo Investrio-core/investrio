@@ -4,10 +4,10 @@ import { RxAvatar } from "react-icons/rx";
 import { AiOutlineLock } from "react-icons/ai";
 import { useRouter, useSearchParams } from "next/navigation";
 import SigninButton from "@/app/components/SigninButton";
-import Form from "@/app/components/forms/Form";
+import Form from "@/app/components/ui/Form";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { clearSession, saveSession } from "@/utils/session";
+import { clearSession, saveSession } from "@/app/utils/session";
 
 const LoginErrorsMapper = {
   OAuthCallback: {

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "./app/api/auth/[...nextauth]/route";
 import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
@@ -14,10 +12,10 @@ export async function middleware(request: NextRequest) {
   
   const sessionToken = cookies().get(cookieName)?.value;
 
-  if (path.startsWith('/dashboard') && sessionToken) {
+  if (path.startsWith('/dashboard/debts') && sessionToken) {
     return NextResponse.next();
-  } else if (!path.startsWith('/dashboard') && sessionToken) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  } else if (!path.startsWith('/dashboard/') && sessionToken) {
+    return NextResponse.redirect(new URL('/dashboard/debts', request.url));
   } else if (path.startsWith('/dashboard') && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   } else {
