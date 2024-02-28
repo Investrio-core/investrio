@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../Loading";
 
 type ButtonPattern = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -126,3 +126,4 @@ export const ButtonReturn = ({ text, href }: ButtonProps) => {
     </>
   );
 };
+

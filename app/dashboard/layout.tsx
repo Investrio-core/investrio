@@ -3,7 +3,7 @@ import React from "react";
 import SideMenu from "@/app/components/SideMenu";
 import Topbar from "@/app/components/Topbar";
 import { useSession } from "next-auth/react";
-import { Loading } from "../components/loading/Loading";
+import { Loading } from "../components/ui/Loading";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const {data} = useSession()

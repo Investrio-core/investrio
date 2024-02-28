@@ -23,3 +23,16 @@ export type DebtSnapshotType = {
   monthlyPayment: number;
   remainingBalance: number;
 }
+
+export type FinancialRecord = {
+  userId: string;
+  id?: string;
+  debtTitle: string;
+  minPayAmount: number;
+  interestRate: number;
+  debtType: string;
+  initialBalance: number;
+  extraPayAmount: number;
+  periodicity: string;
+}
+

@@ -1,7 +1,9 @@
+'use client'
 import { Dialog, Transition } from "@headlessui/react";
-import Input from "../forms/Input";
+import Input from "../ui/Input";
 import { LightButton, SimpleButton } from "../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
+import PercentIcon from '@/public/icons/percent.svg'
 
 type AdditionalPaymentModalProps = {
   onClose: () => void;
@@ -15,20 +17,23 @@ type AdditionalPaymentModalProps = {
 const AdditionalPaymentModal = ({onClose, open = false, value, onSubmit, onChange}: AdditionalPaymentModalProps) => {
   const [currentValue, setCurrentValue] = useState(value || '')
 
-  console.log(currentValue);
-
   const handleSubmit = () => {
     onSubmit(Number(currentValue))
   }
 
   const handleChange = (data: string) => {
-    console.log(data);
     setCurrentValue(data)
 
     if (onChange) {
       onChange(data)
     }
   }
+
+  useEffect(() => {
+    if (value && Number(value) !== Number(currentValue)) {
+      setCurrentValue(value)
+    }
+  }, [value])
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -64,11 +69,7 @@ const AdditionalPaymentModal = ({onClose, open = false, value, onSubmit, onChang
                   Additional Payment
                 </Dialog.Title>
                 <div className="my-5 flex justify-center">
-                  <img
-                    className="w-26"
-                    src="/images/dashboard/percent.svg"
-                    alt="Percent icon"
-                  />
+                  <PercentIcon className="w-26" />
                 </div>
 
                 <div className="mt-5 text-base font-bold text-center">

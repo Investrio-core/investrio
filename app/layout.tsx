@@ -1,5 +1,5 @@
 import "./globals.css";
-import Providers from "./components/Providers";
+import Providers from "./Providers";
 import Head from "next/head";
 
 export const metadata = {

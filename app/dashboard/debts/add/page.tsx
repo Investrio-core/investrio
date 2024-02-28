@@ -2,15 +2,16 @@
 import React, { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Tab } from "@headlessui/react";
-import { ChooseMethods } from "@/app/components/steps/choose-methods";
-import AddDebts from "@/app/components/steps/add-debts";
-import { PaymentConfiguration } from "@/app/components/steps/payment-configuration";
-import { Loading } from "@/app/components/loading/Loading";
+import { ChooseMethods } from "@/app/components/strategy/choose-methods";
+import AddDebts from "@/app/components/strategy/add-strategy";
+import { PaymentConfiguration } from "@/app/components/strategy/payment-configuration";
+import { Loading } from "@/app/components/ui/Loading";
 import { twMerge } from "tailwind-merge";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
-import { DebtType } from "@/types/debtFormType";
-import { useRouter, useSearchParams } from "next/navigation";
+import useAxiosAuth from "@/app/hooks/useAxiosAuth";
+import { useSearchParams } from "next/navigation";
+
+import ArrowDown from '@/public/icons/arrow_down.svg'
 
 export default function DebtsPage() {
   const { data: session } = useSession();
@@ -25,9 +26,7 @@ export default function DebtsPage() {
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["extra-payments"],
     queryFn: async () =>
-      await axiosAuth.get(`/user/records/${session?.user?.id}`, {
-        withCredentials: true,
-      }),
+      await axiosAuth.get(`/user/records/${session?.user?.id}`),
     refetchOnMount: status !== "payment-config",
     refetchOnWindowFocus: status !== "payment-config",
     enabled: !!session?.user.id || status !== "payment-config",
@@ -145,11 +144,7 @@ export default function DebtsPage() {
                 >
                   <div className="relative flex flex-col items-center justify-center pb-8 text-[#8833FF] outline-0 disabled:cursor-not-allowed">
                     {selectedTab === index && (
-                      <img
-                        alt="Current step"
-                        className="absolute mb-12 w-6 h-6"
-                        src="/images/dashboard/arrow_down.svg"
-                      />
+                      <ArrowDown className="absolute mb-12 w-6 h-6" />
                     )}
                     <div className="flex flex-col items-center pt-12">
                       <div className="relative flex items-center">

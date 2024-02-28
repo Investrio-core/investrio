@@ -1,13 +1,11 @@
 "use client";
 import { Button } from "@/app/components/ui/buttons";
-import { Steps } from "../../components/steps";
+import { DashboardInfo } from "@/app/components/dashboard/DashboardInfo";
 import { useSession } from "next-auth/react";
-import useAxiosAuth from "@/app/lib/hooks/useAxiosAuth";
+import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useQuery } from "@tanstack/react-query";
-import { Loading } from "@/app/components/loading/Loading";
+import { Loading } from "@/app/components/ui/Loading";
 import { useRouter } from "next/navigation";
-import { useRefreshToken } from "@/app/lib/hooks/useRefreshToken";
-import { useEffect } from "react";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -19,9 +17,7 @@ export default function Dashboard() {
     queryKey: ["dashboard", session?.user?.id],
 
     queryFn: async () =>
-      await axiosAuth.get(`/user/dashboard/${session?.user?.id}`, {
-        withCredentials: true,
-      }),
+      await axiosAuth.get(`/user/dashboard/${session?.user?.id}`),
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
@@ -41,12 +37,13 @@ export default function Dashboard() {
           <h1 className="title text-left text-[#03091D]">Repayment Strategy</h1>
           <h2 className="text-left text-[#747682]">
             We do the hard work, so you can focus on what matters most.
+
           </h2>
         </div>
         {data?.data?.length ? <Button onClick={onEditClick} classProp={"!w-32 !h-12"} text="Edit" /> : null}
       </div>
 
-      <Steps data={data.data}/>
+      <DashboardInfo data={data.data}/>
     </div>
   );
 }
