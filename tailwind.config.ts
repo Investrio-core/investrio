@@ -29,8 +29,9 @@ const config: Config = {
     extend: {
       colors: {
         purple: {
-          DEFAULT: "#8833FF"
-        }
+          DEFAULT: "#8833FF",
+        },
+        blue: "#4318FF",
       },
     },
   },
