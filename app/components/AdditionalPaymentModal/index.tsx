@@ -33,7 +33,7 @@ const AdditionalPaymentModal = ({onClose, open = false, value, onSubmit, onChang
     if (value && Number(value) !== Number(currentValue)) {
       setCurrentValue(value)
     }
-  }, [value])
+  }, [value, open])
 
   return (
     <Transition appear show={open} as={Fragment}>
