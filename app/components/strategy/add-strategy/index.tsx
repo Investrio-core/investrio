@@ -20,6 +20,8 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useRouter } from "next/navigation";
 import AdditionalPaymentModal from "../../AdditionalPaymentModal";
 import EmptyIcon from '@/public/icons/emptystate.svg'
+import { Tooltip } from "../../ui/Tooltip";
+import { StrategyFormTooltip } from "./FormTooltip";
 
 type Props = {
   onChangeStatus: (status: string) => void;
@@ -196,7 +198,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
     <div className="mx-auto p-6">
       <Disclosure defaultOpen={true}>
         {({ open }) => (
-          <>
+          <div className="flex flex-col">
             <Disclosure.Button className="flex w-full items-center justify-between py-2">
               <span className="font-light text-[#747682] text-left">
                 Manually enter your outstanding debts. We will ask you the
@@ -210,6 +212,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                 } text-2xl text-[#747682]`}
               />
             </Disclosure.Button>
+            <StrategyFormTooltip />
             <Transition
               show={open}
               enter="transition duration-500 ease-out"
@@ -226,10 +229,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                 >
                   <Disclosure.Panel>
                     <div className="border-b-2 border-[#F2F4FA] p-3" />
-
-                    <div className="mt-12">
                       <DebtsForm debts={debts} setDebts={setDebts} />
-                    </div>
                     <div className="border-b-2 border-[#F2F4FA] p-3" />
                   </Disclosure.Panel>
                 </div>
@@ -449,7 +449,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                 }}
               />
             </div>
-          </>
+          </div>
         )}
       </Disclosure>
     </div>
