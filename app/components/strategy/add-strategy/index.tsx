@@ -229,7 +229,9 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                 >
                   <Disclosure.Panel>
                     <div className="border-b-2 border-[#F2F4FA] p-3" />
+                    <div className="mt-12">
                       <DebtsForm debts={debts} setDebts={setDebts} />
+                    </div>
                     <div className="border-b-2 border-[#F2F4FA] p-3" />
                   </Disclosure.Panel>
                 </div>

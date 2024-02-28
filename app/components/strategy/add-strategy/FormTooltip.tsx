@@ -4,7 +4,7 @@ export const StrategyFormTooltip = () => {
   return (
     <Tooltip
       text="Where do I find this info?"
-      containerClassName="self-end mb-3"
+      containerClassName="self-end"
     >
       <div className="text-left text-purple-2 text-sm">
         <h2 className="mb-4 text-base font-bold">Where do I find this info?</h2>
