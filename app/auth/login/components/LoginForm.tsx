@@ -103,9 +103,9 @@ export default function LoginForm() {
               className="btn btn-primary"
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : "Login"}
+              {isLoading ? "Loading..." : "LOG IN"}
             </button>
-            <p className="mt-5 text-base">Don’t have an account? Register <Link href={"/auth/signup/individual/1"} className="font-bold text-purple-1">Here</Link></p>
+            <p className="mt-5 text-base">Don’t have an account? <Link href={"/auth/signup"} className="font-bold text-purple-1">Register Here</Link></p>
           </div>
         </div>
       </Form>

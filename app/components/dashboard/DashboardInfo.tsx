@@ -85,9 +85,12 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
     0
   );
 
+  if (isPending) {
+    return <Loading />
+  }
+
   return (
     <div>
-      {isPending && <Loading />}
       
       <div className="my-12 w-full gap-9">
         <div className="flex gap-9 overflow-x-auto min-w-full">

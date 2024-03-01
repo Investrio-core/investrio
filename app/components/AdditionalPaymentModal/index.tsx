@@ -29,8 +29,10 @@ const AdditionalPaymentModal = ({onClose, open = false, value, onSubmit, onChang
     }
   }
 
+  console.log(value);
   useEffect(() => {
-    if (value && Number(value) !== Number(currentValue)) {
+    console.log("object");
+    if ((value || value === 0) && Number(value) !== Number(currentValue)) {
       setCurrentValue(value)
     }
   }, [value, open])
