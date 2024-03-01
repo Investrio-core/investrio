@@ -32,7 +32,10 @@ const config: Config = {
           DEFAULT: "#8833FF",
         },
         "purple-1": "#4318FF",
-        "purple-2": "#502FF5"
+        "purple-2": "#502FF5",
+        "purple-3": "#8740E2",
+        "gray-1": "#4D5E80",
+        "gray-2": "#F4F7FE"
       },
     },
   },

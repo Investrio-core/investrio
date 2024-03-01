@@ -20,7 +20,6 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useRouter } from "next/navigation";
 import AdditionalPaymentModal from "../../AdditionalPaymentModal";
 import EmptyIcon from '@/public/icons/emptystate.svg'
-import { Tooltip } from "../../ui/Tooltip";
 import { StrategyFormTooltip } from "./FormTooltip";
 
 type Props = {
