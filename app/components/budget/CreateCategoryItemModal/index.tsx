@@ -1,58 +1,70 @@
-'use client'
+"use client";
 import { Dialog, Transition } from "@headlessui/react";
 import Input from "../../ui/Input";
 import { LightButton, SimpleButton } from "../../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Form from "../../ui/Form";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
-  open: boolean,
-  value?: number,
-  name?: string,
-  onSubmit: ({value, name}: {value: number, name: string | undefined}) => void 
-  onChange?: (value: string) => void,
-}
+  open: boolean;
+  value?: number;
+  name?: string;
+  onSubmit: ({
+    value,
+    name,
+  }: {
+    value: number;
+    name: string | undefined;
+  }) => void;
+  onChange?: (value: string) => void;
+};
 
-
-const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, onChange}: CreateCategoryItemModalProps) => {
-  const [currentValue, setCurrentValue] = useState(value || '')
-  const [currentName, setCurrentName] = useState(name || '')
-  const [formHasError, setFormHasError] = useState(true)
+const CreateCategoryItemModal = ({
+  onClose,
+  open = false,
+  value,
+  name,
+  onSubmit,
+  onChange,
+}: CreateCategoryItemModalProps) => {
+  const [currentValue, setCurrentValue] = useState(value || "");
+  const [currentName, setCurrentName] = useState(name || "");
+  const [formHasError, setFormHasError] = useState(true);
 
   const handleSubmit = () => {
     if (currentName.length < 1) {
-      setFormHasError(true)
-      toast.error('Please provide description')
-      return 
-    } 
+      setFormHasError(true);
+      toast.error("Please provide description");
+      return;
+    }
     if (Number(currentValue) < 1) {
-      setFormHasError(true)
-      toast.error('Please provide amount')
-      return
-    } 
-    onSubmit({name: currentName, value: Number(currentValue)})
-  }
+      setFormHasError(true);
+      toast.error("Please provide amount");
+      return;
+    }
+    onSubmit({ name: currentName, value: Number(currentValue) });
+  };
 
   const handleChange = (data: string) => {
-    setCurrentValue(data)
-  }
+    setCurrentValue(data);
+  };
 
   const handleNameChange = (data: string) => {
-    setCurrentName(data)
-  }
+    setCurrentName(data);
+  };
 
   useEffect(() => {
-    setCurrentName('')
-    setCurrentValue('')
+    setCurrentName("");
+    setCurrentValue("");
     if (value && Number(value) !== Number(currentValue)) {
-      setCurrentValue(value)
+      setCurrentValue(value);
     }
     if (name && name !== currentName) {
       setCurrentName(name);
     }
-  }, [value, name, open])
-
+  }, [value, name, open]);
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -88,39 +100,40 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
                   Create new expense
                 </Dialog.Title>
 
-
-                <Input
-                  label="Description"
-                  name="name"
-                  type="text"
-                  placeholder="Ex. Rent"
-                  inline
-                  setFormHasError={setFormHasError}
-                  defaultValue={currentName}
-                  required
-                  onChange={handleNameChange}
-                />
-
-                <Input
-                  label="Amount"
-                  name="extraPayAmount"
-                  type="currency"
-                  placeholder="$00.00"
-                  inline 
-                  setFormHasError={setFormHasError}
-                  defaultValue={currentValue}
-                  required
-                  onChange={handleChange}
-                />
-
-                <div className="mt-9 flex flex-col gap-2">
-                  <SimpleButton
-                    disabled={formHasError}
-                    onClick={handleSubmit}
-                    text="Save"
+                <Form onSubmit={handleSubmit}>
+                  <Input
+                    label="Description"
+                    name="name"
+                    type="text"
+                    placeholder="Ex. Rent"
+                    inline
+                    setFormHasError={setFormHasError}
+                    defaultValue={currentName}
+                    required
+                    onChange={handleNameChange}
                   />
-                  <LightButton onClick={onClose} text="Cancel" />
-                </div>
+
+                  <Input
+                    label="Amount"
+                    name="extraPayAmount"
+                    type="currency"
+                    placeholder="$00.00"
+                    inline
+                    setFormHasError={setFormHasError}
+                    defaultValue={currentValue}
+                    required
+                    onChange={handleChange}
+                  />
+
+                  <div className="mt-9 flex flex-col gap-2">
+                    <SimpleButton
+                      type="submit"
+                      disabled={formHasError}
+                      text="Save"
+                    />
+                    <LightButton onClick={onClose} text="Cancel" />
+                  </div>
+                </Form>
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -130,4 +143,4 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
   );
 };
 
-export default CreateCategoryItemModal
+export default CreateCategoryItemModal;

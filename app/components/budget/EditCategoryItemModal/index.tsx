@@ -5,6 +5,7 @@ import { LightButton, SimpleButton } from "../../ui/buttons";
 import { GoTrash } from "react-icons/go";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Form from "../../ui/Form";
 
 type EditCategoryItemModalProps = {
   onClose: () => void;
@@ -38,18 +39,6 @@ const EditCategoryItemModal = ({
   const [formHasError, setFormHasError] = useState(false);
 
   const handleSubmit = () => {
-
-    if (currentName.length < 1) {
-      setFormHasError(true);
-      toast.error("Please provide description");
-      return;
-    }
-    if (Number(currentValue) < 1) {
-      setFormHasError(true);
-      toast.error("Please provide amount");
-      return;
-    }
-
     if (name) {
       const data: { name: string; value: number; oldName: string } = {
         name: currentName,
@@ -119,38 +108,36 @@ const EditCategoryItemModal = ({
                   Edit expense
                 </Dialog.Title>
 
-                <Input
-                  label="Description"
-                  name="name"
-                  type="text"
-                  placeholder="Ex. Rent"
-                  setFormHasError={setFormHasError}
-                  inline
-                  defaultValue={currentName}
-                  required
-                  onChange={handleNameChange}
-                />
-
-                <Input
-                  label="Amount"
-                  name="extraPayAmount"
-                  type="currency"
-                  setFormHasError={setFormHasError}
-                  placeholder="$00.00"
-                  inline
-                  defaultValue={currentValue}
-                  required
-                  onChange={handleChange}
-                />
-
-                <div className="mt-9 flex flex-col gap-2">
-                  <SimpleButton
-                    onClick={handleSubmit}
-                    disabled={formHasError}
-                    text="Save"
+                <Form onSubmit={handleSubmit}>
+                  <Input
+                    label="Description"
+                    name="name"
+                    type="text"
+                    placeholder="Ex. Rent"
+                    setFormHasError={setFormHasError}
+                    inline
+                    defaultValue={currentName}
+                    required
+                    onChange={handleNameChange}
                   />
-                  <LightButton onClick={onClose} text="Cancel" />
-                </div>
+
+                  <Input
+                    label="Amount"
+                    name="extraPayAmount"
+                    type="currency"
+                    setFormHasError={setFormHasError}
+                    placeholder="$00.00"
+                    inline
+                    defaultValue={currentValue}
+                    required
+                    onChange={handleChange}
+                  />
+
+                  <div className="mt-9 flex flex-col gap-2">
+                    <SimpleButton disabled={formHasError} type="submit" text="Save" />
+                    <LightButton onClick={onClose} text="Cancel" />
+                  </div>
+                </Form>
               </Dialog.Panel>
             </Transition.Child>
           </div>
