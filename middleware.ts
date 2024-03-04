@@ -11,9 +11,13 @@ export async function middleware(request: NextRequest) {
   }
   
   const sessionToken = cookies().get(cookieName)?.value;
+  console.log(path);
 
   if ((!path.startsWith('/auth/login') && !path.startsWith('/auth/signup')) && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
+  if ((path.startsWith('/auth/login') || path.startsWith('/auth/signup')) && sessionToken) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   else {
     return NextResponse.next();
