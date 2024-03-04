@@ -139,8 +139,9 @@ const CategoryBlockItem = ({
         </div>
       </div>
       <div>
-        {items.map((item) => (
+        {items.map((item, idx) => (
           <div
+            key={`${item.name+idx}`}
             onClick={() => onItemClick(item)}
             className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50"
           >

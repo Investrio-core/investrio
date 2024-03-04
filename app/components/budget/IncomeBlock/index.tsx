@@ -91,10 +91,6 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
 
   }, [updateIsPending, createIsPending])
 
-  console.log(budgetInfo.income);
-  console.log(sumCategories);
-  console.log(formatCurrency(1));
-
   return (
     <div className="w-[50%] bg-white p-[24px] border rounded-[12px]">
       <div className="flex justify-between mb-[35px]">

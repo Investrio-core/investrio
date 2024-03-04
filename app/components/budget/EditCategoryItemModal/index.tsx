@@ -21,7 +21,6 @@ type EditCategoryItemModalProps = {
     oldName: string;
   }) => void;
   onDeleteClick: () => void;
-  onChange?: (value: string) => void;
   isDeleteCategoryItemModalOpen: boolean;
 };
 
@@ -31,7 +30,6 @@ const EditCategoryItemModal = ({
   value,
   name,
   onSubmit,
-  onChange,
   onDeleteClick,
   isDeleteCategoryItemModalOpen,
 }: EditCategoryItemModalProps) => {
@@ -40,7 +38,7 @@ const EditCategoryItemModal = ({
   const [formHasError, setFormHasError] = useState(false);
 
   const handleSubmit = () => {
-  
+
     if (currentName.length < 1) {
       setFormHasError(true);
       toast.error("Please provide description");
