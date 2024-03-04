@@ -54,7 +54,7 @@ export default function Dashboard() {
           {data?.data?.length ? (
             <Button
               onClick={onEditClick}
-              classProp={"!w-32 !h-12"}
+              classProp={"!w-32 !h-[38px]"}
               text="Edit"
             />
           ) : null}

@@ -12,13 +12,10 @@ export async function middleware(request: NextRequest) {
   
   const sessionToken = cookies().get(cookieName)?.value;
 
-  if (path.startsWith('/dashboard/debts') && sessionToken) {
-    return NextResponse.next();
-  } else if (!path.startsWith('/dashboard/') && sessionToken) {
-    return NextResponse.redirect(new URL('/dashboard/debts', request.url));
-  } else if ((path.startsWith('/dashboard') || path.startsWith('/budget')) && !sessionToken) {
+  if ((!path.startsWith('/auth/login') && !path.startsWith('/auth/signup')) && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
-  } else {
+  }
+  else {
     return NextResponse.next();
   }
 }
@@ -27,6 +24,7 @@ export const config = {
   matcher: [
     "/",
     "/auth/:path*",
-    "/dashboard/:path*"
+    "/dashboard/:path*",
+    "/budget",
   ],
 };

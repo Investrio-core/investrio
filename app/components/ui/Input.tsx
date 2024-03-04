@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = (props) => {
     onChange,
     maxNumberValue, setFormHasError,
     minNumberValue,
-    error: validationError
+    error: validationError,
   } = props;
   const [error, setError] = useState<string | null>(null);
   const isNumericField = type === "currency" || type === "percentage" || type === "number"
@@ -99,6 +99,7 @@ const Input: React.FC<InputProps> = (props) => {
     if (isNumericField) {
       event.target.value = event.target.value.replaceAll("$", "");
       event.target.value = event.target.value.replaceAll("%", "");
+      event.target.value = event.target.value.replaceAll("-", "");
       event.target.value = event.target.value.replace(/[^\d.-]/g, ''); // Remove all
     }
   }

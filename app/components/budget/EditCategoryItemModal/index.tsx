@@ -134,10 +134,14 @@ const EditCategoryItemModal = ({
                   />
 
                   <div className="mt-9 flex flex-col gap-2">
-                    <SimpleButton disabled={formHasError} type="submit" text="Save" />
-                    <LightButton onClick={onClose} text="Cancel" />
+                    <SimpleButton
+                      disabled={formHasError}
+                      type="submit"
+                      text="Save"
+                    />
                   </div>
                 </Form>
+                <LightButton onClick={onClose} type="button" text="Cancel" />
               </Dialog.Panel>
             </Transition.Child>
           </div>

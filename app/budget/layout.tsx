@@ -11,7 +11,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const {data} = useSession()
 
   if (!data) {
-    redirect('/auth/login')
     return <Loading />
   }
 

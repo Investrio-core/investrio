@@ -17,8 +17,8 @@ const LinkOutline = ({ className, Icon, text, url }: IconLinkProps) => {
       className={twMerge([
         "flex items-center gap-3",
         "font-bold text-[14px] leading-[15px]",
-        "text-purple-1 px-[14px] py-[5.5px]",
-        "border border-purple-1 rounded-[12px]",
+        "text-purple-3 px-[14px] py-[5.5px]",
+        "border border-purple-3 rounded-[12px]",
         "h-fit hover:bg-slate-200",
         className
       ])}

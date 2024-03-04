@@ -34,16 +34,6 @@ const CreateCategoryItemModal = ({
   const [formHasError, setFormHasError] = useState(true);
 
   const handleSubmit = () => {
-    if (currentName.length < 1) {
-      setFormHasError(true);
-      toast.error("Please provide description");
-      return;
-    }
-    if (Number(currentValue) < 1) {
-      setFormHasError(true);
-      toast.error("Please provide amount");
-      return;
-    }
     onSubmit({ name: currentName, value: Number(currentValue) });
   };
 
@@ -131,9 +121,9 @@ const CreateCategoryItemModal = ({
                       disabled={formHasError}
                       text="Save"
                     />
-                    <LightButton onClick={onClose} text="Cancel" />
                   </div>
                 </Form>
+                <LightButton onClick={onClose} type="button" text="Cancel" />
               </Dialog.Panel>
             </Transition.Child>
           </div>
