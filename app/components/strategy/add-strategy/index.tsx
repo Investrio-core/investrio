@@ -20,7 +20,6 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useRouter } from "next/navigation";
 import AdditionalPaymentModal from "../../AdditionalPaymentModal";
 import EmptyIcon from '@/public/icons/emptystate.svg'
-import { Tooltip } from "../../ui/Tooltip";
 import { StrategyFormTooltip } from "./FormTooltip";
 
 type Props = {
@@ -93,8 +92,6 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const handleUpdate = async () => {
     if (deletedIds.length) {
       const deletedResult = await deleteRecords();
-
-      console.log(deletedResult);
     }
     if (debts.length > 0) {
       update();

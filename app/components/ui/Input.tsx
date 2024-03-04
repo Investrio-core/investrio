@@ -42,7 +42,6 @@ const Input: React.FC<InputProps> = (props) => {
   const ref = useRef(null)
 
   const validateInput = (value: string, maxNumberValue?: number) => {
-
     if (required && !value.trim()) {
       setError("You need to fill this field!");
       return false;
@@ -81,14 +80,14 @@ const Input: React.FC<InputProps> = (props) => {
     cleanNumber(event);
     const validated = validateInput(event.target.value, maxNumberValue)
     setFormHasError?.(!validated);
-    if (validated) {
-      onChange?.(event.target.value) // pass the clean number (without masks, etc)
-    }
+    onChange?.(event.target.value) // pass the clean number (without masks, etc)
   }
 
   const onBlur = (event: React.FocusEventHandler & { target: HTMLInputElement }) => {
-    const validated = validateInput(event.target.value, maxNumberValue)
-    setFormHasError?.(!validated);
+    if (event.target.value.length > 0) {
+      const validated = validateInput(event.target.value, maxNumberValue)
+      setFormHasError?.(!validated);
+    }
     if (type === "percentage") {
       event.target.value = formatPercent(event.target.value)
     } else if (type === "currency") {

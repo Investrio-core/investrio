@@ -6,6 +6,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { FaRobot } from "react-icons/fa";
 import { AiFillSetting } from "react-icons/ai";
+import BudgetIcon from '@/public/icons/budget.svg'
 import { SideMenuItem } from "./SideMenuItem";
 
 export default function SideMenu() {
@@ -50,10 +51,10 @@ export default function SideMenu() {
             <FaHandHoldingDollar style={{ fontSize: "20px" }} />
             <span className="text-lg ml-2">Strategy</span>
           </SideMenuItem>
-          {/* <SideMenuItem href="/dashboard/trio">
-            <FaRobot />
-            <span className="text-lg ml-2">Trio</span>
-          </SideMenuItem> */}
+          <SideMenuItem href="/budget">
+            <BudgetIcon />
+            <span className="text-lg ml-2">Budget</span>
+          </SideMenuItem>
           {/* <SideMenuItem href="/settings">
             <AiFillSetting /> <span className="text-lg ml-2">Settings</span>
           </SideMenuItem> */}

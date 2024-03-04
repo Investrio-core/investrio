@@ -37,7 +37,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="m-2 mx-3  rounded-lg p-3 bg-white text-center">
+    <div className="m-2 mx-3 rounded-lg p-3 bg-white text-center">
       <div className="border-b-2 justify-between flex border-gray-100 p-3">
         <div>
           <h1 className="title text-left text-[#03091D]">Repayment Strategy</h1>

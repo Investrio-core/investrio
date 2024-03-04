@@ -1,5 +1,4 @@
 import React from "react";
-import EditIcon from '@/public/icons/edit.svg'
 import { twMerge } from 'tailwind-merge'
 import './styles.css'
 
