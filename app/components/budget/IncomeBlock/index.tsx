@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import IncomeModal from "../IncomeModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
+import { toast } from "react-toastify";
 
 interface IncomeBlockProps {
   budgetInfo: {
@@ -61,6 +62,7 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['budget-tool']})
+      toast.success('Income updated')
     }
   });
 
@@ -89,10 +91,14 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
 
   }, [updateIsPending, createIsPending])
 
+  console.log(budgetInfo.income);
+  console.log(sumCategories);
+  console.log(formatCurrency(1));
+
   return (
     <div className="w-[50%] bg-white p-[24px] border rounded-[12px]">
       <div className="flex justify-between mb-[35px]">
-        <h3 className="text-2xl font-medium">Monthly after tax income</h3>
+        <h3 className="text-2xl font-medium capitalize">Monthly after tax income</h3>
         <IconButton
           onClick={handleChangeIncomeModalOpenOpen}
           Icon={EditIcon}
@@ -103,7 +109,7 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
         {budgetInfo?.income ? formatCurrency(budgetInfo.income): '$0'}
       </div>
       {
-        budgetInfo.income 
+        typeof budgetInfo.income === 'number'
         ? <div className="text-lg">
             <span className="font-bold">{formatCurrency(budgetInfo.income - sumCategories)} </span> 
             left to spent.

@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Input from "../../ui/Input";
 import { LightButton, SimpleButton } from "../../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
@@ -16,9 +17,20 @@ type CreateCategoryItemModalProps = {
 
 const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, onChange}: CreateCategoryItemModalProps) => {
   const [currentValue, setCurrentValue] = useState(value || '')
-  const [currentName, setCurrentName] = useState(name)
+  const [currentName, setCurrentName] = useState(name || '')
+  const [formHasError, setFormHasError] = useState(true)
 
   const handleSubmit = () => {
+    if (currentName.length < 1) {
+      setFormHasError(true)
+      toast.error('Please provide description')
+      return 
+    } 
+    if (Number(currentValue) < 1) {
+      setFormHasError(true)
+      toast.error('Please provide amount')
+      return
+    } 
     onSubmit({name: currentName, value: Number(currentValue)})
   }
 
@@ -31,10 +43,16 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
   }
 
   useEffect(() => {
+    setCurrentName('')
+    setCurrentValue('')
     if (value && Number(value) !== Number(currentValue)) {
       setCurrentValue(value)
     }
-  }, [value, open])
+    if (name && name !== currentName) {
+      setCurrentName(name);
+    }
+  }, [value, name, open])
+
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -77,6 +95,7 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
                   type="text"
                   placeholder="Ex. Rent"
                   inline
+                  setFormHasError={setFormHasError}
                   defaultValue={currentName}
                   required
                   onChange={handleNameChange}
@@ -87,7 +106,8 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
                   name="extraPayAmount"
                   type="currency"
                   placeholder="$00.00"
-                  inline
+                  inline 
+                  setFormHasError={setFormHasError}
                   defaultValue={currentValue}
                   required
                   onChange={handleChange}
@@ -95,6 +115,7 @@ const CreateCategoryItemModal = ({onClose, open = false, value, name, onSubmit, 
 
                 <div className="mt-9 flex flex-col gap-2">
                   <SimpleButton
+                    disabled={formHasError}
                     onClick={handleSubmit}
                     text="Save"
                   />

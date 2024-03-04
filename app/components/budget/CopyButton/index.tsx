@@ -1,5 +1,6 @@
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 interface CopyButtonProps {
   year: number | undefined;
@@ -24,6 +25,7 @@ const CopyButton = ({ month, year, setLoading }: CopyButtonProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["budget-tool"] });
+      toast.success('Successfully copied')
     },
   });
 
@@ -33,7 +35,7 @@ const CopyButton = ({ month, year, setLoading }: CopyButtonProps) => {
 
   return (
     <button onClick={onCopyButtonClick} className="px-[16px] py-[8px] rounded-[8px] border-purple-3 text-purple-3 border text-[14px] hover:bg-slate-200">
-      Copy data from previous month
+      Copy Data from the Previous Month
     </button>
   );
 };

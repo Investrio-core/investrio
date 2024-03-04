@@ -1,7 +1,6 @@
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import CategoryBlockItem from "../CategoryBlockItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import CreateCategoryItemModal from "../CreateCategoryItemModal";
 
 interface CategoryBlockProps {
   budgetInfo: {
@@ -34,11 +33,11 @@ const CategoryBlock = ({
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
 
-  const { income, needs, wants, savings, debts } = budgetInfo;
+  const { income } = budgetInfo;
 
   const { year, month } = date;
 
-  const { mutateAsync: create, isPending: createIsPending } = useMutation({
+  const { mutateAsync: create } = useMutation({
     mutationKey: ["category"],
     mutationFn: async (category: any) => {
       setLoading(true);
@@ -55,7 +54,7 @@ const CategoryBlock = ({
     },
   });
 
-  const { mutateAsync: update, isPending: updateIsPending } = useMutation({
+  const { mutateAsync: update } = useMutation({
     mutationKey: ["category"],
     mutationFn: async (category: any) => {
       setLoading(true);

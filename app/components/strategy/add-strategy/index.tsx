@@ -92,8 +92,6 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const handleUpdate = async () => {
     if (deletedIds.length) {
       const deletedResult = await deleteRecords();
-
-      console.log(deletedResult);
     }
     if (debts.length > 0) {
       update();

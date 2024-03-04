@@ -4,6 +4,7 @@ import CreateCategoryItemModal from "../CreateCategoryItemModal";
 import { useState } from "react";
 import EditCategoryItemModal from "../EditCategoryItemModal";
 import DeleteCategoryItemModal from "../DeleteCategoryItemModal";
+import { toast } from "react-toastify";
 
 type Locale = "wants" | "savings" | "needs" | "debts";
 
@@ -78,6 +79,7 @@ const CategoryBlockItem = ({
       { name: string; value: number }[]
     >;
     await onSubmit(dataToUpdate);
+    toast.success('Expense added')
     setIsCategoryModalOpen(false);
   };
 
@@ -100,6 +102,7 @@ const CategoryBlockItem = ({
         { name: string; value: number }[]
       >;
       await onSubmit(dataToUpdate);
+      toast.success('Expense updated')
       setIsEditCategoryModalOpen(false);
     }
   };
@@ -111,6 +114,7 @@ const CategoryBlockItem = ({
       { name: string; value: number }[]
     >;
     await onSubmit(dataToUpdate);
+    toast.success('Expense deleted')
     setIsDeleteCategoryItemModalOpen(false)
     setIsCategoryModalOpen(false);
   };

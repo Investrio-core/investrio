@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './monthpicker.css'
 
-import { BsCalendarDate } from "react-icons/bs";
+import CalendarIcon from "@/public/icons/calendar.svg";
 
 interface MontPickerProps {
     date: Date | null
@@ -21,9 +21,9 @@ export type Ref = HTMLDivElement;
 
 const CustomDatePickerInput = forwardRef<Ref, CustomDatePickerInputProps>(({ value, onClick }, ref) => {
   return (
-    <div className=" relative w-fit flex gap-4 items-center cursor-pointer" ref={ref} onClick={onClick}>
+    <div className="text-xl relative w-fit flex gap-4 items-center cursor-pointer" ref={ref} onClick={onClick}>
       {value}
-      <BsCalendarDate />
+      <CalendarIcon className="hover:text-purple-3 focus:text-purple-3"/>
     </div>
   );
 });

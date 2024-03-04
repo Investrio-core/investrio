@@ -1,5 +1,5 @@
 export function formatCurrency(value?: number | string | null): string {
-  if (!value) {
+  if (!value && value !== 0) {
     return "";
   }
 
