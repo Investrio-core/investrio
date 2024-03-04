@@ -8,6 +8,7 @@ import CategoryBlock from "../components/budget/CategoryBlock";
 import CopyButton from "../components/budget/CopyButton";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "../components/ui/Loading";
+import { redirect } from "next/navigation";
 
 const categories = ['wants', 'needs', 'savings', 'debts']
 

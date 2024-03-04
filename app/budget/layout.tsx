@@ -4,11 +4,14 @@ import SideMenu from "@/app/components/SideMenu";
 import Topbar from "@/app/components/Topbar";
 import { useSession } from "next-auth/react";
 import { Loading } from "../components/ui/Loading";
+import { redirect } from "next/navigation";
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const {data} = useSession()
 
   if (!data) {
+    redirect('/auth/login')
     return <Loading />
   }
 

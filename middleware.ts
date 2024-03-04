@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   } else if (!path.startsWith('/dashboard/') && sessionToken) {
     return NextResponse.redirect(new URL('/dashboard/debts', request.url));
-  } else if (path.startsWith('/dashboard') && !sessionToken) {
+  } else if ((path.startsWith('/dashboard') || path.startsWith('/budget')) && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   } else {
     return NextResponse.next();
