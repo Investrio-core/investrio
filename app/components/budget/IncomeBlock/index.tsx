@@ -105,7 +105,7 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
         {budgetInfo?.income ? formatCurrency(budgetInfo.income): '$0'}
       </div>
       {
-        typeof budgetInfo.income === 'number'
+        budgetInfo.income
         ? <div className="text-lg">
             <span className="font-bold">{formatCurrency(budgetInfo.income - sumCategories)} </span> 
             left to spent.
