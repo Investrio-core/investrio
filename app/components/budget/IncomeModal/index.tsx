@@ -1,39 +1,48 @@
-'use client'
+"use client";
 import { Dialog, Transition } from "@headlessui/react";
 import Input from "../../ui/Input";
 import { LightButton, SimpleButton } from "../../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
-import PercentIcon from '@/public/icons/percent.svg'
+import PercentIcon from "@/public/icons/percent.svg";
+import Form from "../../ui/Form";
 
 type IncomeModalProps = {
   onClose: () => void;
-  open: boolean,
-  value?: number,
-  onSubmit: (value: number) => void 
-  onChange?: (value: string) => void
-}
+  open: boolean;
+  value?: number;
+  onSubmit: (value: number) => void;
+  onChange?: (value: string) => void;
+};
 
-
-const IncomeModal = ({onClose, open = false, value, onSubmit, onChange}: IncomeModalProps) => {
-  const [currentValue, setCurrentValue] = useState(value || '')
+const IncomeModal = ({
+  onClose,
+  open = false,
+  value,
+  onSubmit,
+  onChange,
+}: IncomeModalProps) => {
+  const [currentValue, setCurrentValue] = useState(value || "");
 
   const handleSubmit = () => {
-    onSubmit(Number(currentValue))
-  }
+    onSubmit(Number(currentValue));
+  };
 
   const handleChange = (data: string) => {
-    setCurrentValue(data)
+    setCurrentValue(data);
 
     if (onChange) {
-      onChange(data)
+      onChange(data);
     }
-  }
+  };
 
   useEffect(() => {
+    console.log(value);
     if (value && Number(value) !== Number(currentValue)) {
-      setCurrentValue(value)
+      setCurrentValue(value);
+    } else if (!value) {
+      setCurrentValue("")
     }
-  }, [value, open])
+  }, [value, open]);
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -69,25 +78,23 @@ const IncomeModal = ({onClose, open = false, value, onSubmit, onChange}: IncomeM
                   Enter Your Monthly Budget
                 </Dialog.Title>
 
-
-                <Input
-                  label="Amount"
-                  name="extraPayAmount"
-                  type="currency"
-                  placeholder="$00.00"
-                  inline
-                  defaultValue={currentValue}
-                  required
-                  onChange={handleChange}
-                />
-
-                <div className="mt-9 flex flex-col gap-2">
-                  <SimpleButton
-                    onClick={handleSubmit}
-                    text="Save"
+                <Form onSubmit={handleSubmit}>
+                  <Input
+                    label="Amount"
+                    name="extraPayAmount"
+                    type="currency"
+                    placeholder="$00.00"
+                    inline
+                    defaultValue={currentValue}
+                    required
+                    onChange={handleChange}
                   />
-                  <LightButton onClick={onClose} text="Cancel" />
-                </div>
+
+                  <div className="mt-9 flex flex-col gap-2">
+                    <SimpleButton type="submit" text="Save" />
+                  </div>
+                </Form>
+                <LightButton onClick={onClose} text="Cancel" />
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -97,4 +104,4 @@ const IncomeModal = ({onClose, open = false, value, onSubmit, onChange}: IncomeM
   );
 };
 
-export default IncomeModal
+export default IncomeModal;
