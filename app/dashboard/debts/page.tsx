@@ -23,7 +23,7 @@ export default function Dashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
     queryFn: async () =>
-      await axiosAuth.get(`/user/dashboard/${session?.user?.id}`),
+      await axiosAuth.get(`/dashboard/${session?.user?.id}`),
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,

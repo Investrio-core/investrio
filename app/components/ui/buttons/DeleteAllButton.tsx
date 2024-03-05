@@ -6,7 +6,7 @@ export const DeleteButton = ({ userId }: { userId: string }) => {
   const axiosAuth = useAxiosAuth()
 
   const handleDeleteButton = async () => {
-    const res = await axiosAuth.delete(`/user/strategy/deleteAll`);
+    const res = await axiosAuth.delete(`/dashboard/strategy/deleteAll`);
     location.reload();
   };
 

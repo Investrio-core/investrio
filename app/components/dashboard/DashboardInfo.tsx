@@ -38,7 +38,7 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
     mutationKey: ["extra"],
     mutationFn: async (extraPayAmount: number) => {
       return await axiosAuth.post(
-        `/user/strategy/update-extra/${sessionData.user.id}`,
+        `/dashboard/strategy/update-extra/${sessionData.user.id}`,
         {extraPayAmount: extraPayAmount}
       );
     },

@@ -26,7 +26,7 @@ export default function DebtsPage() {
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["extra-payments"],
     queryFn: async () =>
-      await axiosAuth.get(`/user/records/${session?.user?.id}`),
+      await axiosAuth.get(`/dashboard/records/${session?.user?.id}`),
     refetchOnMount: status !== "payment-config",
     refetchOnWindowFocus: status !== "payment-config",
     enabled: !!session?.user.id || status !== "payment-config",

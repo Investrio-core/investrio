@@ -59,7 +59,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
       return await axiosAuth.post(
-        `/user/strategy/create/${sessionData.user.id}`,
+        `/dashboard/strategy/create/${sessionData.user.id}`,
         data.debts
       );
     },
@@ -76,7 +76,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
       return await axiosAuth.post(
-        `/user/strategy/update/${sessionData.user.id}`,
+        `/dashboard/strategy/update/${sessionData.user.id}`,
         data.debts
       );
     },
@@ -85,7 +85,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const { mutate: deleteRecords, isSuccess: deleteIsSuccess } = useMutation({
     mutationKey: ["financials"],
     mutationFn: async () => {
-      return await axiosAuth.post(`/user/strategy/delete`, deletedIds);
+      return await axiosAuth.post(`/dashboard/strategy/delete`, deletedIds);
     },
   });
 
