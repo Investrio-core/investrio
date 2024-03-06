@@ -14,8 +14,8 @@ export default function Login() {
       />
       <div className="card bg-base-100 shadow p-5 text-center">
         <LoginForm />
-        <div className="divider"></div>
-        <div className="color-gray-200 text-left text-base">
+        <p className="mt-[32px] text-base">Don’t have an account? <Link href={"/auth/signup"} className="font-bold text-purple-1">Register Here</Link></p>
+        <div className="mt-[32px] text-[#6C7278] text-center text-base">
           For the best Investrio experience, we suggest using a desktop.<br/> Good
           news: our mobile version is on its way!
         </div>

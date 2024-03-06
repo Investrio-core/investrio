@@ -108,7 +108,7 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
         budgetInfo.income
         ? <div className="text-lg">
             <span className="font-bold">{formatCurrency(budgetInfo.income - sumCategories)} </span> 
-            left to spent.
+            left to spend
           </div> 
         : <div>Please assign your budget</div>
       }

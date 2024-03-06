@@ -61,7 +61,7 @@ export default function BudgetTool() {
         <h2 className="text-[32px] font-bold">Budget overview</h2>
         <div className="w-128 flex gap-2">
           <CopyButton year={year} month={month} setLoading={setIsLoading} />
-          <div className="w-[190px] flex justify-end items-center">
+          <div className="w-[200px] flex justify-end items-center">
             <MonthPicker date={date} setDate={setDate} />
           </div>
         </div>

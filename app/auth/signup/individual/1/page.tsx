@@ -56,10 +56,10 @@ export default function Individual1Page() {
         <button className="btn btn-primary mt-4 w-full" type="submit" disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Register Account'}
         </button>
-        <p className="mt-5 text-center text-base">Already have an account? <Link href={"/auth/login"} className="font-bold text-purple-1">Sign in</Link></p>
       </Form>
       <div className="divider text-xs">Or</div>
       <SigninButton/>
+      <p className="mt-5 text-center text-base">Already have an account? <Link href={"/auth/login"} className="font-bold text-purple-1">Sign in</Link></p>
     </>
   )
 }

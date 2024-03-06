@@ -59,7 +59,8 @@ export default function SignUpPage() {
           </div>
         </div>
       </div>
-      <div className="color-gray-200 text-left text-base mt-5">
+      <p className="mt-5 text-center text-base ">Already have an account? <Link href={"/auth/login"} className="font-bold text-purple-1">Sign in</Link></p>
+      <div className="color-gray-200 text-[#6C7278] text-center text-base mt-5">
           For the best Investrio experience, we suggest using a desktop.<br/> Good
           news: our mobile version is on its way!
         </div>

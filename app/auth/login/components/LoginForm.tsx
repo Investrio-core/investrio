@@ -105,7 +105,6 @@ export default function LoginForm() {
             >
               {isLoading ? "Loading..." : "LOG IN"}
             </button>
-            <p className="mt-5 text-base">Don’t have an account? <Link href={"/auth/signup"} className="font-bold text-purple-1">Register Here</Link></p>
           </div>
         </div>
       </Form>
