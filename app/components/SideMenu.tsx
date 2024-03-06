@@ -52,7 +52,7 @@ export default function SideMenu() {
             <span className="text-lg ml-2">Strategy</span>
           </SideMenuItem>
           <SideMenuItem href="/budget">
-            <BudgetIcon />
+            <BudgetIcon width='20' height="20" viewBox="6 6 20 23" />
             <span className="text-lg ml-2">Budget</span>
           </SideMenuItem>
           {/* <SideMenuItem href="/settings">
