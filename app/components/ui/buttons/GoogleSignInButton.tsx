@@ -15,7 +15,7 @@ const GoogleSignInButton = () => {
         );
     }
     return (
-        <button onClick={() => signIn("google")} className="btn btn-ghost w-full">
+        <button onClick={() => signIn("google")} className="btn btn-ghost w-full bg-[#F2F5F7] border-[#EAEAEA]">
             <span className="flex items-center">
                 <img loading="lazy" height="24" width="24" id="provider-logo-dark" src="https://authjs.dev/img/providers/google.svg" className="w-5 h-5 mr-5" />
                 Access with Google
