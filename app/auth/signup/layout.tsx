@@ -14,27 +14,6 @@ const steps: Record<string, any> = {
     step: 1,
     stepTitle: "Personal Info",
   },
-  // '/auth/signup/individual/2': {
-  //   title: 'Complete Your Profile!',
-  //   description: 'For the purpose of industry regulation, your details are required.',
-  //   back: '/auth/signup/individual/1',
-  //   step: 1,
-  //   stepTitle: 'Personal Info'
-  // },
-  // '/auth/signup/goals': {
-  //   title: 'Tells us about your financial goals',
-  //   description: 'To get started, choose a goal from our list or create your own.',
-  //   back: '/auth/signup/individual/2',
-  //   step: 2,
-  //   stepTitle: 'Financial Goals'
-  // },
-  // '/auth/signup/plans': {
-  //   title: 'Select your plan',
-  //   description: 'Unlike many financial apps, we don’t sell your data and we respect your privacy',
-  //   back: '/auth/signup/goals',
-  //   step: 3,
-  //   stepTitle: 'Select Your Plan'
-  // }
   "/auth/signup/checkout/2": {
     title: "Thank you for subscribing!",
     description: "An email confirmation has been sent your email address.",
@@ -42,6 +21,7 @@ const steps: Record<string, any> = {
     stepTitle: "Welcome",
   },
 };
+
 export default function SignUpLayout({
   children,
 }: {

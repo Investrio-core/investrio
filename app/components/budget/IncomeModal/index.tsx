@@ -36,7 +36,6 @@ const IncomeModal = ({
   };
 
   useEffect(() => {
-    console.log(value);
     if (value && Number(value) !== Number(currentValue)) {
       setCurrentValue(value);
     } else if (!value) {

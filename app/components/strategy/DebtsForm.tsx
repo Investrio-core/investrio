@@ -86,8 +86,8 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               label="Name Your Debt"
               name="debtName"
               placeholder="Ex. Visa, Chase, Amex"
-              inline
-              required
+              inline={true}
+              required={true}
               setFormHasError={setFormHasError}
             />
           </div>
@@ -101,8 +101,8 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
                   value: "CreditCard",
                 },
               ]}
-              inline
-              required
+              inline={true}
+              required={true}
               defaultValue="CreditCard"
             />
           </div>
@@ -114,8 +114,8 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               placeholder="00.00%"
               maxNumberValue={100}
               minNumberValue={0.01}
-              inline
-              required
+              inline={true}
+              required={true}
               setFormHasError={setFormHasError}
             />
           </div>
@@ -126,8 +126,8 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               type="currency"
               placeholder="$00.00"
               minNumberValue={0.01}
-              inline
-              required
+              inline={true}
+              required={true}
               onChange={setDebtValue}
               setFormHasError={setFormHasError}
             />
@@ -140,8 +140,8 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
               placeholder="$00.00"
               error={minPayAmountError}
               onChange={setMinimumPayment}
-              inline
-              required
+              inline={true}
+              required={true}
               minNumberValue={
                 debtValue > 0.01 ? Number((debtValue * 0.03).toFixed(2)) : 0.01
               } // Minimum payment is at least 3% of the balance

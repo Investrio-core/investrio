@@ -74,7 +74,6 @@ export const PaymentConfiguration = ({ userId }: Props) => {
       <div className="my-12 w-full gap-9">
         <div className="w-full rounded-lg">
           <label
-            // onClick={() => setSelected("with-investrio")}
             className={`flex h-full flex-col gap-5
             rounded-2xl border-[#9248F8] bg-white p-4 transition-all hover:border-2
             ${selected === "with-investrio" ? "border-2" : ""}`}
@@ -82,21 +81,11 @@ export const PaymentConfiguration = ({ userId }: Props) => {
             <div className="flex items-center justify-between text-left">
               <div>
                 <h2
-                  // className={`text-2xl font-semibold ${
-                  //   selected === "with-investrio" ? "text-[#9248F8]" : ""
-                  // }`}
                   className={"text-2xl font-semibold text-[#9248F8]"}
                 >
                   With Investrio
                 </h2>
               </div>
-              {/* <input
-                className="accent-[#8833FF]"
-                type="radio"
-                value="with-investrio"
-                // checked={selected === "with-investrio"}
-                // onChange={() => setSelected("with-investrio")}
-              /> */}
             </div>
             <div className="border-b-2 border-gray-100"/>
 
@@ -166,9 +155,6 @@ export const PaymentConfiguration = ({ userId }: Props) => {
         <div className="mt-5 w-full rounded-lg">
           <label
             onClick={() => setSelected("with-without-planning")}
-            // className={`flex h-full flex-col gap-5
-            // rounded-2xl border-[#9248F8] bg-white p-4 transition-all hover:border-2
-            // ${selected === "with-without-planning" ? "border-2" : ""}`}
             className="flex h-full flex-col gap-5 rounded-2xl border-[#9248F8] bg-white p-4 transition-all"
           >
             <div className="flex items-center justify-between text-left">
@@ -179,13 +165,6 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   Without Planning
                 </h2>
               </div>
-              {/* <input
-                className="accent-[#8833FF]"
-                type="radio"
-                value="with-without-planning"
-                checked={selected === "with-without-planning"}
-                onChange={() => setSelected("with-without-planning")}
-              /> */}
             </div>
             <div className="border-b-2 border-gray-100"/>
 
@@ -229,13 +208,6 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   </div>
 
                   <div className="flex flex-col md:flex-row justify-center items-center gap-3">
-                    {/* <div className="flex items-center gap-4 rounded-xl bg-[#F6F6F6] p-5 text-[#747682]">
-                      <TbAlertHexagon className="text-5xl"/>
-                      <span className="text-left text-sm">
-                        In this plan, we <br/> assuming you are <br/> paying
-                        the minimum.{" "}
-                      </span>
-                    </div> */}
                     <div className="flex items-center gap-4 rounded-xl bg-[#F6F6F6] p-5 text-[#747682]">
                       <TbAlertHexagon className="text-5xl"/>
                       <span className="text-left text-sm">
