@@ -2,8 +2,8 @@
 import { useSession } from "next-auth/react";
 
 import { Loading } from "../components/ui/Loading";
-import TrialBlock from "../components/Billing/TrialBlock";
-import SubscriptionBlock from "../components/Billing/SubscriptionBlock";
+import TrialBlock from "../components/billing/TrialBlock";
+import SubscriptionBlock from "../components/billing/SubscriptionBlock";
 import LinkOutline from "../components/ui/LinkOutline";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";

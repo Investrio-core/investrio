@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
-import MonthPicker from "../components/Budget/MonthPicker";
-import IncomeBlock from "../components/Budget/IncomeBlock";
+import MonthPicker from "../components/budget/MonthPicker";
+import IncomeBlock from "../components/budget/IncomeBlock";
 
-import CategoryBlock from "../components/Budget/CategoryBlock";
-import CopyButton from "../components/Budget/CopyButton";
+import CategoryBlock from "../components/budget/CategoryBlock";
+import CopyButton from "../components/budget/CopyButton";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "../components/ui/Loading";
 import { redirect } from "next/navigation";
