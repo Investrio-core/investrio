@@ -18,6 +18,8 @@ export async function middleware(request: NextRequest) {
   
   const sessionToken = cookies().get(cookieName)?.value;
 
+  console.log(token);
+
   if ((!path.startsWith('/auth/login') && !path.startsWith('/auth/signup')) && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }

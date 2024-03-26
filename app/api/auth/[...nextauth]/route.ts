@@ -84,6 +84,7 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
+      
       if (trigger === 'update') {
         token.accessToken = session.accessToken
       }
@@ -154,6 +155,14 @@ export const authOptions: AuthOptions = {
           user.id = authUser.id;
           // @ts-ignore
           user.accessToken = authUser.accessToken;
+          user.isActive = authUser.isActive
+          user.isTrial = authUser.isTrial
+          user.stripeCustomerId = authUser.stripeCustomerId
+          user.subscriptionCancelAt = authUser.subscriptionCancelAt
+          user.subscriptionStartedOn = authUser.subscriptionStartedOn
+          user.subscriptionStatus = authUser.subscriptionStatus
+          user.trialEndsAt = authUser.trialEndsAt
+
           return true;
         } catch (err) {
           // throw new Error("Error")
