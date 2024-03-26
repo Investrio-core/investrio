@@ -27,6 +27,12 @@ const STATUSES_COLOR = {
 const SubscriptionBlock = ({ data }: TrialBlockProps) => {
   const axios = useAxiosAuth();
 
+  const handleActivateClick = async () => {
+    const link = await axios.get("/subscription/link/");
+
+    window.location = link.data.url;
+  };
+
   const handleManageClick = async () => {
     const link = await axios.get("/subscription/manage");
 
@@ -106,7 +112,7 @@ const SubscriptionBlock = ({ data }: TrialBlockProps) => {
           <Button
             classProp="!w-full"
             text="Activate Subscription"
-            onClick={handleManageClick}
+            onClick={handleActivateClick}
           />
         ) : (
           <Button
