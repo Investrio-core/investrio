@@ -1,6 +1,6 @@
 "use client";
-import DebtsForm from "@/app/components/Strategy/DebtsForm";
-import DebtsTable from "@/app/components/Strategy/DebtsTable";
+import DebtsForm from "@/app/components/strategy/DebtsForm";
+import DebtsTable from "@/app/components/strategy/DebtsTable";
 import { Fragment, useEffect, useState } from "react";
 import { DebtFormType } from "@/types/debtFormType";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";

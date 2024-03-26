@@ -2,9 +2,9 @@
 import React, { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Tab } from "@headlessui/react";
-import { ChooseMethods } from "@/app/components/Strategy/choose-methods";
-import AddDebts from "@/app/components/Strategy/add-strategy";
-import { PaymentConfiguration } from "@/app/components/Strategy/payment-configuration";
+import { ChooseMethods } from "@/app/components/strategy/choose-methods";
+import AddDebts from "@/app/components/strategy/add-strategy";
+import { PaymentConfiguration } from "@/app/components/strategy/payment-configuration";
 import { Loading } from "@/app/components/ui/Loading";
 import { twMerge } from "tailwind-merge";
 import { useQuery } from "@tanstack/react-query";

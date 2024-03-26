@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import LinkOutline from "@/app/components/ui/LinkOutline";
 import { Button } from "@/app/components/ui/buttons";
-import { DashboardInfo } from "@/app/components/Dashboard/DashboardInfo";
+import { DashboardInfo } from "@/app/components/dashboard/DashboardInfo";
 import { Loading } from "@/app/components/ui/Loading";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";
