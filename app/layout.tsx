@@ -1,3 +1,4 @@
+import Layout from "./components/Layout";
 import "./globals.css";
 import Providers from "./Providers";
 import Head from "next/head";
@@ -21,7 +22,9 @@ export default function RootLayout({
         <link rel="icon" href="/public/favicon.ico" />
       </Head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Layout>{children}</Layout>
+        </Providers>
       </body>
     </html>
   );

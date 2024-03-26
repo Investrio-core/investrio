@@ -25,7 +25,7 @@ export const Button = ({ classProp, text, onClick, disabled }: ButtonProps) => {
       md:w-80 ${classProp} ${
         disabled
           ? "cursor-not-allowed bg-[#747682] opacity-50"
-          : "bg-[#8833FF] hover:bg-[#9248F8]"
+          : "bg-purple-3 hover:bg-[#9248F8]"
       }`}
     >
       {text}

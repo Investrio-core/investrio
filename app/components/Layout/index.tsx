@@ -3,17 +3,23 @@ import React from "react";
 import SideMenu from "@/app/components/SideMenu";
 import Topbar from "@/app/components/Topbar";
 import { useSession } from "next-auth/react";
-import { Loading } from "../components/ui/Loading";
+import { usePathname } from "next/navigation";
+import { Loading } from "../ui/Loading";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   const {data} = useSession()
+  const path = usePathname()
+  
+  if (path.startsWith('/auth')) {
+    return (<>{children}</>)
+  }
 
   if (!data) {
     return <Loading />
   }
 
   const {user} = data
-
 
   return (
     <div className="grid grid-cols-1 lg:flex">

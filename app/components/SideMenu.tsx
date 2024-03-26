@@ -7,9 +7,17 @@ import { FaHandHoldingDollar } from "react-icons/fa6";
 import { FaRobot } from "react-icons/fa";
 import { AiFillSetting } from "react-icons/ai";
 import BudgetIcon from '@/public/icons/budget.svg'
+import CreditCardIcon from '@/public/icons/credit-card.svg'
 import { SideMenuItem } from "./SideMenuItem";
+import { useSession } from "next-auth/react";
 
 export default function SideMenu() {
+  const {data} = useSession()
+
+  const isActiveLink = () => {
+    return (data?.user.isActive || data?.user.isTrial) ? true : false
+  }
+
   return (
     <div className="flex flex-row justify-between drawer lg:drawer-open z-50 row-span-5 auto-cols-auto xl:col-span-2">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -43,21 +51,21 @@ export default function SideMenu() {
               height={50}
             />
           </Link>
-          <SideMenuItem href="/dashboard/debts">
+          <SideMenuItem href="/dashboard/debts" isActive={isActiveLink()} >
             <MdOutlineDashboard />
             <span className="text-lg ml-2">Dashboard</span>
           </SideMenuItem>
-          <SideMenuItem href={"/dashboard/debts/add"}>
+          <SideMenuItem href={"/dashboard/debts/add"} isActive={isActiveLink()}>
             <FaHandHoldingDollar style={{ fontSize: "20px" }} />
             <span className="text-lg ml-2">Strategy</span>
           </SideMenuItem>
-          <SideMenuItem href="/budget">
-            <BudgetIcon width='20' height="20" viewBox="6 6 20 23" />
+          <SideMenuItem href="/budget" isActive={isActiveLink()}>
+            <BudgetIcon width='20' height="20" viewBox="6 6 20 22" />
             <span className="text-lg ml-2">Budget</span>
           </SideMenuItem>
-          {/* <SideMenuItem href="/settings">
-            <AiFillSetting /> <span className="text-lg ml-2">Settings</span>
-          </SideMenuItem> */}
+          <SideMenuItem href="/billing">
+            <CreditCardIcon width='20' height="20" viewBox="6 5 20 21" /> <span className="text-[17px] ml-2">Billing</span>
+          </SideMenuItem>
         </ul>
       </div>
     </div>

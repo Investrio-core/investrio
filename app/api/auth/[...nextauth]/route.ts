@@ -91,7 +91,22 @@ export const authOptions: AuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token }: { session: any; token: any }) {
-      session.user = token as any;
+      session.user = token;
+
+      const user = await prisma.user.findFirst({
+        where: {
+          id: token.id
+        },
+      });
+
+      session.user.isActive = user?.isActive
+      session.user.isTrial = user?.isTrial
+      session.user.subscriptionCancelAt = user?.subscriptionCancelAt
+      session.user.subscriptionStartedOn = user?.subscriptionStartedOn
+      session.user.stripeCustomerId = user?.stripeCustomerId
+      session.user.subscriptionStatus = user?.subscriptionStatus
+      session.user.trialEndsAt = user?.trialEndsAt
+
       return session;
     },
 
