@@ -25,10 +25,14 @@ const useAxiosAuth = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
-          await refreshToken();
-          prevRequest.headers["Authorization"] = `Bearer ${session?.user.accessToken}`;
+          const newAccessToken = await refreshToken();
+          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosAuth(prevRequest);
         }
+
+        if(error?.response?.data?.subscription) {
+          location.replace('/billing') 
+        };
         return Promise.reject(error);
       }
     );

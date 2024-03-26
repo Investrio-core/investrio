@@ -10,7 +10,7 @@ import { Area } from "recharts";
 import { Loading } from "../../ui/Loading";
 import Image from "next/image";
 import {  IPaymentScheduleGraphType } from "@/types/financial";
-import { convertGraphDataToDisplayData, generateGraphData } from "@/app/components/strategy/payment-configuration/utils";
+import { convertGraphDataToDisplayData, generateGraphData } from "@/app/components/Strategy/payment-configuration/utils";
 import Link from "next/link";
 import MoneyIcon from '@/public/icons/money.svg'
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";

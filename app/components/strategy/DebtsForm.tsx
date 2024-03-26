@@ -6,7 +6,7 @@ import Form from "@/app/components/ui/Form";
 import { Dispatch, SetStateAction } from "react";
 import { DebtFormType } from "@/types/debtFormType";
 import { toast } from "react-toastify";
-import ToastComponent from "../toast";
+import ToastComponent from "../Toast";
 import { ButtonWithIcon } from "@/app/components/ui/buttons";
 
 const DEFAULT_PERIODICITY = "MONTH";

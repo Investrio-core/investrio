@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import LinkOutline from "@/app/components/ui/LinkOutline";
 import { Button } from "@/app/components/ui/buttons";
-import { DashboardInfo } from "@/app/components/dashboard/DashboardInfo";
+import { DashboardInfo } from "@/app/components/Dashboard/DashboardInfo";
 import { Loading } from "@/app/components/ui/Loading";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";
@@ -16,6 +16,7 @@ const CALENDLY_URL = "https://calendly.com/investrio-joyce";
 
 export default function Dashboard() {
   const { data: session } = useSession();
+
   const router = useRouter();
 
   const axiosAuth = useAxiosAuth();

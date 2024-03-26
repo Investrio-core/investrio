@@ -16,7 +16,10 @@ export const useRefreshToken = () => {
       }
 
       
-      if (session) update({accessToken: data.accessToken})
+      if (session) {
+        update({accessToken: data.accessToken})
+        return data.accessToken
+      } 
       else redirect('/auth/login');
     } catch (err) {
       console.log(err);
