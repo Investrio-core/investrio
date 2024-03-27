@@ -14,7 +14,7 @@ export default class Mixpanel {
 
   public constructor() {
     if (!this._isDev) {
-      mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN as string, {
+      mixpanel.init(process.env.MIXPANEL_TOKEN as string, {
         debug: true,
         ignore_dnt: true,
       });
