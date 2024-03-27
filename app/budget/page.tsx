@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import MonthPicker from "../components/budget/MonthPicker";
 import IncomeBlock from "../components/budget/IncomeBlock";
@@ -8,14 +8,18 @@ import CategoryBlock from "../components/budget/CategoryBlock";
 import CopyButton from "../components/budget/CopyButton";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "../components/ui/Loading";
-import { redirect } from "next/navigation";
+import mixpanel from "mixpanel-browser";
+import Mixpanel from "@/services/mixpanel";
 
-const categories = ['wants', 'needs', 'savings', 'debts']
+const categories = ["wants", "needs", "savings", "debts"];
+
+let loaded = false;
 
 export default function BudgetTool() {
   const [date, setDate] = useState<Date | null>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const axiosAuth = useAxiosAuth();
+  const mixpanelCalled = useRef<boolean>(false);
 
   const year = date?.getFullYear();
   const month = date?.getMonth();
@@ -36,23 +40,32 @@ export default function BudgetTool() {
     refetch();
   }, [date]);
 
+  useEffect(() => {
+    if (mixpanelCalled.current) return;
+    Mixpanel.getInstance().track("view_budget");
+
+    mixpanelCalled.current = true;
+  }, []);
+
   if (budgetInfoLoading || isLoading) {
     return <Loading />;
   }
 
   const calculateSumCategories = () => {
-     return categories.map((category) => {
+    return categories.map((category) => {
       if (budgetInfo?.data[category]) {
         return budgetInfo?.data[category].reduce(
-          (p: number, c: { value: number }) => p + c.value, 0
-        )
+          (p: number, c: { value: number }) => p + c.value,
+          0
+        );
       }
 
-      return 0
-     })
-  }
+      return 0;
+    });
+  };
   const sumCategories = calculateSumCategories().reduce(
-    (p: number, c: number) => p + c, 0
+    (p: number, c: number) => p + c,
+    0
   );
 
   return (

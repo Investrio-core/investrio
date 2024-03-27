@@ -8,7 +8,7 @@ import Form from "@/app/components/ui/Form";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { clearSession, saveSession } from "@/app/utils/session";
-import Link from "next/link";
+import Mixpanel from "@/services/mixpanel";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -34,7 +34,8 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      // saveSession(session.data);
+      Mixpanel.getInstance().identify(session.data.user.id, session.data.user.email, session.data.user.name)
+      Mixpanel.getInstance().track('login')
     } else {
       clearSession();
     }
@@ -49,6 +50,7 @@ export default function LoginForm() {
         password: data.password,
         redirect: false,
       });
+
       if (response?.ok) {
         router.push("/dashboard");
       } else {

@@ -11,7 +11,8 @@ const nextConfig = {
     ]
   },
   env: {
-    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
+    MIXPANEL_TOKEN: process.env.MIXPANEL_TOKEN
   },
   webpack(config) {
     config.module.rules.push({

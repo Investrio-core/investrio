@@ -1,3 +1,4 @@
+'use client'
 import { formatCurrency } from "@/app/utils/formatters";
 import EditIcon from "@/public/icons/edit.svg";
 import IconButton from "../../ui/IconButton";
@@ -6,6 +7,7 @@ import IncomeModal from "../IncomeModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { toast } from "react-toastify";
+import mixpanel from "mixpanel-browser";
 
 interface IncomeBlockProps {
   budgetInfo: {
@@ -46,6 +48,7 @@ const IncomeBlock = ({ budgetInfo, date, setLoading, sumCategories }: IncomeBloc
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['budget-tool']})
+      
     }
   });
 
