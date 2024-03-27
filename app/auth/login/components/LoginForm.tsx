@@ -34,9 +34,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      Mixpanel.getInstance().identify(session.data.user.id)
-      Mixpanel.getInstance().set('$email', session.data.user.email )
-      Mixpanel.getInstance().set('$name', session.data.user.name )
+      Mixpanel.getInstance().identify(session.data.user.id, session.data.user.email, session.data.user.name)
       Mixpanel.getInstance().track('login')
     } else {
       clearSession();

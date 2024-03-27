@@ -32,11 +32,9 @@ export default function Individual1Page() {
         callbackUrl: "/dashboard/debts/add",
       })
 
-      Mixpanel.getInstance().identify(user.data.id)
-      Mixpanel.getInstance().set("$email", data.email)
-      Mixpanel.getInstance().set("$name", data.name)
-      
+      Mixpanel.getInstance().identify(user.data.id, data.email, data.name)
       Mixpanel.getInstance().track('registration')
+      
     } catch (err: AxiosError | any) {
       console.log(err.message);
       setError(err.response.data)
