@@ -7,6 +7,7 @@ import SigninButton from "@/app/components/ui/buttons/GoogleSignInButton";
 import axios, { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import Mixpanel from "@/services/mixpanel";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -23,12 +24,19 @@ export default function Individual1Page() {
 
       setIsLoading(true)
       setError('');
-      await axios.post(`${API_URL}/user/signup`, {...data, type: 'credentials' }, {withCredentials: true});
+      const user = await axios.post(`${API_URL}/user/signup`, {...data, type: 'credentials' }, {withCredentials: true});
+  
       await signIn("credentials", {
         email: data.email,
         password: data.password,
         callbackUrl: "/dashboard/debts/add",
       })
+
+      Mixpanel.getInstance().identify(user.data.id)
+      Mixpanel.getInstance().set("$email", data.email)
+      Mixpanel.getInstance().set("$name", data.name)
+      
+      Mixpanel.getInstance().track('registration')
     } catch (err: AxiosError | any) {
       console.log(err.message);
       setError(err.response.data)

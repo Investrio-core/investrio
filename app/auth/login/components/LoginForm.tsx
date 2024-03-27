@@ -8,7 +8,7 @@ import Form from "@/app/components/ui/Form";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { clearSession, saveSession } from "@/app/utils/session";
-import Link from "next/link";
+import Mixpanel from "@/services/mixpanel";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -34,7 +34,10 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      // saveSession(session.data);
+      Mixpanel.getInstance().identify(session.data.user.id)
+      Mixpanel.getInstance().set('$email', session.data.user.email )
+      Mixpanel.getInstance().set('$name', session.data.user.name )
+      Mixpanel.getInstance().track('login')
     } else {
       clearSession();
     }
@@ -48,8 +51,12 @@ export default function LoginForm() {
         email: data.email,
         password: data.password,
         redirect: false,
+      }, {
+        
       });
+      console.log(response);
       if (response?.ok) {
+        // Mixpanel.getInstance().identify()
         router.push("/dashboard");
       } else {
         setError("Invalid Credentials");

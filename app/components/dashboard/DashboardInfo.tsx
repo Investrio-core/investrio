@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import AdditionalPaymentModal from "../AdditionalPaymentModal";
 import { Loading } from "../ui/Loading";
+import Mixpanel from "@/services/mixpanel";
 
 export const DashboardInfo = ({ data }: ResultsProps) => {
   const axiosAuth = useAxiosAuth();
@@ -50,6 +51,7 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
   const handleSubmitAdditionalPaymentModal = (extraPayAmount: number) => {
     update(extraPayAmount)
     setIsAdditionalPaymentModalOpen(false)
+    Mixpanel.getInstance().track('edit_extra_payment')
   };
 
   const debts = data[0]?.data?.map((info, index) => ({
@@ -73,7 +75,7 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
     return (
       <div className="text-center mx-auto">
         <h2>No Information has been registered yet.</h2>
-        <Link href={"/dashboard/debts/add"}>
+        <Link href={"/dashboard/debts/add"} onClick={() => Mixpanel.getInstance().track('setup_strategy_start')}>
           <Button text="Set up Strategy" classProp="mx-auto" />
         </Link>
       </div>

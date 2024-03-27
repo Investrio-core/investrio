@@ -14,6 +14,7 @@ import { convertGraphDataToDisplayData, generateGraphData } from "@/app/componen
 import Link from "next/link";
 import MoneyIcon from '@/public/icons/money.svg'
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
+import Mixpanel from "@/services/mixpanel";
 
 type Props = {
   userId?: string;
@@ -225,7 +226,9 @@ export const PaymentConfiguration = ({ userId }: Props) => {
       <div className="mb-5 border-b-2 border-gray-100 p-3"/>
 
       <div className="flex justify-center gap-7">
-        <Link href={'/dashboard/debts'}>
+        <Link href={'/dashboard/debts'} onClick={() => {
+          Mixpanel.getInstance().track('setup_strategy_calculated')
+        }}>
           <Button
             disabled={!selected.length}
             text="Proceed"

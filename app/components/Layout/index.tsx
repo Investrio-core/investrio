@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return <Loading />
   }
 
-  const {user} = data
+  const {user} = data!
 
   return (
     <div className="grid grid-cols-1 lg:flex">

@@ -5,6 +5,8 @@ import prisma from "@/lib/prisma";
 import { parse } from "cookie";
 import { cookies } from "next/headers";
 import { AuthOptions } from "next-auth";
+import mixpanel from "mixpanel-browser";
+import Mixpanel from "@/services/mixpanel";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -67,6 +69,8 @@ export const authOptions: AuthOptions = {
               throw new Error("Failed to login");
             }
             const user = await res.json();
+
+            Mixpanel.getInstance().track('login')
 
             return user || null;
           } catch (error: any) {
@@ -162,6 +166,14 @@ export const authOptions: AuthOptions = {
           user.subscriptionStartedOn = authUser.subscriptionStartedOn
           user.subscriptionStatus = authUser.subscriptionStatus
           user.trialEndsAt = authUser.trialEndsAt
+
+          await mixpanel.init('432dc6ac9f9a0f1225e9cd5b5565a874',
+          {debug: true, persistence: 'localStorage', ignore_dnt: true})
+
+          await mixpanel.identify(user.id)
+    
+          await mixpanel.track('login')
+
 
           return true;
         } catch (err) {

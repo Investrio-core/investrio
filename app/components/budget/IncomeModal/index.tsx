@@ -5,6 +5,8 @@ import { LightButton, SimpleButton } from "../../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
 import PercentIcon from "@/public/icons/percent.svg";
 import Form from "../../ui/Form";
+import mixpanel from "mixpanel-browser";
+import Mixpanel from "@/services/mixpanel";
 
 type IncomeModalProps = {
   onClose: () => void;
@@ -25,6 +27,7 @@ const IncomeModal = ({
 
   const handleSubmit = () => {
     onSubmit(Number(currentValue));
+    Mixpanel.getInstance().track('add_income')
   };
 
   const handleChange = (data: string) => {

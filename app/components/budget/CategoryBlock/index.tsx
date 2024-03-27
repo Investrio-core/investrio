@@ -1,6 +1,7 @@
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import CategoryBlockItem from "../CategoryBlockItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import mixpanel from "mixpanel-browser";
 
 interface CategoryBlockProps {
   budgetInfo: {
@@ -50,6 +51,12 @@ const CategoryBlock = ({
       return data;
     },
     onSuccess: () => {
+
+      mixpanel.init('432dc6ac9f9a0f1225e9cd5b5565a874',
+      {debug: true, persistence: 'localStorage', ignore_dnt: true})
+
+      mixpanel.track('add_item')
+    
       queryClient.invalidateQueries({ queryKey: ["budget-tool"] });
     },
   });

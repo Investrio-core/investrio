@@ -7,15 +7,28 @@ import SubscriptionBlock from "../components/Billing/SubscriptionBlock";
 import LinkOutline from "../components/ui/LinkOutline";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import mixpanel from "mixpanel-browser";
+import Mixpanel from "@/services/mixpanel";
 
 const CALENDLY_URL = "https://calendly.com/investrio-joyce";
 
 export default function BudgetTool() {
   const { data } = useSession();
+  const mixpanelCalled = useRef<boolean>(false)
 
+  
   if (!data?.user) {
     return <Loading />;
   }
+  
+  useEffect(() => {
+    if (mixpanelCalled.current) return;
+    Mixpanel.getInstance().track('view_billing')
+    
+    mixpanelCalled.current = true;
+  }, [])
 
   return (
     <div className="px-[32px] py-[32px]">

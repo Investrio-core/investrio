@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import AdditionalPaymentModal from "../../AdditionalPaymentModal";
 import EmptyIcon from '@/public/icons/emptystate.svg'
 import { StrategyFormTooltip } from "./FormTooltip";
+import Mixpanel from "@/services/mixpanel";
 
 type Props = {
   onChangeStatus: (status: string) => void;
@@ -38,6 +39,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const axiosAuth = useAxiosAuth();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   let [isOpen, setIsOpen] = useState(false);
+  const [isDebtUpdated, setIsDebtUpdated] = useState(false)
   const [deleteModal, setDeleteModal] = useState({ open: false, id: "" });
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [editModal, setEditModal] = useState({ open: false, id: "" });
@@ -100,8 +102,19 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
 
   const handleProceedClick = async () => {
     const hasExistedDebts = !!debts.find((e) => e.id)
+    const hasNewDebts = !!debts.find((e) => !e.id)
+
+  
 
     if (hasExistedDebts) {
+      if (hasNewDebts) {
+        Mixpanel.getInstance().track('add_debt')
+      }
+
+      if (isDebtUpdated) {
+        Mixpanel.getInstance().track('edit_strategy')
+      }
+
       handleUpdate();
     } else if (!debts.length) {
       await deleteRecords()
@@ -120,6 +133,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
     } else {
       mutate();
     }
+
+    console.log('Here');
   };
 
   useEffect(() => {
@@ -327,6 +342,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   };
                                   return updatedDebts;
                                 });
+
+                                setIsDebtUpdated(true)
                               }}
                               className="grid grid-cols-12 p-4 gap-4"
                             >

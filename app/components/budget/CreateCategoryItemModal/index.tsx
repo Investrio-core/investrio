@@ -5,6 +5,8 @@ import { LightButton, SimpleButton } from "../../ui/buttons";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Form from "../../ui/Form";
+import mixpanel from "mixpanel-browser";
+import Mixpanel from "@/services/mixpanel";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
@@ -34,10 +36,14 @@ const CreateCategoryItemModal = ({
   const [formHasError, setFormHasError] = useState(true);
 
   const handleSubmit = () => {
+    
     onSubmit({ name: currentName, value: Number(currentValue) });
+
+    Mixpanel.getInstance().track('add_item')
   };
 
   const handleChange = (data: string) => {
+  
     setCurrentValue(data);
   };
 
