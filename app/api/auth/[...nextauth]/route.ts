@@ -162,12 +162,12 @@ export const authOptions: AuthOptions = {
           user.subscriptionStartedOn = authUser.subscriptionStartedOn
           user.subscriptionStatus = authUser.subscriptionStatus
           user.trialEndsAt = authUser.trialEndsAt
-
+          
           return true;
         } catch (err) {
           // throw new Error("Error")
           return false;
-        }
+        } 
       }
 
       //SignUp
@@ -197,6 +197,7 @@ export const authOptions: AuthOptions = {
           user.id = createdUser.id 
           // @ts-ignore
           user.accessToken = createdUser.accessToken
+
           return true;
         } catch (err) {
           console.log(err);

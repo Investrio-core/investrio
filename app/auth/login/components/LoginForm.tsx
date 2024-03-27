@@ -40,7 +40,7 @@ export default function LoginForm() {
       clearSession();
     }
   }, [session]);
-
+ 
   async function onSubmit(data: { email: string; password: string }) {
     try {
       setIsLoading(true);
