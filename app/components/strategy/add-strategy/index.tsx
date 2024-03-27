@@ -19,7 +19,7 @@ import { Loading } from "../../ui/Loading";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useRouter } from "next/navigation";
 import AdditionalPaymentModal from "../../AdditionalPaymentModal";
-import EmptyIcon from '@/public/icons/emptystate.svg'
+import EmptyIcon from "@/public/icons/emptystate.svg";
 import { StrategyFormTooltip } from "./FormTooltip";
 import Mixpanel from "@/services/mixpanel";
 
@@ -39,16 +39,17 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const axiosAuth = useAxiosAuth();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   let [isOpen, setIsOpen] = useState(false);
-  const [isDebtUpdated, setIsDebtUpdated] = useState(false)
+  const [isDebtUpdated, setIsDebtUpdated] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ open: false, id: "" });
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [editModal, setEditModal] = useState({ open: false, id: "" });
   const [totalMinPayment, setTotalMinPayment] = useState("");
   const [extraPayAmount, setExtraPayAmount] = useState("");
   const [editFormHasError, setEditFormHasError] = useState<boolean>(false);
-  const [editMinPaymentHasError, setEditMinPaymentHasError] = useState<string>('');
-  const [editOutstandingBalance, setEditOutstandingBalance] = useState(0)
-  const [editMinimumPayment, setEditMinimumPayment] = useState(0)
+  const [editMinPaymentHasError, setEditMinPaymentHasError] =
+    useState<string>("");
+  const [editOutstandingBalance, setEditOutstandingBalance] = useState(0);
+  const [editMinimumPayment, setEditMinimumPayment] = useState(0);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -101,23 +102,21 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   };
 
   const handleProceedClick = async () => {
-    const hasExistedDebts = !!debts.find((e) => e.id)
-    const hasNewDebts = !!debts.find((e) => !e.id)
-
-  
+    const hasExistedDebts = !!debts.find((e) => e.id);
+    const hasNewDebts = !!debts.find((e) => !e.id);
 
     if (hasExistedDebts) {
       if (hasNewDebts) {
-        Mixpanel.getInstance().track('add_debt')
+        Mixpanel.getInstance().track("add_debt");
       }
 
       if (isDebtUpdated) {
-        Mixpanel.getInstance().track('edit_strategy')
+        Mixpanel.getInstance().track("edit_strategy");
       }
 
       handleUpdate();
     } else if (!debts.length) {
-      await deleteRecords()
+      await deleteRecords();
     } else {
       setIsOpen(true);
     }
@@ -127,14 +126,12 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
     if (deletedIds.length) {
       const deletedResult = await deleteRecords();
     }
-    
+
     if (records.length) {
-      update()
+      update();
     } else {
       mutate();
     }
-
-    console.log('Here');
   };
 
   useEffect(() => {
@@ -200,11 +197,17 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
   const selectedDebt = debts[parseInt(editModal.id)];
 
   useEffect(() => {
-    if (editMinimumPayment < Number((editOutstandingBalance * 0.03).toFixed(2))) {
-      setEditMinPaymentHasError(`The minimum value for this field is ${Number((editOutstandingBalance * 0.03).toFixed(2))}`)
-      return
+    if (
+      editMinimumPayment < Number((editOutstandingBalance * 0.03).toFixed(2))
+    ) {
+      setEditMinPaymentHasError(
+        `The minimum value for this field is ${Number(
+          (editOutstandingBalance * 0.03).toFixed(2)
+        )}`
+      );
+      return;
     }
-  }, [editMinimumPayment])
+  }, [editMinimumPayment]);
 
   return (
     <div className="mx-auto p-6">
@@ -257,7 +260,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                   </h1>
                   Add a debt to proceed
                 </span>
-                <EmptyIcon style={{filter: "grayscale(100%)"}} />
+                <EmptyIcon style={{ filter: "grayscale(100%)" }} />
               </div>
             )}
             <div className="border-b-2 border-[#F2F4FA]" />
@@ -282,7 +285,12 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                   text="Proceed"
                 />
 
-                <AdditionalPaymentModal open={isOpen} onChange={setExtraPayAmount} onClose={closeModal} onSubmit={handleSubmit}/>
+                <AdditionalPaymentModal
+                  open={isOpen}
+                  onChange={setExtraPayAmount}
+                  onClose={closeModal}
+                  onSubmit={handleSubmit}
+                />
 
                 <Transition appear show={editModal.open} as={Fragment}>
                   <Dialog
@@ -324,14 +332,27 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                             </Dialog.Title>
                             <Form
                               onSubmit={(data) => {
-                                const minPayment = parseFloat(data.minPayment.replace('$', '').replace(',', ''))
-                                let balance = data.balance
-                                balance =parseFloat(data.balance.replace('$', '').replace(',', ''))
-                                if (minPayment <  Number((balance * 0.03).toFixed(2))) {
-                                  setEditMinPaymentHasError(`The minimum value for this field is ${Number((balance * 0.03).toFixed(2))}`)
-                                  return
+                                const minPayment = parseFloat(
+                                  data.minPayment
+                                    .replace("$", "")
+                                    .replace(",", "")
+                                );
+                                let balance = data.balance;
+                                balance = parseFloat(
+                                  data.balance.replace("$", "").replace(",", "")
+                                );
+                                if (
+                                  minPayment <
+                                  Number((balance * 0.03).toFixed(2))
+                                ) {
+                                  setEditMinPaymentHasError(
+                                    `The minimum value for this field is ${Number(
+                                      (balance * 0.03).toFixed(2)
+                                    )}`
+                                  );
+                                  return;
                                 } else {
-                                  setEditMinPaymentHasError('')
+                                  setEditMinPaymentHasError("");
                                 }
                                 setEditModal({ id: "", open: false });
                                 setDebts((prev) => {
@@ -343,7 +364,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   return updatedDebts;
                                 });
 
-                                setIsDebtUpdated(true)
+                                setIsDebtUpdated(true);
                               }}
                               className="grid grid-cols-12 p-4 gap-4"
                             >
@@ -413,19 +434,27 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                                   defaultValue={selectedDebt?.minPayment}
                                   error={editMinPaymentHasError}
                                   onChange={setEditMinimumPayment}
-                                  minNumberValue={Number((editOutstandingBalance * 0.03).toFixed(2)) || 0.01}
+                                  minNumberValue={
+                                    Number(
+                                      (editOutstandingBalance * 0.03).toFixed(2)
+                                    ) || 0.01
+                                  }
                                   setFormHasError={setEditFormHasError}
                                 />
                               </div>
                               <div className="col-span-12 mt-3">
-                                <SimpleButton type="submit" text="Save" disabled={editFormHasError} />
+                                <SimpleButton
+                                  type="submit"
+                                  text="Save"
+                                  disabled={editFormHasError}
+                                />
                                 <LightButton
                                   className="col-span-12"
                                   type="button"
                                   onClick={(e) => {
-                                    e.preventDefault()
-                                    setEditFormHasError(false)
-                                    setEditMinPaymentHasError('')
+                                    e.preventDefault();
+                                    setEditFormHasError(false);
+                                    setEditMinPaymentHasError("");
                                     setEditModal((prev) => ({
                                       ...prev,
                                       open: false,

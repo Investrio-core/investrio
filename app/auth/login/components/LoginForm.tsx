@@ -49,12 +49,9 @@ export default function LoginForm() {
         email: data.email,
         password: data.password,
         redirect: false,
-      }, {
-        
       });
-      console.log(response);
+
       if (response?.ok) {
-        // Mixpanel.getInstance().identify()
         router.push("/dashboard");
       } else {
         setError("Invalid Credentials");

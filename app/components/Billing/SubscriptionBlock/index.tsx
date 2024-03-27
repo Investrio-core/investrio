@@ -28,7 +28,7 @@ const SubscriptionBlock = ({ data }: TrialBlockProps) => {
   const axios = useAxiosAuth();
 
   const handleActivateClick = async () => {
-    const link = await axios.get("/subscription/manage/");
+    const link = await axios.get("/subscription/link/");
 
     window.location = link.data.url;
   };

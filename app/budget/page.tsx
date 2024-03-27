@@ -11,7 +11,7 @@ import { Loading } from "../components/ui/Loading";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
 
-const categories = ['wants', 'needs', 'savings', 'debts']
+const categories = ["wants", "needs", "savings", "debts"];
 
 let loaded = false;
 
@@ -19,12 +19,11 @@ export default function BudgetTool() {
   const [date, setDate] = useState<Date | null>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const axiosAuth = useAxiosAuth();
-  const mixpanelCalled = useRef<boolean>(false)
+  const mixpanelCalled = useRef<boolean>(false);
 
   const year = date?.getFullYear();
   const month = date?.getMonth();
 
- 
   const {
     data: budgetInfo,
     isLoading: budgetInfoLoading,
@@ -43,32 +42,30 @@ export default function BudgetTool() {
 
   useEffect(() => {
     if (mixpanelCalled.current) return;
-    Mixpanel.getInstance().track('view_budget')
-    
+    Mixpanel.getInstance().track("view_budget");
+
     mixpanelCalled.current = true;
-  }, [])
+  }, []);
 
   if (budgetInfoLoading || isLoading) {
     return <Loading />;
   }
 
-  
-
-
-
   const calculateSumCategories = () => {
-     return categories.map((category) => {
+    return categories.map((category) => {
       if (budgetInfo?.data[category]) {
         return budgetInfo?.data[category].reduce(
-          (p: number, c: { value: number }) => p + c.value, 0
-        )
+          (p: number, c: { value: number }) => p + c.value,
+          0
+        );
       }
 
-      return 0
-     })
-  }
+      return 0;
+    });
+  };
   const sumCategories = calculateSumCategories().reduce(
-    (p: number, c: number) => p + c, 0
+    (p: number, c: number) => p + c,
+    0
   );
 
   return (
