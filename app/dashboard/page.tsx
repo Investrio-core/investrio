@@ -14,7 +14,7 @@ export default function Dashboard() {
     if (params.get("success")) {
       if (mixpanelCalled.current) return;
       Mixpanel.getInstance().identify(data?.user.id!, data?.user.email!, data?.user.name! )
-      Mixpanel.getInstance().track("login");
+      Mixpanel.getInstance().track("google_authorization");
 
       mixpanelCalled.current = true;
     }

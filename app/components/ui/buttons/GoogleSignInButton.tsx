@@ -7,7 +7,7 @@ const GoogleSignInButton = () => {
     const { data: session } = useSession();
 
     const auth = async () => {
-      await signIn('google', {callbackUrl: 'http://localhost:3000/dashboard?success=true'},)
+      await signIn('google', {callbackUrl: `${process.env.NEXTAUTH_URL}/dashboard?success=true`},)
     }
     if (session && session.user) {
         return (

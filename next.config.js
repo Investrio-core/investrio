@@ -11,6 +11,7 @@ const nextConfig = {
     ]
   },
   env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     MIXPANEL_TOKEN: process.env.MIXPANEL_TOKEN
   },
