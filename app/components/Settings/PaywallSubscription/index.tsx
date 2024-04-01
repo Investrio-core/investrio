@@ -4,6 +4,7 @@ import CheckMarkIcon from "@/public/icons/checkmark.svg";
 import dayjs from "dayjs";
 import { Button } from "../../ui/buttons";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
+import Mixpanel from "@/services/mixpanel";
 
 interface TrialBlockProps {
   data: any;
@@ -36,6 +37,7 @@ const PaywallSubscription = ({ data }: TrialBlockProps) => {
 
   const handleActivateClick = async () => {
     const link = await axios.get("/subscription/link/");
+    Mixpanel.getInstance().track('start_subscription')
 
     window.location = link.data.url;
   };

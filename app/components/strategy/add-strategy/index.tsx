@@ -66,6 +66,11 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         data.debts
       );
     },
+    onSuccess(data) {
+      if (data.data.track.isFirstPaywall) {
+        Mixpanel.getInstance().track('trial_paywall')
+      }
+    },
   });
 
   const {
@@ -83,6 +88,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         data.debts
       );
     },
+    
   });
 
   const { mutate: deleteRecords, isSuccess: deleteIsSuccess } = useMutation({
