@@ -5,6 +5,7 @@ import Topbar from "@/app/components/Topbar";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { Loading } from "../ui/Loading";
+import Paywall from "../Paywall";
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -22,9 +23,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const {user} = data!
 
   return (
+    <>
+    {user.isShowPaywall && <Paywall />}
     <div className="grid grid-cols-1 lg:flex">
       <div className="flex flex-row justify-between">
-        <div className="lg:w-[170px]">
+        <div className="lg:w-[190px]">
           <SideMenu/>
         </div>
         <div className="float-right lg:hidden">
@@ -41,5 +44,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </section>
       </div>
     </div>
+    </>
   )
 }

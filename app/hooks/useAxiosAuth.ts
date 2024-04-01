@@ -30,9 +30,10 @@ const useAxiosAuth = () => {
           return axiosAuth(prevRequest);
         }
 
-        if(error?.response?.data?.subscription) {
-          location.replace('/billing') 
+        if(error?.response?.data?.payWall) {
+          location.replace('/dashboard/debts') 
         };
+
         return Promise.reject(error);
       }
     );

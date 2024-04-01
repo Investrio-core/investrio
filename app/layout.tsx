@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import "./globals.css";
 import Providers from "./Providers";
 import Head from "next/head";
+import Paywall from "./components/Paywall";
 
 export const metadata = {
   title: "Investrio",

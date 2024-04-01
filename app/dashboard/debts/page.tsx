@@ -11,6 +11,8 @@ import { DashboardInfo } from "@/app/components/dashboard/DashboardInfo";
 import { Loading } from "@/app/components/ui/Loading";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";
+import mock from "./mock";
+import { useEffect } from "react";
 
 const CALENDLY_URL = "https://calendly.com/investrio-joyce";
 
@@ -21,15 +23,25 @@ export default function Dashboard() {
 
   const axiosAuth = useAxiosAuth();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
-    queryFn: async () =>
-      await axiosAuth.get(`/dashboard/${session?.user?.id}`),
+    queryFn: async () =>{
+
+      if (session?.user.isShowPaywall) {
+        return mock
+      }
+      return await axiosAuth.get(`/dashboard/${session?.user?.id}`)
+    },
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
     enabled: !!session?.user?.id,
   });
+
+  useEffect(() => {
+    refetch()    
+  }, [session?.user.isShowPaywall])
+
 
   if (isLoading || !session?.user?.id || !data) return <Loading />;
 

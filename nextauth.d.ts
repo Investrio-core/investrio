@@ -10,10 +10,10 @@ interface IUser extends DefaultUser {
   stripeCustomerId?: string;
   trialEndsAt?: string;
   subscriptionStatus?: "active" | "cancelled" | "failed";
-  subscriptionCancelAt?: string;
-  subscriptionStartedOn?: string;
+  isShowPaywall: boolean;
+  isAddedFreeStrategy: boolean;
 }
 
 declare module "next-auth" {
-  interface User extends IUser {}
+  interface User extends IUser { }
 }

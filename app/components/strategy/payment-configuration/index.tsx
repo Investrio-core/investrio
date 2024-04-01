@@ -238,3 +238,11 @@ export const PaymentConfiguration = ({ userId }: Props) => {
     </>
   );
 };
+
+
+
+// Add book on setting / delete new +
+// Font size on settings +
+// Icon change on settings + 
+// trial status 
+// Redirect to dashboard

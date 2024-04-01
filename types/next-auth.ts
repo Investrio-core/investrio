@@ -13,8 +13,8 @@ declare module "next-auth" {
       stripeCustomerId?: string;
       trialEndsAt?: string;
       subscriptionStatus?: "active" | "cancelled" | "failed";
-      subscriptionCancelAt?: string;
-      subscriptionStartedOn?: string;
+      isShowPaywall: boolean;
+      isAddedFreeStrategy: boolean;
     };
   }
 }
