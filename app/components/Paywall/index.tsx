@@ -21,8 +21,6 @@ const Paywall = (props: Props) => {
     return
   }
 
-
-
   return (
     <div className=' z-[1000] absolute top-0 left-0 w-[100vw] h-[100vh] overflow-hidden backdrop-blur-sm flex items-center justify-center'>
       <div className='top-0 left-0 absolute w-full h-full bg-black opacity-50 '></div>

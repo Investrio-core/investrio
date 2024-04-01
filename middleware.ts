@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  const params = request.nextUrl.searchParams
 
   const token = await getToken({
     req: request,
@@ -22,11 +23,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
+  if (path.startsWith('/settings') && params.has('success') && sessionToken) {
+    return NextResponse.next();
+  }
+
   if ((token?.isShowPaywall) && sessionToken && !path.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  if (!path.includes('/dashboard') && !token?.isAddedFreeStrategy) {
+  if (!path.includes('/dashboard') && !token?.isAddedFreeStrategy && sessionToken) {
     return NextResponse.redirect(new URL('/dashboard/debts/add', request.url));
   }
   
@@ -34,7 +39,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   else {
-    return  NextResponse.next();
+    return NextResponse.next();
   }
 }
 
