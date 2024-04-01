@@ -3,7 +3,7 @@ import mixpanel from "mixpanel-browser";
 export default class Mixpanel {
   private static _instance: Mixpanel;
 
-  public _isDev = process.env.NEXT_PUBLIC_ENV !== "development";
+  public _isDev = process.env.NEXT_PUBLIC_ENV === "development";
 
   public static getInstance(): Mixpanel {
     if (Mixpanel._instance == null)
@@ -37,6 +37,7 @@ export default class Mixpanel {
 
   public reset() {
     if (!this._isDev) {
+      mixpanel.reset();
     }
   }
 }
