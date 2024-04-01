@@ -10,20 +10,27 @@ export async function middleware(request: NextRequest) {
     secret: process.env.SECRET_KEY
   })
 
+  console.log(path);
+
   let cookieName = 'next-auth.session-token';
 
   if (process.env.NODE_ENV === 'production') {
     cookieName = '__Secure-next-auth.session-token';
   }
+
+  console.log(token);
   
   const sessionToken = cookies().get(cookieName)?.value;
 
   if ((!path.startsWith('/auth/login') && !path.startsWith('/auth/signup')) && !sessionToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
-  if ((!token?.isActive && !token?.isTrial) && sessionToken && !path.startsWith('/billing')) {
-    return NextResponse.redirect(new URL('/billing', request.url));
+
+  if ((token?.isShowPaywall) && sessionToken && !path.startsWith('/dashboard')) {
+    console.log('11233331223');
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
+  
   if ((path.startsWith('/auth/login') || path.startsWith('/auth/signup')) && sessionToken) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
@@ -38,6 +45,6 @@ export const config = {
     "/auth/:path*",
     "/dashboard/:path*",
     "/budget",
-    '/billing'
+    '/settings'
   ],
 };

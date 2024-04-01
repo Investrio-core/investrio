@@ -102,11 +102,11 @@ export const authOptions: AuthOptions = {
 
       session.user.isActive = user?.isActive
       session.user.isTrial = user?.isTrial
-      session.user.subscriptionCancelAt = user?.subscriptionCancelAt
-      session.user.subscriptionStartedOn = user?.subscriptionStartedOn
       session.user.stripeCustomerId = user?.stripeCustomerId
       session.user.subscriptionStatus = user?.subscriptionStatus
       session.user.trialEndsAt = user?.trialEndsAt
+      session.user.isShowPaywall = user?.isShowPaywall
+      session.user.isAddedFreeStrategy = user?.isAddedFreeStrategy
 
       return session;
     },
@@ -158,8 +158,6 @@ export const authOptions: AuthOptions = {
           user.isActive = authUser.isActive
           user.isTrial = authUser.isTrial
           user.stripeCustomerId = authUser.stripeCustomerId
-          user.subscriptionCancelAt = authUser.subscriptionCancelAt
-          user.subscriptionStartedOn = authUser.subscriptionStartedOn
           user.subscriptionStatus = authUser.subscriptionStatus
           user.trialEndsAt = authUser.trialEndsAt
           

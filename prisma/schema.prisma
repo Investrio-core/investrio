@@ -73,11 +73,11 @@ model User {
   snowball              SnowballPaymentSchedule[]
   stripeCustomerId      String?    
   subscriptionStatus    SubscriptionStatus?
-  subscriptionCancelAt  DateTime?         
-  subscriptionStartedOn DateTime?         
   isActive              Boolean?                    
   isTrial               Boolean?
   trialEndsAt           DateTime?
+  isShowPaywall         Boolean?
+  isAddedFreeStrategy   Boolean?
 
   @@map("users")
 }
