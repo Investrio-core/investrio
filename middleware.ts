@@ -25,6 +25,10 @@ export async function middleware(request: NextRequest) {
   if ((token?.isShowPaywall) && sessionToken && !path.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
+
+  if (!path.includes('/dashboard') && !token?.isAddedFreeStrategy) {
+    return NextResponse.redirect(new URL('/dashboard/debts/add', request.url));
+  }
   
   if ((path.startsWith('/auth/login') || path.startsWith('/auth/signup')) && sessionToken) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
