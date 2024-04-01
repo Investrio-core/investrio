@@ -10,15 +10,11 @@ export async function middleware(request: NextRequest) {
     secret: process.env.SECRET_KEY
   })
 
-  console.log(path);
-
   let cookieName = 'next-auth.session-token';
 
   if (process.env.NODE_ENV === 'production') {
     cookieName = '__Secure-next-auth.session-token';
   }
-
-  console.log(token);
   
   const sessionToken = cookies().get(cookieName)?.value;
 
@@ -27,7 +23,6 @@ export async function middleware(request: NextRequest) {
   }
 
   if ((token?.isShowPaywall) && sessionToken && !path.startsWith('/dashboard')) {
-    console.log('11233331223');
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   

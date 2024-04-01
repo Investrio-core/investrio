@@ -41,8 +41,6 @@ const SubscriptionBlock = ({ subscriptionStatus, isTrial }: TrialBlockProps) => 
   const status = isTrial ? 'trial' : subscriptionStatus as "active" | "cancelled" | "failed";
   const badgeColor = STATUSES_COLOR[status!];
 
-  console.log(status);
-
   return (
     <div className="w-[50%] p-8 border rounded-xl bg-white">
       <div className="flex justify-between items-center">

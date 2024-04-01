@@ -11,7 +11,6 @@ const Paywall = (props: Props) => {
   const path = usePathname()
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    console.log('object');
     if (!path.startsWith('/dashboard')) {
       redirect('/dashboard/debts')
     }
