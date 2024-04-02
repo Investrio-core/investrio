@@ -15,7 +15,7 @@ export default class Mixpanel {
   public constructor() {
     if (!this._isDev) {
       mixpanel.init(process.env.MIXPANEL_TOKEN as string, {
-        debug: true,
+        debug: process.env.NODE_ENV === 'production' ? false : true,
         ignore_dnt: true,
       });
     }
