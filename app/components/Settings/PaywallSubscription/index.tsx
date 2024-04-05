@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import CheckMarkIcon from "@/public/icons/checkmark.svg";
 import dayjs from "dayjs";
-import { Button } from "../../ui/buttons";
+import { SimpleButton } from "../../ui/buttons";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import Mixpanel from "@/services/mixpanel";
 
@@ -43,6 +43,7 @@ const PaywallSubscription = ({ data }: TrialBlockProps) => {
 
     window.location = link.data.url;
   };
+
 
   const badgeColor = STATUSES_COLOR["active"];
 
@@ -94,18 +95,18 @@ const PaywallSubscription = ({ data }: TrialBlockProps) => {
 
       <div className="text-base font-medium text-purple-3 flex items-center justify-center gap-3 mt-8">
         {!data.trialEndsAt ? (
-          <Button
-            disabled={loading}
+          <SimpleButton
+            loading={loading}
             classProp="!w-full"
-            text="Subscribe (7 days FREE trial)"
-            onClick={handleActivateClick}
+            text={loading ? '' : "Subscribe (7 days FREE trial)"}
+            onClick={loading ? () => {} : handleActivateClick}
           />
         ) : (
-          <Button
-            disabled={loading}
-            text="Subscribe"
+          <SimpleButton
+            loading={loading}
+            text={loading ? '' : "Subscribe"}
             classProp="!w-full"
-            onClick={handleActivateClick}
+            onClick={loading ? () => {} : handleActivateClick}
           />
         )}
       </div>
