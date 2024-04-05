@@ -35,8 +35,6 @@ export const PaymentConfiguration = ({ userId }: Props) => {
 
     if (!userId || isLoading || !data?.data) return <Loading/>
 
-  console.log(data?.data)
-
   const { withStrategy, withoutStrategy, totalInterestPaid, withStrategyTotalInterestPaid, savedInterest, monthsFaster } = data.data
 
   const withoutGraph = withoutStrategy.map((data) => ({
