@@ -41,7 +41,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
 
   const withoutGraph = withoutStrategy.map((data) => ({
     name: dayjs(data.paymentDate).format('MMM'),
-    balance: data._sum.remainingBalance,
+    balance: data.remainingBalance,
   }))
 
   const withGraph = withStrategy.map((data) => ({
@@ -95,7 +95,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
-                      Total Interest: <br/> {formatCurrency(totalInterestPaid)}
+                      Total Interest: <br/> {formatCurrency(withStrategyTotalInterestPaid)}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
 
@@ -170,7 +170,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
                       Total Interest: <br/> {formatCurrency(
-                      withStrategyTotalInterestPaid
+                      totalInterestPaid
                     )}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>

@@ -34,7 +34,8 @@ export type ComparisonData = {
 
     withoutStrategy: {
       paymentDate: string;
-      _sum: { remainingBalance: number; monthlyInterestPaid: number };
+      remainingBalance: number;
+       monthlyInterestPaid: number;
     }[];
     withStrategy: {
       paymentDate: string;
