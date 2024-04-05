@@ -9,12 +9,12 @@ import { formatCurrency } from "@/app/utils/formatters";
 import { Area } from "recharts";
 import { Loading } from "../../ui/Loading";
 import Image from "next/image";
-import {  IPaymentScheduleGraphType } from "@/types/financial";
-import { convertGraphDataToDisplayData, generateGraphData } from "@/app/components/strategy/payment-configuration/utils";
+import { ComparisonData } from "@/types/financial";
 import Link from "next/link";
 import MoneyIcon from '@/public/icons/money.svg'
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import Mixpanel from "@/services/mixpanel";
+import dayjs from "dayjs";
 
 type Props = {
   userId?: string;
@@ -24,51 +24,34 @@ export const PaymentConfiguration = ({ userId }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
   const axiosAuth = useAxiosAuth()
 
-  const { data: withInvestrio, isLoading: isWithInvestrioLoading} =
-    useQuery<IPaymentScheduleGraphType>({
-      queryKey: ["extra-payments"],
-      queryFn: async () => await axiosAuth.get(`/dashboard/extra-pay-graph/${userId}`),
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      enabled: !!userId
-    });
-
-  const { data: withoutPlanning, isLoading: isWithoutPlanningLoading} =
-    useQuery<IPaymentScheduleGraphType>({
+  const {data, isLoading} =
+    useQuery<ComparisonData>({
       queryKey: ["no-extra-payments"],
-      queryFn: async () => await axiosAuth.get(`/dashboard/no-extra-pay-graph/${userId}`),
+      queryFn: async () => await axiosAuth.get(`/dashboard/comparison/${userId}`),
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       enabled: !!userId
     });
 
-  const { data: paymentConfigurationSummary, isLoading: isLoadingPaymentConfiguration, isRefetching } = useQuery({
-    queryKey: ["paymentConfigurationSummary"],
-    queryFn: async () => await axiosAuth.get(`/dashboard/step-three/${userId}`),
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    enabled: !!userId
-  });
+    if (!userId || isLoading || !data?.data) return <Loading/>
 
-  const { withInvestrioData, withoutPlanningData } = useMemo(() => {
-    return {
-      withInvestrioData: convertGraphDataToDisplayData({
-        graphData: withInvestrio?.data,
-        summary: paymentConfigurationSummary?.data
-      }),
-      withoutPlanningData: convertGraphDataToDisplayData({
-        graphData: withoutPlanning?.data,
-        summary: paymentConfigurationSummary?.data,
-        withPlanning: false,
-      })
-    }
-  }, [withInvestrio, withoutPlanning, paymentConfigurationSummary]);
+  console.log(data?.data)
 
+  const { withStrategy, withoutStrategy, totalInterestPaid, withStrategyTotalInterestPaid, savedInterest, monthsFaster } = data.data
+
+  const withoutGraph = withoutStrategy.map((data) => ({
+    name: dayjs(data.paymentDate).format('MMM'),
+    balance: data._sum.remainingBalance,
+  }))
+
+  const withGraph = withStrategy.map((data) => ({
+
+    name: dayjs(data.paymentDate).format('MMM'),
+    balance: data.remainingBalance,
+  }))
   
-  const withInvestrioGraph = useMemo(() => generateGraphData(withInvestrio?.data), [withInvestrio])
-  const withoutInvestrioGraph = useMemo(() => generateGraphData(withoutPlanning?.data), [withoutPlanning])
-  
-  if (!userId || !withInvestrioGraph || !withoutInvestrioGraph || isRefetching) return <Loading/>
+  const withoutEndDate = withoutStrategy[withoutStrategy.length - 1].paymentDate
+  const withEndDate = withStrategy[withStrategy.length - 1].paymentDate
 
   return (
     <>
@@ -93,13 +76,8 @@ export const PaymentConfiguration = ({ userId }: Props) => {
             <div className="grid grid-cols-4 lg:grid-cols-12 gap-4">
               <div className="col-span-4 shadow-sm lg:col-span-6">
                 <Card fullWidth title="Balance over time">
-                  {isWithInvestrioLoading && (
-                    <div className="flex justify-center items-center">
-                      <Loading isHeightScreen={false} size="m"/>
-                    </div>
-                  )}
                   <CustomLineChart
-                    data={withInvestrioGraph}
+                    data={withGraph}
                     area={
                       <Area
                         dataKey="balance"
@@ -117,12 +95,12 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
-                      Total Interest: <br/> {formatCurrency(withInvestrioData.totalInterest)}
+                      Total Interest: <br/> {formatCurrency(totalInterestPaid)}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
 
                     <div className="text-2xl w-[200px]">
-                      Debt Free By: <br/> {withInvestrioData.debtFreeDate}
+                      Debt Free By: <br/> {dayjs(withEndDate).format("MMMM - YYYY")}
                     </div>
                   </div>
 
@@ -131,7 +109,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                       <MoneyIcon width='30' height="30" viewBox="0 0 64 64" />
                       <div>
                         <span>Save money! </span>
-                        <h1 className="text-2xl font-black">{formatCurrency(withInvestrioData.saved) || '$0'}</h1>
+                        <h1 className="text-2xl font-black">{formatCurrency(savedInterest) || '$0'}</h1>
                       </div>
                     </div>
                     <div className="flex gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">
@@ -139,7 +117,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                         <span>Save time, pay</span>
                         <br/>
                         <span className="text-sm">
-                          <span className="text-2xl font-extrabold">{withInvestrioData.monthsFaster}</span> months faster!
+                          <span className="text-2xl font-extrabold">{monthsFaster}</span> months faster!
                         </span>
                       </div>
                     </div>
@@ -172,14 +150,8 @@ export const PaymentConfiguration = ({ userId }: Props) => {
             <div className="grid grid-cols-4 lg:grid-cols-12 gap-4">
               <div className="col-span-4 shadow-sm lg:col-span-6">
                 <Card title="Balance over time" fullWidth>
-                  {isWithoutPlanningLoading && (
-                    <div className="flex justify-center items-center">
-                      <Loading isHeightScreen={false} size="m"/>
-                    </div>
-                  )}
-
                   <CustomLineChart
-                    data={withoutInvestrioGraph}
+                    data={withoutGraph}
                     area={
                       <Area
                         dataKey="balance"
@@ -198,13 +170,13 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
                       Total Interest: <br/> {formatCurrency(
-                      withoutPlanningData?.totalInterest
+                      withStrategyTotalInterestPaid
                     )}
                     </div>
                     <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
 
                     <div className="text-2xl w-[200px]">
-                      Debt Free Date: <br/> {withoutPlanningData?.debtFreeDate}
+                      Debt Free Date: <br/> {dayjs(withoutEndDate).format('MMMM - YYYY')}
                     </div>
                   </div>
 
