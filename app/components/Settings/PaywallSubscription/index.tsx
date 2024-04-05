@@ -33,11 +33,13 @@ const subscriptionItems = [
 ];
 
 const PaywallSubscription = ({ data }: TrialBlockProps) => {
+  const [loading, setIsLoading] = useState(false);
   const axios = useAxiosAuth();
 
   const handleActivateClick = async () => {
+    setIsLoading(true);
     const link = await axios.get("/subscription/link/");
-    Mixpanel.getInstance().track('start_subscription')
+    Mixpanel.getInstance().track("start_subscription");
 
     window.location = link.data.url;
   };
@@ -93,12 +95,14 @@ const PaywallSubscription = ({ data }: TrialBlockProps) => {
       <div className="text-base font-medium text-purple-3 flex items-center justify-center gap-3 mt-8">
         {!data.trialEndsAt ? (
           <Button
+            disabled={loading}
             classProp="!w-full"
             text="Subscribe (7 days FREE trial)"
             onClick={handleActivateClick}
           />
         ) : (
           <Button
+            disabled={loading}
             text="Subscribe"
             classProp="!w-full"
             onClick={handleActivateClick}
