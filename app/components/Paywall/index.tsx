@@ -10,21 +10,19 @@ const Paywall = (props: Props) => {
   const {data} = useSession()
   const path = usePathname()
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
     if (!path.startsWith('/dashboard')) {
       redirect('/dashboard/debts')
     }
   }, [])
 
   if (!data?.user.isShowPaywall) {
-    document.body.style.overflow = 'unset'
     return
   }
 
   return (
-    <div className=' z-[1000] absolute top-0 left-0 w-[100vw] h-[100vh] overflow-hidden backdrop-blur-sm flex items-center justify-center'>
-      <div className='top-0 left-0 absolute w-full h-full bg-black opacity-50 '></div>
-      <div className='z-[10001] bg-white w-[600px] backdrop-blur rounded-xl'>
+    <div className=' z-[1000] fixed top-0 left-0 w-full h-full overflow-scroll sm:overflow-hidden backdrop-blur-sm flex sm:items-center justify-center '>
+      <div className='w-full h-full absolute bg-black opacity-50 '></div>
+      <div className='max-sm:m-auto align-center z-[10001] bg-white w-full sm:w-[600px] backdrop-blur rounded-xl'>
         <PaywallSubscription data={data.user}/>
       </div>
     </div>

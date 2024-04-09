@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
     try {
-
         const refreshToken = cookies().get('refreshToken')
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/refresh`, {}, { headers: {Cookie: `refreshToken=${refreshToken?.value}`}})
 

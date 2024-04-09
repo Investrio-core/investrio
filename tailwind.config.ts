@@ -26,6 +26,9 @@ const config: Config = {
     ],
   },
   theme: {
+    screens: {
+      sm: '500px'
+    },
     extend: {
       colors: {
         purple: {
