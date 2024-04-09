@@ -26,10 +26,10 @@ const config: Config = {
     ],
   },
   theme: {
-    screens: {
-      sm: '500px'
-    },
     extend: {
+      screens: {
+        sm: '500px'
+      },
       colors: {
         purple: {
           DEFAULT: "#8833FF",
