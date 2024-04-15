@@ -1,13 +1,20 @@
-import Script from "next/script";
 import Layout from "./components/Layout";
 import "./globals.css";
 import Providers from "./Providers";
 import Head from "next/head";
-import Paywall from "./components/Paywall";
+import { Metadata } from "next";
 
-export const metadata = {
-  title: "Investrio",
-  description: "...",
+export const metadata: Metadata = {
+  title: "Investrio | Personalized Financial Planning & Advisory",
+  description: "Eliminate your debt & build your future. Investrio provides a personal approach to your finances and beyond. Helping you move financially forward.",
+  icons: {
+    'icon': '/public/logo.png',
+    shortcut: '/public/logo.png',
+    apple: [
+      {url: '/public/logo.png'}
+    ]
+  },
+  
 };
 export default function RootLayout({
   children,
