@@ -6,13 +6,24 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Investrio | Personalized Financial Planning & Advisory",
-  description: "Eliminate your debt & build your future. Investrio provides a personal approach to your finances and beyond. Helping you move financially forward.",
+  description:
+    "Eliminate your debt & build your future. Investrio provides a personal approach to your finances and beyond. Helping you move financially forward.",
   icons: {
-    icon: '/logo.svg',
-    shortcut: '/favicon.ico',
-    apple: '/logo.svg',
+    icon: "/logo.svg",
+    shortcut: "/favicon.ico",
+    apple: "/logo.svg",
   },
-  
+  openGraph: {
+    title: "Investrio | Personalized Financial Planning & Advisory",
+    description: "The React Framework for the Web",
+    images: [
+      {
+        url: `${process.env.NEXTAUTH_URL}/logo.png`,
+        width: 800,
+        height: 600,
+      },
+    ],
+  },
 };
 export default function RootLayout({
   children,
