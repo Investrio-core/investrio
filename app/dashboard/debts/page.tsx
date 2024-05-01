@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import LinkOutline from "@/app/components/ui/LinkOutline";
 import { Button } from "@/app/components/ui/buttons";
-import { DashboardInfo } from "@/app/components/dashboard/DashboardInfo";
+import { DashboardInfo } from "@/app/components/Dashboard/DashboardInfo";
 import { Loading } from "@/app/components/ui/Loading";
 
 import PlusOutlineIcon from "@/public/icons/plus-outline.svg";
@@ -23,7 +23,7 @@ export default function Dashboard() {
 
   const axiosAuth = useAxiosAuth();
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isRefetching, } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
     queryFn: async () =>{
 
@@ -42,8 +42,7 @@ export default function Dashboard() {
     refetch()    
   }, [session?.user.isShowPaywall])
 
-
-  if (isLoading || !session?.user?.id || !data) return <Loading />;
+  if (isLoading || !session?.user?.id || !data || isRefetching) return <Loading />;
 
   const onEditClick = () => {
     router.push("/dashboard/debts/add?step=2");
