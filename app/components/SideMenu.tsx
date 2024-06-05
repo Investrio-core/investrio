@@ -4,24 +4,23 @@ import Link from "next/link";
 import React from "react";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaHandHoldingDollar } from "react-icons/fa6";
-import BudgetIcon from '@/public/icons/budget.svg'
-import CogIcon from '@/public/icons/cog.svg'
+import BudgetIcon from "@/public/icons/budget.svg";
+import CogIcon from "@/public/icons/cog.svg";
 import { SideMenuItem } from "./SideMenuItem";
 import { useSession } from "next-auth/react";
 import BookConsultationBlock from "./BookConsultation";
 
-
 export default function SideMenu() {
-  const {data} = useSession()
+  const { data } = useSession();
 
   const isActiveLink = (link: string) => {
+    // if (link === '/dashboard' && !data?.user.isAddedFreeStrategy) {
+    //   return true
+    // }
 
-    if (link === '/dashboard' && !data?.user.isAddedFreeStrategy) {
-      return true
-    }
-
-    return (data?.user.isActive || data?.user.isTrial) ? true : false
-  }
+    // return (data?.user.isActive || data?.user.isTrial) ? true : false
+    return true;
+  };
 
   return (
     <div className="flex flex-row justify-between drawer lg:drawer-open z-50 row-span-5 auto-cols-auto xl:col-span-2">
@@ -39,7 +38,6 @@ export default function SideMenu() {
             height={50}
           />
         </div>
-   
       </div>
       <div className="drawer-side">
         <label
@@ -57,27 +55,31 @@ export default function SideMenu() {
               height={50}
             />
           </Link>
-          <SideMenuItem href="/dashboard/debts" isActive={isActiveLink("/dashboard")} >
+          <SideMenuItem
+            href="/dashboard/debts"
+            isActive={isActiveLink("/dashboard")}
+          >
             <MdOutlineDashboard />
             <span className="text-lg ml-2">Dashboard</span>
           </SideMenuItem>
-          <SideMenuItem href={"/dashboard/debts/add"} isActive={isActiveLink('/dashboard')}>
+          <SideMenuItem
+            href={"/dashboard/debts/add"}
+            isActive={isActiveLink("/dashboard")}
+          >
             <FaHandHoldingDollar style={{ fontSize: "20px" }} />
             <span className="text-lg ml-2">Strategy</span>
           </SideMenuItem>
-          <SideMenuItem href="/budget" isActive={isActiveLink('/budget')}>
-            <BudgetIcon width='20' height="20" viewBox="6 6 20 22" />
+          <SideMenuItem href="/budget" isActive={isActiveLink("/budget")}>
+            <BudgetIcon width="20" height="20" viewBox="6 6 20 22" />
             <span className="text-lg ml-2">Budget</span>
           </SideMenuItem>
-          <SideMenuItem href="/settings" isActive={isActiveLink('/settings')}>
-            <CogIcon width='20' height="20" viewBox="6 5 20 21" /> <span className="text-lg ml-2">Settings</span>
+          <SideMenuItem href="/settings" isActive={isActiveLink("/settings")}>
+            <CogIcon width="20" height="20" viewBox="6 5 20 21" />{" "}
+            <span className="text-lg ml-2">Settings</span>
           </SideMenuItem>
 
-          <div className="mt-auto">
-          {/* <BookConsultationBlock/> */}
-        </div>
+          <div className="mt-auto">{/* <BookConsultationBlock/> */}</div>
         </ul>
-        
       </div>
     </div>
   );
