@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import SideMenu from "@/app/components/SideMenu";
 import Topbar from "@/app/components/Topbar";
@@ -7,43 +7,40 @@ import { usePathname } from "next/navigation";
 import { Loading } from "../ui/Loading";
 import Paywall from "../Paywall";
 
-
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const {data} = useSession()
-  const path = usePathname()
-  
-  if (path.startsWith('/auth')) {
-    return (<>{children}</>)
+  const { data } = useSession();
+  const path = usePathname();
+
+  if (path.startsWith("/auth")) {
+    return <>{children}</>;
   }
 
   if (!data) {
-    return <Loading />
+    return <Loading />;
   }
 
-  const {user} = data!
+  const { user } = data!;
 
   return (
     <>
-    {user.isShowPaywall && <Paywall />}
-    <div className="grid grid-cols-1 lg:flex">
-      <div className="flex flex-row justify-between">
-        <div className="lg:w-[190px]">
-          <SideMenu/>
+      {/* {user.isShowPaywall && <Paywall />} */}
+      <div className="grid grid-cols-1 lg:flex">
+        <div className="flex flex-row justify-between">
+          <div className="lg:w-[190px]">
+            <SideMenu />
+          </div>
+          <div className="float-right lg:hidden">
+            <Topbar user={user} />
+          </div>
         </div>
-        <div className="float-right lg:hidden">
-          <Topbar user={user}/>
-        </div>
-      </div>
 
-      <div className="bg-[#f7f8fa] max-md:col-span-7">
-        <section className="hidden lg:block">
-          <Topbar user={user}/>
-        </section>
-        <section className="lg:w-[calc(100vw-190px)]">
-          {children}
-        </section>
+        <div className="bg-[#f7f8fa] max-md:col-span-7">
+          <section className="hidden lg:block">
+            <Topbar user={user} />
+          </section>
+          <section className="lg:w-[calc(100vw-190px)]">{children}</section>
+        </div>
       </div>
-    </div>
     </>
-  )
+  );
 }
