@@ -61,7 +61,6 @@ const SubscriptionBlock = ({
         text="Manage Subscription"
         classProp="!w-full bg-white text-purple-3 border border-purple-3 hover:bg-slate-200 mt-8"
         onClick={handleManageClick}
-        disabled={true}
       />
     </div>
   );

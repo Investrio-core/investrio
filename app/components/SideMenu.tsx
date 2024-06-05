@@ -73,10 +73,10 @@ export default function SideMenu() {
             <BudgetIcon width="20" height="20" viewBox="6 6 20 22" />
             <span className="text-lg ml-2">Budget</span>
           </SideMenuItem>
-          <SideMenuItem href="/settings" isActive={isActiveLink("/settings")}>
+          {/* <SideMenuItem href="/settings" isActive={isActiveLink("/settings")}>
             <CogIcon width="20" height="20" viewBox="6 5 20 21" />{" "}
             <span className="text-lg ml-2">Settings</span>
-          </SideMenuItem>
+          </SideMenuItem> */}
 
           <div className="mt-auto">{/* <BookConsultationBlock/> */}</div>
         </ul>
