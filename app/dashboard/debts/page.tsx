@@ -23,14 +23,13 @@ export default function Dashboard() {
 
   const axiosAuth = useAxiosAuth();
 
-  const { data, isLoading, refetch, isRefetching, } = useQuery({
+  const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["dashboard", session?.user?.id],
-    queryFn: async () =>{
-
-      if (session?.user.isShowPaywall) {
-        return mock
-      }
-      return await axiosAuth.get(`/dashboard/${session?.user?.id}`)
+    queryFn: async () => {
+      // if (session?.user.isShowPaywall) {
+      //   return mock
+      // }
+      return await axiosAuth.get(`/dashboard/${session?.user?.id}`);
     },
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
@@ -39,10 +38,11 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    refetch()    
-  }, [session?.user.isShowPaywall])
+    refetch();
+  }, [session?.user.isShowPaywall]);
 
-  if (isLoading || !session?.user?.id || !data || isRefetching) return <Loading />;
+  if (isLoading || !session?.user?.id || !data || isRefetching)
+    return <Loading />;
 
   const onEditClick = () => {
     router.push("/dashboard/debts/add?step=2");

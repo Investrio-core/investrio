@@ -7,7 +7,7 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 
 interface TrialBlockProps {
   subscriptionStatus: "active" | "cancelled" | "failed";
-  isTrial: boolean
+  isTrial: boolean;
 }
 
 const STATUSES_COLOR = {
@@ -29,7 +29,10 @@ const STATUSES_COLOR = {
   },
 };
 
-const SubscriptionBlock = ({ subscriptionStatus, isTrial }: TrialBlockProps) => {
+const SubscriptionBlock = ({
+  subscriptionStatus,
+  isTrial,
+}: TrialBlockProps) => {
   const axios = useAxiosAuth();
 
   const handleManageClick = async () => {
@@ -38,14 +41,18 @@ const SubscriptionBlock = ({ subscriptionStatus, isTrial }: TrialBlockProps) => 
     window.location = link.data.url;
   };
 
-  const status = isTrial ? 'trial' : subscriptionStatus as "active" | "cancelled" | "failed";
+  const status = isTrial
+    ? "trial"
+    : (subscriptionStatus as "active" | "cancelled" | "failed");
   const badgeColor = STATUSES_COLOR[status!];
 
   return (
     <div className="w-[50%] p-8 border rounded-xl bg-white">
       <div className="flex justify-between items-center">
         <div className="text-2xl font-semibold">Subscription Status:</div>
-        <div className={`${badgeColor.bg} ${badgeColor.text} rounded-lg font-medium px-2 text-base capitalize`}>
+        <div
+          className={`${badgeColor.bg} ${badgeColor.text} rounded-lg font-medium px-2 text-base capitalize`}
+        >
           {status}
         </div>
       </div>
