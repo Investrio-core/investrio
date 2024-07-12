@@ -3,7 +3,7 @@ import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Mixpanel from "@/services/mixpanel";
 
-const GoogleSignInButton = () => {
+const GoogleSignInButton = ({ callToAction }: { callToAction?: string }) => {
   const { data: session } = useSession();
 
   const auth = async () => {
@@ -41,7 +41,7 @@ const GoogleSignInButton = () => {
           src="https://authjs.dev/img/providers/google.svg"
           className="w-5 h-5 mr-5"
         />
-        Login with Google
+        {callToAction ?? "Login with Google"}
       </span>
     </button>
   );
