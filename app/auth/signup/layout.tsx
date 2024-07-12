@@ -1,3 +1,21 @@
+import React from "react";
+
+export default function SignUpLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex h-screen min-h-screen justify-center items-center overflow-auto bg-violet-50">
+      <div className="w-full max-w-[90%] md:max-w-lg">
+        <div>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+// Stripped out select individual or company step and steps
+/*
 "use client";
 
 import React from "react";
@@ -71,3 +89,4 @@ export default function SignUpLayout({
     </>
   );
 }
+*/
