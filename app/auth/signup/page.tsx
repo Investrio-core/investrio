@@ -1,3 +1,81 @@
+"use client";
+
+import { useState } from "react";
+import axios, { AxiosError } from "axios";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import Mixpanel from "@/services/mixpanel";
+import Image from "next/image";
+import SignupForm from "./components/SignupForm";
+import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
+
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export default function SignUpPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showSteps, setShowSteps] = useState(true);
+
+  async function onSubmit(data: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
+    try {
+      if (data.password.length < 8) {
+        setError("Your password must be at least 8 characters long.");
+        return;
+      }
+
+      setIsLoading(true);
+      setError("");
+      const user = await axios.post(
+        `${API_URL}/user/signup`,
+        { ...data, type: "credentials" },
+        { withCredentials: true }
+      );
+
+      await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        // ## Register callback:
+        callbackUrl: "/dashboard/debts/add",
+      });
+
+      Mixpanel.getInstance().identify(user.data.id, data.email, data.name);
+      Mixpanel.getInstance().track("registration");
+    } catch (err: AxiosError | any) {
+      console.log(err.message);
+      setError(err.response.data);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <Image
+        src="/images/logo.svg"
+        alt="Investrio"
+        width={225}
+        height={53}
+        className={`mx-auto pb-5 ${showSteps ? "mt-[0px]" : "mt-[128px]"}`}
+      />
+      {showSteps ? (
+        <OnboardingIntroSteps
+          showSteps={showSteps}
+          setShowSteps={setShowSteps}
+        />
+      ) : (
+        <SignupForm isLoading={isLoading} error={error} onSubmit={onSubmit} setShowSteps={setShowSteps} />
+      )}
+    </>
+  );
+}
+
+// Stripped out select individual or company page:
+/*
 import { RxAvatar } from "react-icons/rx";
 import { BsArrowRight } from "react-icons/bs";
 import { MdOutlineBusiness } from "react-icons/md";
@@ -67,3 +145,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+*/
