@@ -1,4 +1,4 @@
-import * as React from "react";
+import { MouseEventHandler } from "react";
 import { motion } from "framer-motion";
 
 const Path = (props) => (

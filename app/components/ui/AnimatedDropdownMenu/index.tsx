@@ -30,12 +30,11 @@ const AnimatedDropdownMenu = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-center bg-white">
+    <div className="flex items-center justify-center bg-white relative z-100">
       <motion.div animate={open ? "open" : "closed"} className="relative">
         <button
           onClick={() => setOpen((pv) => !pv)}
-          className="flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-600 hover:bg-violet:300 transition-colors shadow-sm"
-          //   className="btn btn-primary mt-4 w-full capitalize text-base/[16px]"
+          className="border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors shadow-md"
         >
           {renderImage ? (
             <Image
@@ -53,7 +52,7 @@ const AnimatedDropdownMenu = ({
             </span>
           ) : null}
           <motion.span variants={iconVariants}>
-            <FiChevronDown />
+            <FiChevronDown className={"text-slate-600"} />
           </motion.span>
         </button>
 
@@ -61,7 +60,7 @@ const AnimatedDropdownMenu = ({
           initial={wrapperVariants.closed}
           variants={wrapperVariants}
           style={{ originY: "top", translateX: "-50%" }}
-          className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-48 overflow-hidden"
+          className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-48 overflow-hidden z-100"
         >
           {options.map(({ onClick, label, icon }) => (
             <Option onClick={onClick} text={label} Icon={icon} />
@@ -83,7 +82,7 @@ const Option = ({ text, Icon, onClick }: OptionProps) => {
     <motion.li
       variants={itemVariants}
       onClick={() => onClick()}
-      className="flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap rounded-md hover:bg-indigo-100 text-slate-700 hover:text-indigo-500 transition-colors cursor-pointer"
+      className="relative z-100 flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap rounded-md hover:bg-indigo-100 text-slate-700 hover:text-indigo-500 transition-colors cursor-pointer"
     >
       <motion.span variants={actionIconVariants}>
         <Icon />
