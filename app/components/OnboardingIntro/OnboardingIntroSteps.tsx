@@ -40,9 +40,6 @@ export default function OnboardingIntroSteps({
   //   const [showSteps, setShowSteps] = useState(true);
 
   useEffect(() => {
-    console.log(currentStep);
-    console.log(showSteps);
-
     if (currentStep === NUM_STEPS) {
       setShowSteps(false);
     }

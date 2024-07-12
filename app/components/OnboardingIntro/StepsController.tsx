@@ -1,11 +1,13 @@
 import Image from "next/image";
+import { StandardButton } from "../ui/buttons";
 
 interface Props {
   setNext: Function;
   setPrev: Function;
-  setSkip: Function;
+  setSkip?: Function;
   currentStep: number;
   numSteps: number;
+  useButton?: boolean;
 }
 
 export default function StepsController({
@@ -14,8 +16,30 @@ export default function StepsController({
   setSkip,
   currentStep,
   numSteps,
+  useButton = false,
 }: Props) {
   const stepsIterator = Array(numSteps).fill(0);
+
+  const nextButton = useButton ? (
+    <button
+      className={`btn btn-primary mt-4 capitalize text-base/[14px]`}
+      style={{
+        borderRadius: "12px",
+        position: "relative",
+        top: "-10px",
+      }}
+      onClick={() => setNext()}
+    >
+      Next
+    </button>
+  ) : (
+    <div
+      className="text-right text-zinc-800 text-lg font-medium leading-7 cursor-pointer"
+      onClick={() => setNext()}
+    >
+      Next
+    </div>
+  );
   return (
     <div
       style={{
@@ -31,10 +55,10 @@ export default function StepsController({
       }}
       //   className="bottom-[24px] left-0 right-0 text-center"
     >
-      {currentStep === 0 ? (
+      {currentStep === 0 && setSkip ? (
         <div
           className="text-neutral-400 text-lg font-medium leading-7 cursor-pointer"
-          onClick={() => setSkip()}
+          onClick={() => (setSkip ? setSkip() : undefined)}
         >
           Skip
         </div>
@@ -61,12 +85,7 @@ export default function StepsController({
           />
         ))}
       </div>
-      <div
-        className="text-right text-zinc-800 text-lg font-medium leading-7 cursor-pointer"
-        onClick={() => setNext()}
-      >
-        Next
-      </div>
+      {currentStep < numSteps - 1 ? nextButton : null}
     </div>
   );
 }
