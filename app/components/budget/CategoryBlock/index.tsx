@@ -41,6 +41,7 @@ const CategoryBlock = ({
     mutationKey: ["category"],
     mutationFn: async (category: any) => {
       setLoading(true);
+
       const data = await axiosAuth.post(`/budget/create`, {
         ...category,
         year,
@@ -50,23 +51,38 @@ const CategoryBlock = ({
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budget-tool"] });
+      queryClient.invalidateQueries({ queryKey: ["budget-tool", year, month] });
     },
   });
 
   const { mutateAsync: update } = useMutation({
     mutationKey: ["category"],
     mutationFn: async (category: any) => {
+      queryClient.setQueryData(["budget-tool", year, month], (oldData: any) => {
+        if (oldData?.data === undefined) return oldData;
+
+        const categoryKey = Object.keys(category)?.[0];
+        if (categoryKey) {
+          const newData = {
+            ...oldData,
+            data: { ...oldData.data, [categoryKey]: category[categoryKey] },
+          };
+          return newData;
+        }
+        return oldData;
+      });
+
       setLoading(true);
       const data = await axiosAuth.put(
         `/budget/update-category/${budgetInfo?.id}`,
         { ...category }
       );
       setLoading(false);
+
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budget-tool"] });
+      queryClient.invalidateQueries({ queryKey: ["budget-tool", year, month] });
     },
   });
 
@@ -74,6 +90,7 @@ const CategoryBlock = ({
     [key in "needs" | "savings" | "debts" | "wants"]: {
       name: string;
       value: number;
+      recurringExpense?: string;
     }[];
   }) => {
     setLoading(true);
@@ -88,12 +105,7 @@ const CategoryBlock = ({
   };
 
   return (
-    <div className="w-full bg-white mt-[24px] rounded-[12px] border p-[24px]">
-      <div className="flex text-base font-medium text-gray-1 px-[12px]">
-        <div className="w-4/6">CATEGORY</div>
-        <div className="w-1/6 text-right">RECOMMENDED</div>
-        <div className="w-1/6 text-right">ACTUAL</div>
-      </div>
+    <div className="w-[100vw] lg:w-full bg-white mt-[24px] rounded-[12px] border lg:p-[24px]">
       {categories.map((category) => {
         const name = category.name as "needs" | "savings" | "debts" | "wants";
         const items = budgetInfo[name];
