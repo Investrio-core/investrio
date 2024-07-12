@@ -37,8 +37,11 @@ export default function PageHeader({
             placeholder="Type a question, talk to us!"
             className="w-[207px] h-[21px] text-zinc-500 text-sm font-normal'] leading-[21px] focus:outline-none"
           ></input>
-          <div className="p-3 bg-indigo-50 rounded-lg justify-center items-center flex">
-            <div className="w-4 h-4 relative">
+          <div
+            className="p-3 bg-indigo-50 rounded-lg justify-center items-center flex"
+            style={{ zIndex: "-2 !important" }}
+          >
+            <div className="w-4 h-4">
               <FaMagnifyingGlass />
             </div>
           </div>

@@ -64,7 +64,7 @@ export default function MultiInputBlock({
               name="extraPayAmount"
               type="currency"
               placeholder="$00.00"
-              inline
+              // inline
               required
               onChange={(value: string) => setNumber(Number(value))}
               // onBlur={(value: string) => setIncome(Number(value))}

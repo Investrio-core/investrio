@@ -121,9 +121,7 @@ const Income = ({
           </span>
           left to spend
         </div>
-      ) : (
-        <div>Please assign your budget</div>
-      )}
+      ) : null}
     </div>
   );
 };

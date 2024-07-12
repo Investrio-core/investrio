@@ -107,13 +107,7 @@ const IncomeBlock = ({
       <div>{budgetInfo?.income ? formattedIncome : "$0"}</div>
       {budgetInfo.income ? (
         <div className="text-lg">
-          <span
-            className={`text-[48px] font-bold ${
-              incomeAfterExpenses < 0 ? "text-red-700" : "text-green-700"
-            } `}
-          >
-            {formattedIncome}{" "}
-          </span>
+
           left to spend
         </div>
       ) : (

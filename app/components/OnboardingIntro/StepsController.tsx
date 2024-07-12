@@ -79,6 +79,7 @@ export default function StepsController({
                 ? "/images/step-selected.svg"
                 : "/images/step-unselected.svg"
             }`}
+            key={`step-${idx}`}
             alt={"step"}
             width={16}
             height={16}
