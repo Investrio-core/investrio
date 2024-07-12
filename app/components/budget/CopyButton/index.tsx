@@ -24,7 +24,7 @@ const CopyButton = ({ month, year, setLoading }: CopyButtonProps) => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budget-tool"] });
+      queryClient.invalidateQueries({ queryKey: ["budget-tool", year, month] });
       toast.success('Successfully copied')
     },
   });
