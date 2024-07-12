@@ -2,33 +2,38 @@ import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import './monthpicker.css'
+import "./monthpicker.css";
 
 import CalendarIcon from "@/public/icons/calendar.svg";
 
-interface MontPickerProps {
-    date: Date | null
-    setDate: (date: Date | null) => void
+interface MonthPickerProps {
+  date: Date | null;
+  setDate: (date: Date | null) => void;
 }
 
 interface CustomDatePickerInputProps {
-    value: string
-    onClick: () => void
+  value: string;
+  onClick: () => void;
 }
 
 export type Ref = HTMLDivElement;
 
+const CustomDatePickerInput = forwardRef<Ref, CustomDatePickerInputProps>(
+  ({ value, onClick }, ref) => {
+    return (
+      <div
+        className="text-xl relative w-fit flex gap-4 items-center cursor-pointer"
+        ref={ref}
+        onClick={onClick}
+      >
+        {value}
+        <CalendarIcon className="hover:text-purple-3 focus:text-purple-3" />
+      </div>
+    );
+  }
+);
 
-const CustomDatePickerInput = forwardRef<Ref, CustomDatePickerInputProps>(({ value, onClick }, ref) => {
-  return (
-    <div className="text-xl relative w-fit flex gap-4 items-center cursor-pointer" ref={ref} onClick={onClick}>
-      {value}
-      <CalendarIcon className="hover:text-purple-3 focus:text-purple-3"/>
-    </div>
-  );
-});
-
-const MonthPicker = ({ date, setDate }: MontPickerProps) => {
+const MonthPicker = ({ date, setDate }: MonthPickerProps) => {
   return (
     <DatePicker
       // @ts-ignore
