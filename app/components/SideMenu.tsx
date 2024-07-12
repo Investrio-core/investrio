@@ -1,4 +1,3 @@
-import { BiMenu } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -8,6 +7,7 @@ import BudgetIcon from "@/public/icons/budget.svg";
 import CogIcon from "@/public/icons/cog.svg";
 import { SideMenuItem } from "./SideMenuItem";
 import { useSession } from "next-auth/react";
+import { BiMenu } from "react-icons/bi";
 import BookConsultationBlock from "./BookConsultation";
 import AnimatedMenuToggle from "./ui/AnimatedMenuToggle";
 
@@ -60,6 +60,7 @@ export default function SideMenu() {
           type="checkbox"
           className="drawer-toggle"
           checked={showMenu}
+          onChange={() => {}}
         />
 
         <div className="drawer-content flex flex-row lg:hidden relative top-15">
@@ -100,18 +101,6 @@ export default function SideMenu() {
             />
           </button> */}
           </label>
-
-          {/* <div className="hidden md:block">
-            <Image
-              // src="/logo.svg"
-              src="/images/logo.svg"
-              alt="Investrio"
-              className="mb-2"
-              width={50}
-              height={50}
-              onClick={() => setShowMenu(false)}
-            />
-          </div> */}
         </div>
         <div className="drawer-side">
           <label

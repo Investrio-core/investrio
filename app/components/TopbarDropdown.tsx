@@ -28,15 +28,14 @@ interface Props {
 
 export default function TopbarDropdown({ name, email, image }: Props) {
   const buttonContent = (
-    <div className="flex flex-row">
+    <div className="flex flex-row z-100 relative">
       <div className="flex flex-row gap-2 bg-transparent lg:mr-4">
-        <div className="mr-3 flex flex-col lg:mr-auto">
-          <span className="text-sm text-white font-bold">
+        <div className="mr-1 flex flex-col justify-start items-start lg:mr-auto">
+          <span className="text-sm text-slate-600 font-bold">
             {name?.split(" ")[0] || "username"}
           </span>
-          {/* hidden sm:block */}
           {
-            <span className="hidden sm:block text-[10px] text-slate-300">
+            <span className="hidden sm:block text-[10px] text-slate-400">
               {email}
             </span>
           }

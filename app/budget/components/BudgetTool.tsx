@@ -89,7 +89,11 @@ export default function BudgetTool() {
   }, [date]);
 
   useEffect(() => {
-    if (year === undefined || month === undefined) {
+    if (
+      year === undefined ||
+      month === undefined ||
+      budgetInfo?.data === undefined
+    ) {
       return;
     }
 
@@ -164,11 +168,11 @@ export default function BudgetTool() {
   }
 
   return (
-    <div className="lg:px-[28px] lg:py-[26px] bg-violet-50 pb-[140px] min-h-[91vh]">
+    <div className="lg:px-[28px] lg:py-[26px] bg-violet-50 pb-[12px] min-h-content min-h-[min(100vh, min-h-content)] max-w-[97vw] md:max-w-[100vw]">
       {/* <div className="flex flex-col lg:flex-row justify-between items-center mb-[24px]">
         <h2 className="text-[32px] font-bold">Budget overview</h2>
         <div className="w-128 flex gap-2">
-          <CopyButton year={year} month={month} setLoading={setIsLoading} />
+          <CopyButton year={year} month={month} setLoading={setIsLoading} />vw
           <div className="w-[200px] flex justify-end items-center">
             <MonthPicker date={date} setDate={setDate} />
           </div>
@@ -261,6 +265,10 @@ export default function BudgetTool() {
           budgetInfo={budgetInfo?.data}
           date={{ year, month }}
         />
+      </div>
+
+      <div className="mt-[108px] text-[#6C7278] text-center text-base">
+        © 2024 Investrio. All rights reserved
       </div>
     </div>
   );

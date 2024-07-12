@@ -19,7 +19,7 @@ export default function Topbar({ user }: TopbarProps) {
   const { image, name, email, id } = user;
 
   return (
-    <div className="flex flex-row justify-between items-center px-2 lg:px-6 py-2 lg:border-b lg:shadow-sm bg-white">
+    <div className="flex flex-row justify-between items-center px-2 lg:px-6 py-2 lg:border-b lg:shadow-sm bg-white z-100">
       <div className="hidden lg:block font-semibold">
         <h1 className="text-md">Welcome back {name?.split(" ")[0]}!</h1>
         <h3 className="text-sm text-[#747682] font-normal">
