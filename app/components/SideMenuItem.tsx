@@ -7,10 +7,16 @@ import clsx from "clsx";
 type Props = {
   href: string;
   children: ReactNode;
-  isActive?: boolean
+  isActive?: boolean;
+  closeMenu: Function;
 };
 
-export const SideMenuItem = ({ href, children, isActive = true }: Props) => {
+export const SideMenuItem = ({
+  href,
+  children,
+  isActive = true,
+  closeMenu,
+}: Props) => {
   const pathname = usePathname();
 
   const listItemClasses = clsx(
@@ -20,16 +26,18 @@ export const SideMenuItem = ({ href, children, isActive = true }: Props) => {
       "text-[#737581] hover:bg-gray-100": pathname !== href,
     },
     {
-      "text-gray-300": !isActive
+      "text-gray-300": !isActive,
     }
   );
 
   return (
     <Link
-      className={`flex items-center whitespace-nowrap leading-3 tracking-wide ${!isActive ? 'pointer-events-none' : ''}`}
-      href={isActive ? href : ''}
+      className={`flex items-center whitespace-nowrap leading-3 tracking-wide ${
+        !isActive ? "pointer-events-none" : ""
+      }`}
+      href={isActive ? href : ""}
     >
-      <li className={listItemClasses}>
+      <li className={listItemClasses} onClick={() => closeMenu()}>
         {children}
       </li>
     </Link>
