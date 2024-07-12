@@ -17,26 +17,18 @@ export default function Login() {
         height={53}
         className="mx-auto pb-5 mt-[77px]"
       />
-
-      {showSteps ? (
-        <OnboardingIntroSteps
-          showSteps={showSteps}
-          setShowSteps={setShowSteps}
-        />
-      ) : (
-        <div className="text-center p-5 mt-[30px]">
-          <LoginForm />
-          <p className="mt-[32px] text-base text-zinc-500">
-            Don’t have an account?{" "}
-            <Link href={"/auth/signup"} className="font-bold text-violet-600">
-              Register Here
-            </Link>
-          </p>
-          <div className="mt-[32px] text-[#6C7278] text-base absolute bottom-[24px] left-0 right-0 text-center">
-            © 2024 Investrio. All rights reserved.
-          </div>
+      <div className="text-center p-5 mt-[30px]">
+        <LoginForm />
+        <p className="mt-[32px] text-base text-zinc-500">
+          Don’t have an account?{" "}
+          <Link href={"/auth/signup"} className="font-bold text-violet-600">
+            Register Here
+          </Link>
+        </p>
+        <div className="mt-[32px] text-[#6C7278] text-base absolute bottom-[24px] left-0 right-0 text-center">
+          © 2024 Investrio. All rights reserved.
         </div>
-      )}
+      </div>
     </div>
   );
 }
