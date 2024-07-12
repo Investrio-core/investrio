@@ -12,7 +12,30 @@ interface ButtonProps extends ButtonPattern {
   icon?: React.ReactNode;
   href?: string;
   loading?: boolean;
+  type?: "submit" | "reset" | "button";
 }
+
+export const StandardButton = ({
+  text,
+  onClick,
+  type,
+  disabled,
+  classProp
+}: ButtonProps) => {
+  return (
+    <button
+      className={`btn btn-primary mt-4 w-full capitalize text-base/[16px] ${classProp}`}
+      type={type}
+      disabled={disabled}
+      style={{
+        borderRadius: "12px",
+      }}
+      onClick={onClick}
+    >
+      {disabled ? "Loading..." : text}
+    </button>
+  );
+};
 
 export const Button = ({ classProp, text, onClick, disabled }: ButtonProps) => {
   return (

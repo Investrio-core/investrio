@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Form from "../../ui/Form";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
+import Select from "@/app/components/ui/Select";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
@@ -16,9 +17,11 @@ type CreateCategoryItemModalProps = {
   onSubmit: ({
     value,
     name,
+    recurringExpense,
   }: {
     value: number;
     name: string | undefined;
+    recurringExpense: string | undefined;
   }) => void;
   onChange?: (value: string) => void;
 };
@@ -34,16 +37,21 @@ const CreateCategoryItemModal = ({
   const [currentValue, setCurrentValue] = useState(value || "");
   const [currentName, setCurrentName] = useState(name || "");
   const [formHasError, setFormHasError] = useState(true);
-
+  const [recurringExpense, setRecurringExpense] = useState<string | undefined>(
+    "true"
+  );
+  
   const handleSubmit = () => {
-    
-    onSubmit({ name: currentName, value: Number(currentValue) });
-
-    Mixpanel.getInstance().track('add_item')
+    onSubmit({
+      name: currentName,
+      value: Number(currentValue),
+      recurringExpense: recurringExpense,
+    });
+    onClose();
+    Mixpanel.getInstance().track("add_item");
   };
 
   const handleChange = (data: string) => {
-  
     setCurrentValue(data);
   };
 
@@ -119,6 +127,29 @@ const CreateCategoryItemModal = ({
                     defaultValue={currentValue}
                     required
                     onChange={handleChange}
+                  />
+
+                  <Select
+                    label="Is this a recurring expense?"
+                    name="recurringExpense"
+                    options={[
+                      {
+                        label: "Yes",
+                        value: "true",
+                      },
+                      {
+                        label: "No",
+                        value: "false",
+                      },
+                    ]}
+                    inline
+                    required
+                    value={recurringExpense}
+                    onChange={(e) => {
+                      if (e?.target?.value !== undefined) {
+                        setRecurringExpense(e?.target?.value);
+                      }
+                    }}
                   />
 
                   <div className="mt-9 flex flex-col gap-2">

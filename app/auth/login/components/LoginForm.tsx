@@ -9,15 +9,17 @@ import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { clearSession, saveSession } from "@/app/utils/session";
 import Mixpanel from "@/services/mixpanel";
+import Link from "next/link";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
-    message: 'The sign in provider is returning an error. Please, try again later.'
+    message:
+      "The sign in provider is returning an error. Please, try again later.",
   },
   OAuthSignin: {
-    message: 'The sign in provider is not responding. Please, try again later.'
-  }
-} as Record<string, { message: string }>
+    message: "The sign in provider is not responding. Please, try again later.",
+  },
+} as Record<string, { message: string }>;
 
 export default function LoginForm() {
   const session = useSession();
@@ -27,20 +29,27 @@ export default function LoginForm() {
   const params = useSearchParams();
 
   useEffect(() => {
-    if (params.get('error')) {
-      setError(LoginErrorsMapper[params.get('error')!]?.message || 'Something went wrong!')
+    if (params.get("error")) {
+      setError(
+        LoginErrorsMapper[params.get("error")!]?.message ||
+          "Something went wrong!"
+      );
     }
-  }, [params])
+  }, [params]);
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      Mixpanel.getInstance().identify(session.data.user.id, session.data.user.email, session.data.user.name)
-      Mixpanel.getInstance().track('login')
+      Mixpanel.getInstance().identify(
+        session.data.user.id,
+        session.data.user.email,
+        session.data.user.name
+      );
+      Mixpanel.getInstance().track("login");
     } else {
       clearSession();
     }
   }, [session]);
- 
+
   async function onSubmit(data: { email: string; password: string }) {
     try {
       setIsLoading(true);
@@ -65,13 +74,14 @@ export default function LoginForm() {
 
   return (
     <>
-    
+      <SigninButton />
+      <div className="divider">OR</div>
       <Form onSubmit={onSubmit}>
         <div className="flex flex-col gap-5">
           <div className="form-control">
             <div className="join">
               <div className="btn join-item hover:cursor-default">
-                <RxAvatar/>
+                <RxAvatar />
               </div>
               <input
                 type="email"
@@ -85,7 +95,7 @@ export default function LoginForm() {
           <div className="form-control">
             <div className="join ">
               <button className="btn join-item hover:cursor-default">
-                <AiOutlineLock/>
+                <AiOutlineLock />
               </button>
               <input
                 type="password"
@@ -95,6 +105,14 @@ export default function LoginForm() {
                 className="input input-bordered join-item w-full"
               />
             </div>
+            <p className="mt-[8px] text-base text-right">
+              <Link
+                href={"/auth/reset-password"}
+                className="font-bold text-violet-600"
+              >
+                Forgot Password?
+              </Link>
+            </p>
           </div>
 
           {error && <p className="text-left text-sm text-red-500">{error}</p>}
@@ -102,16 +120,17 @@ export default function LoginForm() {
           <div className="form-control">
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-primary capitalize text-base/[16px] text-white"
               disabled={isLoading}
+              style={{
+                borderRadius: "12px",
+              }}
             >
-              {isLoading ? "Loading..." : "LOG IN"}
+              {isLoading ? "Loading..." : "Login"}
             </button>
           </div>
         </div>
       </Form>
-      <div className="divider">OR</div>
-      <SigninButton/>
     </>
   );
 }

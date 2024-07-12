@@ -6,6 +6,8 @@ import { GoTrash } from "react-icons/go";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Form from "../../ui/Form";
+import Select from "@/app/components/ui/Select";
+import { BudgetItem } from "@/app/budget/components/BudgetTool";
 
 type EditCategoryItemModalProps = {
   onClose: () => void;
@@ -16,13 +18,16 @@ type EditCategoryItemModalProps = {
     value,
     name,
     oldName,
+    recurringExpense,
   }: {
     value: number;
     name: string;
     oldName: string;
+    recurringExpense?: string;
   }) => void;
   onDeleteClick: () => void;
   isDeleteCategoryItemModalOpen: boolean;
+  recurringExpense?: string;
 };
 
 const EditCategoryItemModal = ({
@@ -33,19 +38,30 @@ const EditCategoryItemModal = ({
   onSubmit,
   onDeleteClick,
   isDeleteCategoryItemModalOpen,
+  recurringExpense,
 }: EditCategoryItemModalProps) => {
   const [currentValue, setCurrentValue] = useState(value || "");
   const [currentName, setCurrentName] = useState(name || "");
   const [formHasError, setFormHasError] = useState(false);
+  const [currentRecurringExpense, setRecurringExpense] = useState<
+    string | undefined
+  >(recurringExpense);
 
   const handleSubmit = () => {
     if (name) {
-      const data: { name: string; value: number; oldName: string } = {
+      const data: {
+        name: string;
+        value: number;
+        oldName: string;
+        recurringExpense?: string;
+      } = {
         name: currentName,
         value: Number(currentValue),
         oldName: name,
+        recurringExpense: currentRecurringExpense,
       };
       onSubmit(data);
+      onClose();
     }
   };
 
@@ -64,7 +80,10 @@ const EditCategoryItemModal = ({
     if (name && name !== currentName) {
       setCurrentName(name);
     }
-  }, [value, open, name]);
+    if (recurringExpense !== currentRecurringExpense) {
+      setRecurringExpense(recurringExpense);
+    }
+  }, [value, open, name, recurringExpense]);
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -131,6 +150,30 @@ const EditCategoryItemModal = ({
                     defaultValue={currentValue}
                     required
                     onChange={handleChange}
+                  />
+
+                  <Select
+                    label="Is this a recurring expense?"
+                    name="recurringExpense"
+                    options={[
+                      {
+                        label: "Yes",
+                        value: "true",
+                      },
+                      {
+                        label: "No",
+                        value: "false",
+                      },
+                    ]}
+                    inline
+                    required
+                    value={currentRecurringExpense ?? undefined}
+                    // placeholder={"Yes / No"}
+                    onChange={(e) => {
+                      if (e?.target?.value !== undefined) {
+                        setRecurringExpense(e?.target?.value);
+                      }
+                    }}
                   />
 
                   <div className="mt-9 flex flex-col gap-2">

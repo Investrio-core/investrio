@@ -11,6 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useSession();
   const path = usePathname();
 
+  // take out layout for onboarding flow: || path.startsWith("/onboarding")
   if (path.startsWith("/auth")) {
     return <>{children}</>;
   }
@@ -24,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* {user.isShowPaywall && <Paywall />} */}
-      <div className="grid grid-cols-1 lg:flex">
+      <div className="grid grid-cols-1 lg:flex max-w-[100vw]">
         <div className="flex flex-row justify-between">
           <div className="lg:w-[190px]">
             <SideMenu />
