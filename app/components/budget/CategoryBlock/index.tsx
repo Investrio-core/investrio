@@ -2,6 +2,8 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import CategoryBlockItem from "../CategoryBlockItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+export type CategoryType = "needs" | "savings" | "debts" | "wants";
+
 interface CategoryBlockProps {
   budgetInfo: {
     needs: { value: number; name: string }[];
@@ -105,13 +107,14 @@ const CategoryBlock = ({
   };
 
   return (
-    <div className="w-[100vw] lg:w-full bg-white mt-[24px] rounded-[12px] border lg:p-[24px]">
+    <div className="w-[100vw] lg:w-full bg-white mt-[24px] rounded-[12px] border lg:p-[24px] mb-[20px]">
       {categories.map((category) => {
         const name = category.name as "needs" | "savings" | "debts" | "wants";
         const items = budgetInfo[name];
         return (
           <CategoryBlockItem
             onSubmit={onSubmit}
+            category={name}
             key={category.name}
             name={category.name}
             income={income}
