@@ -8,7 +8,7 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@layer  base {
+@layer base {
   html {
     font-family: "Poppins", system-ui, sans-serif;
   }
