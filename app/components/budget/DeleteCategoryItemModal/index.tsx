@@ -4,12 +4,16 @@ import { Fragment } from "react";
 import { TbAlertHexagon } from "react-icons/tb";
 
 type DeleteCategoryItemModalProps = {
+  category: string;
+  name: string;
   show: boolean;
   onCloseModal: () => void;
   onConfirm: () => void;
 };
 
 const DeleteCategoryItemModal = ({
+  category,
+  name,
   show,
   onCloseModal,
   onConfirm,
@@ -49,7 +53,11 @@ const DeleteCategoryItemModal = ({
                     style={{ width: "32px", height: "32px" }}
                     color="#DC26267F"
                   />
-                  <span className="mt-4 text-bold">Are you sure?</span>
+                  <span className="mt-4 text-bold">
+                    {category.slice(0, 1).toUpperCase()}
+                    {/* {category.slice(1, -1)}: {name} */}
+                    {category.slice(1)} {">"} {name}
+                  </span>
                 </Dialog.Title>
                 <div className="flex text-center justify-center mt-4">
                   <span className="text-base">
@@ -74,4 +82,4 @@ const DeleteCategoryItemModal = ({
   );
 };
 
-export default DeleteCategoryItemModal
+export default DeleteCategoryItemModal;
