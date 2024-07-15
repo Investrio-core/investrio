@@ -9,7 +9,6 @@ import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
 
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function SignUpPage() {
@@ -60,7 +59,7 @@ export default function SignUpPage() {
         alt="Investrio"
         width={225}
         height={53}
-        className={`mx-auto pb-5 ${showSteps ? "mt-[0px]" : "mt-[128px]"}`}
+        className={`mx-auto pb-[12px] ${showSteps ? "mt-[0px]" : "mt-[42px]"}`}
       />
       {showSteps ? (
         <OnboardingIntroSteps
@@ -68,7 +67,12 @@ export default function SignUpPage() {
           setShowSteps={setShowSteps}
         />
       ) : (
-        <SignupForm isLoading={isLoading} error={error} onSubmit={onSubmit} setShowSteps={setShowSteps} />
+        <SignupForm
+          isLoading={isLoading}
+          error={error}
+          onSubmit={onSubmit}
+          setShowSteps={setShowSteps}
+        />
       )}
     </>
   );
