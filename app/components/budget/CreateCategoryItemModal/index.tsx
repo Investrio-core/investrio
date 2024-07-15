@@ -8,10 +8,12 @@ import Form from "../../ui/Form";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
 import Select from "@/app/components/ui/Select";
+import { CategoryType } from "../CategoryBlock";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
   open: boolean;
+  category: CategoryType;
   value?: number;
   name?: string;
   onSubmit: ({
@@ -26,9 +28,23 @@ type CreateCategoryItemModalProps = {
   onChange?: (value: string) => void;
 };
 
+const getPlaceholderFromCategory = (category: CategoryType) => {
+  switch (category) {
+    case "needs":
+      return "Rent, Electricity, Utilities, Food, etc.";
+    case "debts":
+      return "Mortgage, Car Loan, Student Loan, etc.";
+    case "savings":
+      return "Savings Account, Shares, Investment Property, etc.";
+    case "wants":
+      return "Vacation, Jewelry, Luxury items, etc.";
+  }
+};
+
 const CreateCategoryItemModal = ({
   onClose,
   open = false,
+  category,
   value,
   name,
   onSubmit,
@@ -40,7 +56,7 @@ const CreateCategoryItemModal = ({
   const [recurringExpense, setRecurringExpense] = useState<string | undefined>(
     "true"
   );
-  
+
   const handleSubmit = () => {
     onSubmit({
       name: currentName,
@@ -109,7 +125,7 @@ const CreateCategoryItemModal = ({
                     label="Description"
                     name="name"
                     type="text"
-                    placeholder="Ex. Rent"
+                    placeholder={`Ex. ${getPlaceholderFromCategory(category)}`}
                     inline
                     setFormHasError={setFormHasError}
                     defaultValue={currentName}
