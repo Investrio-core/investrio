@@ -58,6 +58,7 @@ export default function OnboardingIntroSteps({
 
       <div className="flex flex-col justify-center align-center">
         <OnboardingIntroStep {...ONBOARDING_STEPS_DATA[currentStep]} />
+
         <StepsController
           setNext={() => setCurrentStep((prevState) => prevState + 1)}
           setPrev={() =>
@@ -69,6 +70,8 @@ export default function OnboardingIntroSteps({
           setSkip={() => setShowSteps(false)}
           currentStep={currentStep}
           numSteps={NUM_STEPS}
+          renderLastNext
+          classes={`mt-[60px]`}
         />
       </div>
     </>

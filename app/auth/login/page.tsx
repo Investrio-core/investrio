@@ -9,15 +9,15 @@ export default function Login() {
   const [showSteps, setShowSteps] = useState(true);
 
   return (
-    <div className="flex flex-col justify-center align-center">
+    <div className="flex flex-col justify-center align-center overflow-auto">
       <Image
         src="/images/logo.svg"
         alt="Investrio"
         width={225}
         height={53}
-        className="mx-auto pb-5 mt-[77px]"
+        className="mx-auto pb-[12px] mt-[42px]"
       />
-      <div className="text-center p-5 mt-[30px]">
+      <div className="text-center p-[12px] mt-[30px]">
         <LoginForm />
         <p className="mt-[32px] text-base text-zinc-500">
           Don’t have an account?{" "}
@@ -25,7 +25,8 @@ export default function Login() {
             Register Here
           </Link>
         </p>
-        <div className="mt-[32px] text-[#6C7278] text-base absolute bottom-[24px] left-0 right-0 text-center">
+        {/* <div className="mt-[32px] text-[#6C7278] text-base absolute bottom-[24px] left-0 right-0 text-center"> */}
+        <div className="mt-[32px] text-[#6C7278] text-base text-center pb-2 mb-2">
           © 2024 Investrio. All rights reserved.
         </div>
       </div>

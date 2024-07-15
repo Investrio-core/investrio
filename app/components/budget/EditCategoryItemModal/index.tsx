@@ -7,11 +7,12 @@ import { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Form from "../../ui/Form";
 import Select from "@/app/components/ui/Select";
-import { BudgetItem } from "@/app/budget/components/BudgetTool";
+import { CategoryType } from "../CategoryBlock";
 
 type EditCategoryItemModalProps = {
   onClose: () => void;
   open: boolean;
+  category: CategoryType;
   value?: number;
   name?: string;
   onSubmit: ({
@@ -33,6 +34,7 @@ type EditCategoryItemModalProps = {
 const EditCategoryItemModal = ({
   onClose,
   open = false,
+  category,
   value,
   name,
   onSubmit,
@@ -124,7 +126,8 @@ const EditCategoryItemModal = ({
                   as="h3"
                   className="text-left text-[30px] font-normal leading-6 text-gray-900 mb-[24px]"
                 >
-                  Edit expense
+                  Edit {category.slice(0, 1).toUpperCase()}
+                  {category.slice(1, -1)}
                 </Dialog.Title>
 
                 <Form onSubmit={handleSubmit}>
@@ -153,7 +156,7 @@ const EditCategoryItemModal = ({
                   />
 
                   <Select
-                    label="Is this a recurring expense?"
+                    label={`Is this a recurring ${category.slice(0, -1)}?`}
                     name="recurringExpense"
                     options={[
                       {

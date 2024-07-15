@@ -1,14 +1,14 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import useBudgetQueries from "@/app/hooks/useBudgetQueries";
-import MonthPicker from "../../components/budget/MonthPicker";
-import IncomeBlock from "../../components/budget/IncomeBlock";
-import Income from "../../components/budget/IncomeBlock/Income";
+import MonthPicker from "@/app/components/budget/MonthPicker";
+import IncomeBlock from "@/app/components/budget/IncomeBlock";
+import Income from "@/app/components/budget/IncomeBlock/Income";
 
-import CategoryBlock from "../../components/budget/CategoryBlock";
-import CopyButton from "../../components/budget/CopyButton";
+import CategoryBlock from "@/app/components/budget/CategoryBlock";
+import CopyButton from "@/app/components/budget/CopyButton";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loading } from "../../components/ui/Loading";
+import { Loading } from "@/app/components/ui/Loading";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
 import CustomPieChart, {
@@ -42,6 +42,7 @@ export default function BudgetTool() {
   const [date, setDate] = useState<Date | null>(new Date());
   const [step, setStep] = useState<BudgetMobileSteps>(INCOME_STEP);
   const [isLoading, setIsLoading] = useState(false);
+  const [firstLoadCompleted, setFirstLoadCompleted] = useState(false);
   const axiosAuth = useAxiosAuth();
   const mixpanelCalled = useRef<boolean>(false);
 
@@ -133,6 +134,17 @@ export default function BudgetTool() {
   }, [budgetInfo?.data, year, month]);
 
   useEffect(() => {
+    if (
+      !firstLoadCompleted &&
+      budgetInfo?.data !== undefined &&
+      Object.keys(budgetInfo?.data)?.length > 0
+    ) {
+      setStep(BUDGET_STEP);
+      setFirstLoadCompleted(true);
+    }
+  }, [budgetInfo?.data]);
+
+  useEffect(() => {
     if (mixpanelCalled.current) return;
     Mixpanel.getInstance().track("view_budget");
 
@@ -207,7 +219,7 @@ export default function BudgetTool() {
           />
         ) : null}
 
-        <div className="ml-[10px] relative top-[80px] w-[100%] flex items-center justify-center bg-violet-100">
+        <div className="ml-[10px] relative top-[0px] w-[100%] flex items-center justify-center">
           <StepsController
             useButton={true}
             setNext={() =>
@@ -267,7 +279,7 @@ export default function BudgetTool() {
         />
       </div>
 
-      <div className="mt-[108px] text-[#6C7278] text-center text-base">
+      <div className="mt-[28px] text-[#6C7278] text-center text-base">
         © 2024 Investrio. All rights reserved
       </div>
     </div>

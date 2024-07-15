@@ -105,14 +105,14 @@ export default function LoginForm() {
                 className="input input-bordered join-item w-full"
               />
             </div>
-            <p className="mt-[8px] text-base text-right">
+            {/* <p className="mt-[8px] text-base text-right">
               <Link
                 href={"/auth/reset-password"}
                 className="font-bold text-violet-600"
               >
                 Forgot Password?
               </Link>
-            </p>
+            </p> */}
           </div>
 
           {error && <p className="text-left text-sm text-red-500">{error}</p>}

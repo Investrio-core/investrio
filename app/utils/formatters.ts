@@ -4,10 +4,11 @@ export function formatCurrency(value?: number | string | null): string {
   }
 
   if (String(value).includes("$")) {
-    return value.toString()
+    return value.toString();
   }
 
-  const valueAsNumber = typeof value === "string" ? parseFloat(value.replaceAll(",", "")) : value;
+  const valueAsNumber =
+    typeof value === "string" ? parseFloat(value.replaceAll(",", "")) : value;
 
   return Intl.NumberFormat("en-US", {
     style: "currency",

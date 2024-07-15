@@ -97,7 +97,7 @@ const Income = ({
   const formattedIncome = formatCurrency(incomeAfterExpenses);
 
   return (
-    <div className="relative lg:w-[50%] p-[24px] bg-indigo-50 rounded-[18px] border border-violet-200 mx-[16px] mt-[16px] mb-[16px] flex flex-col items-center justify-center">
+    <div className="relative lg:w-[50%] p-[24px] bg-indigo-50 rounded-[18px] border border-violet-200 mx-[16px] mt-[16px] mb-[10px] flex flex-col items-center justify-center">
       <MultiInputBlock
         number={income}
         lastSavedNumber={budgetInfo?.income}

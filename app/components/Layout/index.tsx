@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* {user.isShowPaywall && <Paywall />} */}
-      <div className="grid grid-cols-1 lg:flex max-w-[100vw]">
+      <div className="grid grid-cols-1 lg:flex max-w-[100vw] min-h-fit">
         <div className="flex flex-row justify-between">
           <div className="lg:w-[190px]">
             <SideMenu />

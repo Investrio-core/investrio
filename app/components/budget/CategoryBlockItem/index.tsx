@@ -9,12 +9,15 @@ import { toast } from "react-toastify";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { expenseEmojiMapping } from "./emoji-mapper";
 import RenderEmoji from "@/app/components/ui/RenderEmoji";
-import { BudgetItem } from "@/app/budget/components/BudgetTool";
+import { BudgetItem } from "@/app/dashboard/budget/components/BudgetTool";
 import { FiRepeat } from "react-icons/fi";
+import Image from "next/image";
+import { CategoryType } from "../CategoryBlock";
 
 type Locale = "wants" | "savings" | "needs" | "debts";
 
 interface CategoryBlockItemProps {
+  category: CategoryType;
   name: string;
   items: BudgetItem[];
   percent: number;
@@ -23,6 +26,7 @@ interface CategoryBlockItemProps {
 }
 
 const CategoryBlockItem = ({
+  category,
   name,
   items = [],
   percent,
@@ -52,6 +56,7 @@ const CategoryBlockItem = ({
 
   const handleChangeDeleteCategoryItemModalOpen = () => {
     setIsDeleteCategoryItemModalOpen(!isDeleteCategoryItemModalOpen);
+    setIsEditCategoryModalOpen(!isEditCategoryModalOpen);
   };
 
   const calculateRecommended = () => {
@@ -153,9 +158,9 @@ const CategoryBlockItem = ({
         <div className="lg:w-4/6 font-semibold text-[20px] flex items-start capitalize relative top-[10px]">
           {name}
         </div>
-        <div className="lg:w-1/6 text-right flex flex-col justify-center">
-          <div className="text-lg">{calculateRecommended()}</div>
-          <div className="text-base text-[#8E8ECC]">{percent}%</div>
+        <div className="lg:w-1/6 text-right flex flex-col justify-center relative">
+          <div className="text-lg text-right">{calculateRecommended()}</div>
+          <div className="text-base text-[#8E8ECC] text-right">{percent}%</div>
         </div>
         <div className="lg:w-1/6 text-right flex flex-col justify-center">
           <div className="text-lg">
@@ -185,15 +190,37 @@ const CategoryBlockItem = ({
               {item.name}
               {/* 0x1F502 */}
               {item?.recurringExpense === "true" ? (
-                <FiRepeat className="text-green-700 pl-[6px]" />
-              ) : (
+                // <FiRepeat className="text-green-700 pl-[6px]" />
                 <RenderEmoji
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  symbol={"0x1F502"}
+                  symbol={"0x1F501"}
                   label={item.name}
                   fallback={expenseEmojiMapping["default"]}
                   className={"ml-[6px]"}
+                />
+              ) : (
+                // <div
+                //   className="min-w-[12px] min-h-[12px] ml-[12px] bg-blue-200 rounded-full flex
+                //  justify-center items-center"
+                // >
+                //   <p className="text-base/[10px] px-[20px] py-[8px]">1</p>
+                // </div>
+                // <RenderEmoji
+                //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //   // @ts-ignore
+                //   // symbol={"0x1F502"}
+                //   symbol={"0x1F947"}
+                //   label={item.name}
+                //   fallback={expenseEmojiMapping["default"]}
+                //   className={"ml-[6px]"}
+                // />
+                <Image
+                  src="/icons/repeat-once.svg"
+                  alt="Once"
+                  width={34}
+                  height={34}
+                  className="ml-[6px]"
                 />
               )}
             </div>
@@ -215,8 +242,10 @@ const CategoryBlockItem = ({
         onClose={handleChangeCategoryModalOpen}
         onSubmit={onModalSubmit}
         open={isCategoryModalOpen}
+        category={category}
       />
       <EditCategoryItemModal
+        category={category}
         onDeleteClick={handleChangeDeleteCategoryItemModalOpen}
         isDeleteCategoryItemModalOpen={isDeleteCategoryItemModalOpen}
         name={selectedItem.name}
@@ -237,6 +266,8 @@ const CategoryBlockItem = ({
         onConfirm={() => onDeleteSubmit(selectedItem)}
         show={isDeleteCategoryItemModalOpen}
         onCloseModal={handleChangeDeleteCategoryItemModalOpen}
+        name={selectedItem.name}
+        category={category}
       />
     </div>
   );

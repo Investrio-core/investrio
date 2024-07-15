@@ -136,7 +136,7 @@ export default function SideMenu() {
               <span className="text-lg ml-2">Strategy</span>
             </SideMenuItem>
             <SideMenuItem
-              href="/budget"
+              href="/dashboard/budget"
               isActive={isActiveLink("/budget")}
               closeMenu={() => setShowMenu(false)}
             >
