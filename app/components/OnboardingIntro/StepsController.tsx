@@ -8,6 +8,8 @@ interface Props {
   currentStep: number;
   numSteps: number;
   useButton?: boolean;
+  renderLastNext?: boolean;
+  classes?: string;
 }
 
 export default function StepsController({
@@ -17,6 +19,8 @@ export default function StepsController({
   currentStep,
   numSteps,
   useButton = false,
+  renderLastNext = false,
+  classes = "",
 }: Props) {
   const stepsIterator = Array(numSteps).fill(0);
 
@@ -42,6 +46,7 @@ export default function StepsController({
   );
   return (
     <div
+      className={classes}
       style={{
         display: "flex",
         width: "295px",
@@ -49,11 +54,7 @@ export default function StepsController({
         alignItems: "center",
         alignSelf: "center",
         justifySelf: "center",
-        // marginTop: "183px",
-        position: "absolute",
-        bottom: "24px",
       }}
-      //   className="bottom-[24px] left-0 right-0 text-center"
     >
       {currentStep === 0 && setSkip ? (
         <div
@@ -86,7 +87,7 @@ export default function StepsController({
           />
         ))}
       </div>
-      {currentStep < numSteps - 1 ? nextButton : null}
+      {currentStep < numSteps - 1 || renderLastNext ? nextButton : null}
     </div>
   );
 }
