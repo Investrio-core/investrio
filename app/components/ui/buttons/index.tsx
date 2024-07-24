@@ -9,18 +9,49 @@ interface ButtonProps extends ButtonPattern {
   classProp?: string;
   classIconProp?: string;
   text: string;
+  iconText?: string;
   icon?: React.ReactNode;
+  Icon?: () => JSX.Element;
   href?: string;
   loading?: boolean;
   type?: "submit" | "reset" | "button";
 }
+
+export const ToolTipButton = ({
+  Icon,
+  iconText,
+  text,
+  classProp,
+}: ButtonProps) => {
+  return (
+    <div
+      className={`w-[206px] h-[35px] bg-slate-400 rounded-[10px] shadow flex gap-[5px] justify-center items-center ${classProp}`}
+    >
+      {Icon ? (
+        <div className="w-[19px] h-5 bg-violet-600 rounded-full">
+          <Icon />
+        </div>
+      ) : null}
+      {iconText ? (
+        <div className="w-[19px] h-5 bg-violet-600 rounded-full relative">
+          <div className="w-3.5 h-[13px] text-white text-sm font-normal leading-[21px] relative left-[6px]">
+            {iconText}
+          </div>
+        </div>
+      ) : null}
+      <div className="text-white text-sm font-normal leading-[21px]">
+        {text}
+      </div>
+    </div>
+  );
+};
 
 export const StandardButton = ({
   text,
   onClick,
   type,
   disabled,
-  classProp
+  classProp,
 }: ButtonProps) => {
   return (
     <button
