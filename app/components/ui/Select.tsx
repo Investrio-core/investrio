@@ -4,6 +4,7 @@ import { ChangeEventHandler } from "react";
 
 type SelectProps = {
   label: string;
+  labelStyles?: string;
   name: string;
   value?: string | undefined;
   options: {
@@ -17,9 +18,11 @@ type SelectProps = {
   onChange?: ChangeEventHandler<HTMLSelectElement>;
   disabled?: boolean;
   placeholder?: string;
+  style?: object;
 };
 export default function Select({
   label,
+  labelStyles,
   name,
   options,
   defaultValue,
@@ -28,11 +31,17 @@ export default function Select({
   disabled,
   onChange,
   placeholder,
+  style = {},
 }: SelectProps) {
   return (
     <div className={twMerge(`form-control`, inline ? "flex flex-col" : "")}>
       <label className={"text-left font-light"}>
-        <span className="label-text text-bold text-[#747682]">{label}</span>
+        <span
+          className={`label-text text-bold text-[#747682] ${labelStyles ?? ""}`}
+          style={{ ...style }}
+        >
+          {label}
+        </span>
       </label>
       <select
         disabled={disabled}
