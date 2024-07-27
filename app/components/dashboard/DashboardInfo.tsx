@@ -39,12 +39,12 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
     mutationKey: ["extra"],
     mutationFn: async (extraPayAmount: number) => {
       return await axiosAuth.post(
-        `/dashboard/strategy/update-extra/${sessionData.user.id}`,
-        {extraPayAmount: extraPayAmount}
+        `/dashboard/strategy/update-extra`,
+        { extraPayAmount: extraPayAmount }
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['dashboard']})
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
     }
   });
 
@@ -93,7 +93,7 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
 
   return (
     <div>
-      
+
       <div className="my-12 w-full gap-9">
         <div className="flex gap-9 overflow-x-auto min-w-full">
           <Card icon="calendar" label="Min. Payment" value={minPayment || 0} />

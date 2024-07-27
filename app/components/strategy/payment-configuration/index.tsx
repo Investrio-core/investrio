@@ -24,16 +24,16 @@ export const PaymentConfiguration = ({ userId }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
   const axiosAuth = useAxiosAuth()
 
-  const {data, isLoading} =
+  const { data, isLoading } =
     useQuery<ComparisonData>({
       queryKey: ["no-extra-payments"],
-      queryFn: async () => await axiosAuth.get(`/dashboard/comparison/${userId}`),
+      queryFn: async () => await axiosAuth.get(`/dashboard/comparison`),
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       enabled: !!userId
     });
 
-    if (!userId || isLoading || !data?.data) return <Loading/>
+  if (!userId || isLoading || !data?.data) return <Loading />
 
   const { withStrategy, withoutStrategy, totalInterestPaid, withStrategyTotalInterestPaid, savedInterest, monthsFaster } = data.data
 
@@ -47,7 +47,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
     name: dayjs(data.paymentDate).format('MMM'),
     balance: data.remainingBalance,
   }))
-  
+
   const withoutEndDate = withoutStrategy[withoutStrategy.length - 1].paymentDate
   const withEndDate = withStrategy[withStrategy.length - 1].paymentDate
 
@@ -69,7 +69,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                 </h2>
               </div>
             </div>
-            <div className="border-b-2 border-gray-100"/>
+            <div className="border-b-2 border-gray-100" />
 
             <div className="grid grid-cols-4 lg:grid-cols-12 gap-4">
               <div className="col-span-4 shadow-sm lg:col-span-6">
@@ -93,12 +93,12 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
-                      Total Interest: <br/> {formatCurrency(withStrategyTotalInterestPaid)}
+                      Total Interest: <br /> {formatCurrency(withStrategyTotalInterestPaid)}
                     </div>
-                    <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
+                    <hr className="w-full md:h-16 md:w-auto border border-gray-100" />
 
                     <div className="text-2xl w-[200px]">
-                      Debt Free By: <br/> {dayjs(withEndDate).format("MMMM - YYYY")}
+                      Debt Free By: <br /> {dayjs(withEndDate).format("MMMM - YYYY")}
                     </div>
                   </div>
 
@@ -113,7 +113,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                     <div className="flex gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">
                       <div className="text-left">
                         <span>Save time, pay</span>
-                        <br/>
+                        <br />
                         <span className="text-sm">
                           <span className="text-2xl font-extrabold">{monthsFaster}</span> months faster!
                         </span>
@@ -143,7 +143,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                 </h2>
               </div>
             </div>
-            <div className="border-b-2 border-gray-100"/>
+            <div className="border-b-2 border-gray-100" />
 
             <div className="grid grid-cols-4 lg:grid-cols-12 gap-4">
               <div className="col-span-4 shadow-sm lg:col-span-6">
@@ -167,22 +167,22 @@ export const PaymentConfiguration = ({ userId }: Props) => {
                   <div
                     className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
-                      Total Interest: <br/> {formatCurrency(
-                      totalInterestPaid
-                    )}
+                      Total Interest: <br /> {formatCurrency(
+                        totalInterestPaid
+                      )}
                     </div>
-                    <hr className="w-full md:h-16 md:w-auto border border-gray-100"/>
+                    <hr className="w-full md:h-16 md:w-auto border border-gray-100" />
 
                     <div className="text-2xl w-[200px]">
-                      Debt Free Date: <br/> {dayjs(withoutEndDate).format('MMMM - YYYY')}
+                      Debt Free Date: <br /> {dayjs(withoutEndDate).format('MMMM - YYYY')}
                     </div>
                   </div>
 
                   <div className="flex flex-col md:flex-row justify-center items-center gap-3">
                     <div className="flex items-center gap-4 rounded-xl bg-[#F6F6F6] p-5 text-[#747682]">
-                      <TbAlertHexagon className="text-5xl"/>
+                      <TbAlertHexagon className="text-5xl" />
                       <span className="text-left text-sm">
-                        In this plan, we <br/> assuming you are <br/> paying
+                        In this plan, we <br /> assuming you are <br /> paying
                         the minimum.{" "}
                       </span>
                     </div>
@@ -193,7 +193,7 @@ export const PaymentConfiguration = ({ userId }: Props) => {
           </label>
         </div>
       </div>
-      <div className="mb-5 border-b-2 border-gray-100 p-3"/>
+      <div className="mb-5 border-b-2 border-gray-100 p-3" />
 
       <div className="flex justify-center gap-7">
         <Link href={'/dashboard/debts'} onClick={() => {
