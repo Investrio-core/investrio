@@ -18,3 +18,15 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  test-db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_DB=testDB_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

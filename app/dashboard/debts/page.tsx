@@ -29,7 +29,7 @@ export default function Dashboard() {
       // if (session?.user.isShowPaywall) {
       //   return mock
       // }
-      return await axiosAuth.get(`/dashboard/${session?.user?.id}`);
+      return await axiosAuth.get(`/dashboard`);
     },
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,

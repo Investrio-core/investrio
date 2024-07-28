@@ -62,7 +62,7 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
       return await axiosAuth.post(
-        `/dashboard/strategy/create/${sessionData.user.id}`,
+        `/dashboard/strategy/create`,
         data.debts
       );
     },
@@ -84,11 +84,11 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
         debts: formatDebtsForApi(sessionData.user.id, debts, extraPayAmount),
       };
       return await axiosAuth.post(
-        `/dashboard/strategy/update/${sessionData.user.id}`,
+        `/dashboard/strategy/update`,
         data.debts
       );
     },
-    
+
   });
 
   const { mutate: deleteRecords, isSuccess: deleteIsSuccess } = useMutation({
@@ -228,9 +228,8 @@ export default function AddDebts({ onChangeStatus, records = [] }: Props) {
                 month
               </span>
               <IoIosArrowDown
-                className={`${
-                  open ? "-rotate-90 transform" : ""
-                } text-2xl text-[#747682]`}
+                className={`${open ? "-rotate-90 transform" : ""
+                  } text-2xl text-[#747682]`}
               />
             </Disclosure.Button>
             <StrategyFormTooltip />
