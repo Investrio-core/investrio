@@ -26,7 +26,7 @@ export default function DebtsPage() {
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["extra-payments"],
     queryFn: async () =>
-      await axiosAuth.get(`/dashboard/records/${session?.user?.id}`),
+      await axiosAuth.get(`/dashboard/records`),
     refetchOnMount: status !== "payment-config",
     refetchOnWindowFocus: status !== "payment-config",
     enabled: !!session?.user.id || status !== "payment-config",
@@ -69,7 +69,7 @@ export default function DebtsPage() {
       case 'payment-config':
         return 'Discover how Investrio saves you money'
         break;
-    
+
       default:
         break;
     }
@@ -88,7 +88,7 @@ export default function DebtsPage() {
       case 'payment-config':
         return 'We compared the results of your debt repayment with and without the Investrio method, and the difference is significant!'
         break;
-    
+
       default:
         break;
     }
@@ -128,7 +128,7 @@ export default function DebtsPage() {
         <div className="border-b-2 border-gray-100 p-3">
           <h1 className="title text-left text-[#03091D]">{handleTabHeaderTitle()}</h1>
           <h2 className="text-left text-[#747682]">
-          {handleTabHeaderDescription()}
+            {handleTabHeaderDescription()}
           </h2>
         </div>
 
@@ -170,11 +170,10 @@ export default function DebtsPage() {
                       </div>
 
                       <span
-                        className={`font-light whitespace-nowrap ${
-                          selectedTab === index
+                        className={`font-light whitespace-nowrap ${selectedTab === index
                             ? "text-purple"
                             : "text-[#747682]"
-                        }`}
+                          }`}
                       >
                         {category.title}
                       </span>
