@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import useBudgetQueries from "@/app/hooks/useBudgetQueries";
+import useBudgetData from "@/app/hooks/useData/useBudgetData";
 import MonthPicker from "@/app/components/budget/MonthPicker";
 import IncomeBlock from "@/app/components/budget/IncomeBlock";
 import Income from "@/app/components/budget/IncomeBlock/Income";
@@ -17,6 +18,8 @@ import CustomPieChart, {
 import PieBreakdownBlock from "./PieBreakdownBlock";
 import PageHeader from "@/app/components/Layout/PageHeader";
 import StepsController from "@/app/components/OnboardingIntro/StepsController";
+import { useTabContext } from "@/app/context/TabContext/context";
+import useCalculators from "@/app/hooks/useCalculators";
 
 const categories = ["wants", "needs", "savings", "debts"];
 
@@ -39,29 +42,42 @@ export interface BudgetItem {
 }
 
 export default function BudgetTool() {
-  const [date, setDate] = useState<Date | null>(new Date());
-  const [step, setStep] = useState<BudgetMobileSteps>(INCOME_STEP);
+  const [date, setDate] = useState<Date | null | undefined>(new Date());
+  // const [step, setStep] = useState<BudgetMobileSteps>(INCOME_STEP);
   const [isLoading, setIsLoading] = useState(false);
   const [firstLoadCompleted, setFirstLoadCompleted] = useState(false);
   const axiosAuth = useAxiosAuth();
   const mixpanelCalled = useRef<boolean>(false);
 
+  const { setTabs, setSubTab, subTab: step, tab, state } = useTabContext();
+
   const year = date?.getFullYear();
   const month = date?.getMonth();
+
+  const { paymentScheduleCalculator } = useCalculators();
+  const snowballResultsWithExtra = paymentScheduleCalculator(
+    [],
+    "snowball",
+    1000
+  );
 
   const {
     data: budgetInfo,
     isLoading: budgetInfoLoading,
     refetch,
-  } = useQuery({
-    queryKey: ["budget-tool", year, month],
-    queryFn: async () => {
-      return await axiosAuth.get(`/budget/${year}/${month}`);
-    },
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    enabled: !!date,
-  });
+    sumCategories,
+    incomeAfterExpenses
+  } = useBudgetData(date);
+
+  // } = useQuery({
+  //   queryKey: ["budget-tool", year, month],
+  //   queryFn: async () => {
+  //     return await axiosAuth.get(`/budget/${year}/${month}`);
+  //   },
+  //   refetchOnMount: true,
+  //   refetchOnWindowFocus: true,
+  //   enabled: !!date,
+  // });
 
   const { create } = useBudgetQueries(
     year,
@@ -139,7 +155,8 @@ export default function BudgetTool() {
       budgetInfo?.data !== undefined &&
       Object.keys(budgetInfo?.data)?.length > 0
     ) {
-      setStep(BUDGET_STEP);
+      // setStep(BUDGET_STEP);
+      setSubTab(BUDGET_STEP);
       setFirstLoadCompleted(true);
     }
   }, [budgetInfo?.data]);
@@ -151,36 +168,36 @@ export default function BudgetTool() {
     mixpanelCalled.current = true;
   }, []);
 
-  const calculateSumCategories = () => {
-    return categories.map((category) => {
-      if (budgetInfo?.data[category]) {
-        return budgetInfo?.data[category].reduce(
-          (p: number, c: { value: number }) => p + c.value,
-          0
-        );
-      }
+  // const calculateSumCategories = () => {
+  //   return categories.map((category) => {
+  //     if (budgetInfo?.data[category]) {
+  //       return budgetInfo?.data[category].reduce(
+  //         (p: number, c: { value: number }) => p + c.value,
+  //         0
+  //       );
+  //     }
 
-      return 0;
-    });
-  };
+  //     return 0;
+  //   });
+  // };
 
-  const sumCategories = useMemo(
-    () => calculateSumCategories().reduce((p: number, c: number) => p + c, 0),
-    [
-      budgetInfo?.data["wants"],
-      budgetInfo?.data["needs"],
-      budgetInfo?.data["savings"],
-      budgetInfo?.data["debts"],
-    ]
-  );
+  // const sumCategories = useMemo(
+  //   () => calculateSumCategories().reduce((p: number, c: number) => p + c, 0),
+  //   [
+  //     budgetInfo?.data["wants"],
+  //     budgetInfo?.data["needs"],
+  //     budgetInfo?.data["savings"],
+  //     budgetInfo?.data["debts"],
+  //   ]
+  // );
 
   // if (budgetInfoLoading || isLoading) {
-  if (budgetInfo === undefined) {
+  if (budgetInfo?.data === undefined) {
     return <Loading />;
   }
 
   return (
-    <div className="lg:px-[28px] lg:py-[26px] bg-violet-50 pb-[12px] min-h-content min-h-[min(100vh, min-h-content)] max-w-[97vw] md:max-w-[100vw]">
+    <div className="px-0 lg:px-[28px] lg:py-[26px] bg-violet-50 pb-[12px] min-h-[min(100vh, min-h-content)] max-w-[97vw] md:max-w-[100vw]">
       {/* <div className="flex flex-col lg:flex-row justify-between items-center mb-[24px]">
         <h2 className="text-[32px] font-bold">Budget overview</h2>
         <div className="w-128 flex gap-2">
@@ -204,6 +221,7 @@ export default function BudgetTool() {
             isLoading={isLoading}
             budgetInfo={budgetInfo?.data}
             date={{ year, month }}
+            incomeAfterExpenses={incomeAfterExpenses}
           />
         ) : null}
 
@@ -219,7 +237,7 @@ export default function BudgetTool() {
           />
         ) : null}
 
-        <div className="ml-[10px] relative top-[0px] w-[100%] flex items-center justify-center">
+        {/* <div className="ml-[10px] relative top-[0px] w-[100%] flex items-center justify-center">
           <StepsController
             useButton={true}
             setNext={() =>
@@ -249,7 +267,7 @@ export default function BudgetTool() {
             currentStep={BUDGET_MOBILE_STEPS.findIndex((el) => el === step)}
             numSteps={BUDGET_MOBILE_STEPS.length}
           />
-        </div>
+        </div> */}
       </div>
 
       <div className="hidden md:block lg:block">
