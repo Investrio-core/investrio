@@ -15,13 +15,22 @@ type Props = {
   showPayloadNameOnLabel?: boolean; // default true
 };
 
-const CustomTooltip = ({ active, payload, showPayloadNameOnLabel }: TooltipProps<number, string> & { showPayloadNameOnLabel?: boolean }) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  showPayloadNameOnLabel,
+}: TooltipProps<number, string> & { showPayloadNameOnLabel?: boolean }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-4 border border-gray-300 rounded-lg shadow-lg">
-        {showPayloadNameOnLabel && <p className="text-sm text-gray-600">{payload[0].name}</p>}
+        {showPayloadNameOnLabel && (
+          <p className="text-sm text-gray-600">{payload[0].name}</p>
+        )}
         <p className="text-md font-bold text-blue-600">
-          {payload[0]?.value?.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+          {payload[0]?.value?.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}
         </p>
       </div>
     );
@@ -35,10 +44,14 @@ const formatYAxis = (value: number): string | number => {
 };
 
 const formatXAxis = (tickItem: string) => {
-  return tickItem
+  return tickItem;
 };
 
-export default function CustomLineChart({ data, area, showPayloadNameOnLabel = true }: Props) {
+export default function CustomLineChart({
+  data,
+  area,
+  showPayloadNameOnLabel = true,
+}: Props) {
   const possibleColors = [
     {
       id: "primary",
@@ -62,15 +75,22 @@ export default function CustomLineChart({ data, area, showPayloadNameOnLabel = t
         }}
       >
         <defs>
-          {possibleColors.map(({ id, color }) => (
-            <linearGradient key={id} id={id} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={.6}/>
-              <stop offset="95%" stopColor={color} stopOpacity={.1}/>
+          {possibleColors.map(({ id, color }, idx) => (
+            <linearGradient
+              key={`${id}-${color}-${idx}`}
+              id={id}
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
+            >
+              <stop offset="5%" stopColor={color} stopOpacity={0.6} />
+              <stop offset="95%" stopColor={color} stopOpacity={0.1} />
             </linearGradient>
           ))}
         </defs>
         <XAxis
-        interval={'preserveStartEnd'}
+          interval={"preserveStartEnd"}
           className="text-xs"
           dataKey="name"
           axisLine={false}
@@ -78,13 +98,18 @@ export default function CustomLineChart({ data, area, showPayloadNameOnLabel = t
           tickFormatter={formatXAxis}
         />
         <YAxis
+          interval={"preserveStartEnd"}
           className="text-sm"
           axisLine={false}
           tickLine={false}
           tickFormatter={formatYAxis as any}
         />
-        <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-        <Tooltip content={<CustomTooltip showPayloadNameOnLabel={showPayloadNameOnLabel}/>}/>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <Tooltip
+          content={
+            <CustomTooltip showPayloadNameOnLabel={showPayloadNameOnLabel} />
+          }
+        />
         {area}
       </AreaChart>
     </ResponsiveContainer>
