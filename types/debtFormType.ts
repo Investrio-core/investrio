@@ -7,7 +7,8 @@ export type DebtFormType = {
   minPayment: string;
   dueDate: string;
   periodicity: string;
-}
+  extraPayAmount?: string | number;
+};
 
 export type DebtType = {
   minPayAmount: number;
@@ -15,14 +16,14 @@ export type DebtType = {
   initialBalance: number;
   monthlyInterestRate: number;
   data: DebtSnapshotType[];
-}
+};
 
 export type DebtSnapshotType = {
   currentDate: number;
   monthlyInterestPaid: number;
   monthlyPayment: number;
   remainingBalance: number;
-}
+};
 
 export type FinancialRecord = {
   userId: string;
@@ -34,5 +35,4 @@ export type FinancialRecord = {
   initialBalance: number;
   extraPayAmount: number;
   periodicity: string;
-}
-
+};
