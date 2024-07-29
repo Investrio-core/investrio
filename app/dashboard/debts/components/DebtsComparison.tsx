@@ -22,6 +22,7 @@ import { useComparisonData } from "@/app/hooks/useData/useComparisonData";
 import { ResultsProps, Data } from "@/app/components/dashboard/results.types";
 import useCalculators from "@/app/hooks/useCalculators";
 import { Results } from "@/app/hooks/calculatorsSnowball";
+import { getDebtFreeDate } from "./helpers";
 
 type Props = {
   userId?: string;
@@ -29,21 +30,20 @@ type Props = {
   debts: Data[];
   snowballResultsWithExtra: Results | undefined;
   snowballResultsWithoutExtra: Results | undefined;
+  neverBecomesDebtFree?: boolean;
+  endBalance?: number;
+  endDate?: Date | string;
 };
 
 export const DebtsComparison = ({
   userId,
-  // data: debtData,
   debts: debtData,
   snowballResultsWithExtra,
   snowballResultsWithoutExtra,
+  neverBecomesDebtFree,
+  endBalance,
 }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
-  //   const axiosAuth = useAxiosAuth();
-
-  // const { data, isLoading } = useComparisonData(
-  //   debtData !== undefined && debtData?.length > 0
-  // );
 
   if (!userId || !debtData) return <Loading />;
 
@@ -67,51 +67,14 @@ export const DebtsComparison = ({
     (snowballResultsWithoutExtra?.totalInterestPaid ?? 0) -
     (snowballResultsWithExtra?.totalInterestPaid ?? 0);
 
-  const withoutEndDate = snowballResultsWithoutExtra?.payments?.[0]?.[
-    "accounts"
-  ]?.[0] ? (
-    <span className="text-nowrap">
-      Debt Free By&nbsp;
-      {dayjs(
-        snowballResultsWithoutExtra.payments[
-          snowballResultsWithoutExtra.payments.length - 1
-        ]["accounts"][0].paymentDate
-      ).format("MMMM YYYY")}
-    </span>
-  ) : (
-    "Add Debts to calculate debt free date"
+  const withoutEndDate = getDebtFreeDate(
+    neverBecomesDebtFree,
+    snowballResultsWithoutExtra
   );
-  const withEndDate = snowballResultsWithExtra?.payments?.[0]?.[
-    "accounts"
-  ]?.[0] ? (
-    <span className="text-nowrap">
-      Debt Free by{" "}
-      {dayjs(
-        snowballResultsWithExtra.payments[
-          snowballResultsWithExtra.payments.length - 1
-        ]["accounts"][0].paymentDate
-      ).format("MMMM YYYY")}
-    </span>
-  ) : (
-    "Add Debts to calculate debt free date"
+  const withEndDate = getDebtFreeDate(
+    neverBecomesDebtFree,
+    snowballResultsWithExtra
   );
-
-  // const withoutGraph = withoutStrategy.map((data) => ({
-  //   name: dayjs(data.paymentDate).format("MMM"),
-  //   balance: data.remainingBalance,
-  // }));
-
-  // const withGraph = withStrategy.map((data) => ({
-  //   name: dayjs(data.paymentDate).format("MMM"),
-  //   balance: data.remainingBalance,
-  // }));
-
-  // console.log("-- withGraph from backend --");
-  // console.log(withGraph);
-
-  // const withoutEndDate =
-  //   withoutStrategy[withoutStrategy.length - 1].paymentDate;
-  // const withEndDate = withStrategy[withStrategy.length - 1].paymentDate;
 
   const fallback = (
     <div className="text-center mx-auto px-4 py-6 text-violet-500 font-bold">
