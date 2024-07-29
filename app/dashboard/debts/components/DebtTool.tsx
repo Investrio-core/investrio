@@ -175,12 +175,15 @@ export default function DebtTool() {
     sumCategories,
     totalExpenses,
     income,
+    hasBudgetData,
   } = useBudgetData(date);
 
   const budgetProgress = (
     <div className="h-9 w-[100%] relative mt-[38px] mb-[0px] bg-white rounded-[18px] border border-2 border-violet-200">
       <div className="font-md text-violet-500 font-bold mx-[4px] relative top-[-28px] left-[3%]">
-        Monthly Disposable Income
+        {hasBudgetData
+          ? "Monthly Disposable Income"
+          : "Set a budget to plan better"}
       </div>
       <LinearProgress
         sx={{
@@ -192,7 +195,7 @@ export default function DebtTool() {
           left: "5%",
           backgroundColor: "darkred",
           "& .MuiLinearProgress-bar": {
-            backgroundColor: "darkgreen",
+            backgroundColor: hasBudgetData ? "darkgreen" : "darkgrey",
           },
         }}
         variant="determinate"

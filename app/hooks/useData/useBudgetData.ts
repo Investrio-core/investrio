@@ -4,7 +4,6 @@ import { useMemo } from "react";
 
 const categories = ["wants", "needs", "savings", "debts"];
 
-
 export default function useBudgetData(date?: Date | null) {
   const axiosAuth = useAxiosAuth();
   const year = date?.getFullYear() ?? new Date().getFullYear();
@@ -22,7 +21,7 @@ export default function useBudgetData(date?: Date | null) {
 
   const calculateSumCategories = () => {
     return categories.map((category) => {
-      if (data?.data[category]) {
+      if (data?.data?.[category]) {
         return data?.data[category].reduce(
           (p: number, c: { value: number }) => p + c.value,
           0
@@ -45,5 +44,16 @@ export default function useBudgetData(date?: Date | null) {
 
   const incomeAfterExpenses = (data?.data?.income ?? 0) - sumCategories;
 
-  return { data, isLoading, refetch, sumCategories, totalExpenses: sumCategories, incomeAfterExpenses, income: data?.data?.income };
+  const hasBudgetData = Object.keys(data?.data ?? {}).length > 0;
+
+  return {
+    data,
+    isLoading,
+    refetch,
+    sumCategories,
+    totalExpenses: sumCategories,
+    incomeAfterExpenses,
+    income: data?.data?.income,
+    hasBudgetData,
+  };
 }
