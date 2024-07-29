@@ -42,6 +42,8 @@ interface ChartDataEntry {
 
 type Props = {
   data: MonthlyData[];
+  alreadyTransformedData?: ChartDataEntry[];
+  labels?: Set<string>;
 };
 
 const COLORS = [
@@ -65,8 +67,15 @@ const formatYAxis = (value: number): string => {
   return value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString();
 };
 
-const getColorForKey = (key: string, data: MonthlyData[]): string => {
-  const uniqueKeys = new Set(data.flatMap((d) => d.data.map((dd) => dd.title)));
+const getColorForKey = (
+  key: string,
+  data: MonthlyData[],
+  labels?: Set<string>
+): string => {
+  const uniqueKeys =
+    labels !== undefined
+      ? labels
+      : new Set(data.flatMap((d) => d.data.map((dd) => dd.title)));
   const keyIndex = Array.from(uniqueKeys).indexOf(key);
   return COLORS[keyIndex % COLORS.length] || COLORS[0];
 };
@@ -90,17 +99,24 @@ const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
   return null;
 };
 
-export const CustomBarChart = ({ data }: Props) => {
-  const transformedData: ChartDataEntry[] = data.map((item) => ({
-    name: new Date(item.paymentDate).toLocaleDateString("en-US", {
-      month: "short",
-      year: "2-digit",
-    }),
-    ...item.data.reduce((acc, curr) => {
-      acc[curr.title] = curr.monthlyPayment;
-      return acc;
-    }, {} as { [key: string]: number }),
-  }));
+export const CustomBarChart = ({
+  data,
+  alreadyTransformedData,
+  labels,
+}: Props) => {
+  const transformedData: ChartDataEntry[] =
+    alreadyTransformedData ??
+    data?.map((item) => ({
+      name:
+        new Date(item.paymentDate).toLocaleDateString("en-US", {
+          month: "short",
+          year: "2-digit",
+        }) ?? [],
+      ...(item?.data?.reduce((acc, curr) => {
+        acc[curr.title] = curr.monthlyPayment;
+        return acc;
+      }, {} as { [key: string]: number }) ?? []),
+    }));
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -109,7 +125,11 @@ export const CustomBarChart = ({ data }: Props) => {
         margin={{ top: -10, right: 0, left: -20 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" className="text-sm" interval={'preserveStartEnd'} />
+        <XAxis
+          dataKey="name"
+          className="text-sm"
+          interval={"preserveStartEnd"}
+        />
         <YAxis tickFormatter={formatYAxis} className="text-sm" />
         <Tooltip
           cursor={{ fill: "#451B8010" }}
@@ -118,13 +138,13 @@ export const CustomBarChart = ({ data }: Props) => {
           wrapperStyle={{ zIndex: 9999 }}
         />
         <Legend layout="horizontal" verticalAlign="top" align="right" />
-        {Object.keys(transformedData[0])
+        {Object.keys(transformedData?.[0] ?? {})
           .filter((key) => key !== "name")
           .map((key) => (
             <Bar
               key={key}
               dataKey={key}
-              fill={getColorForKey(key, data)}
+              fill={getColorForKey(key, data, labels)}
               stackId="a"
               barSize={20}
               animationBegin={20}
