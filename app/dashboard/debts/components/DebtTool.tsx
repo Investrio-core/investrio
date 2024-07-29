@@ -21,7 +21,7 @@ import DebtsComparison from "./DebtsComparison";
 
 import DebtSummary from "./DebtSummary";
 import AddDebt from "./AddDebt";
-import { DebtFormType } from "@/types/debtFormType";
+import { DebtFormType, FinancialRecordSchema } from "@/types/debtFormType";
 import { FinancialRecord } from "@/types/financial";
 import { PaymentConfiguration } from "@/app/components/strategy/payment-configuration";
 import { useTabContext } from "@/app/context/TabContext/context";
@@ -156,7 +156,19 @@ export default function DebtTool() {
 
       // queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
       // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-      return debtsData;
+
+      // console.log("-- FETCHED DEBTS --");
+      // console.log(debtsData);
+
+      // normalize debt data as the old interest rate was saved as zero leading decimals, e.g. 0.25...
+      const debts = debtsData?.data.map((debt: FinancialRecordSchema) => {
+        if (String(debt.interestRate)?.[0] === "0") {
+          return { ...debt, interestRate: debt.interestRate * 100 };
+        }
+        return debt;
+      });
+
+      return { ...debtsData, data: debts };
     },
     staleTime: 148000,
     // refetchOnMount: status !== "payment-config",
@@ -343,6 +355,8 @@ export default function DebtTool() {
     minPayment,
     totalInterestSaved,
     endBalance,
+    neverBecomesDebtFree,
+    debtFreeMonthYear,
   } = getSummaryStatistics(
     snowballResultsWithExtra,
     snowballResultsWithoutExtra,
@@ -469,6 +483,9 @@ export default function DebtTool() {
               snowballResultsWithExtra={selectedMethod}
               // snowballResultsWithExtra={snowballResultsWithExtra}
               snowballResultsWithoutExtra={snowballResultsWithoutExtra}
+              neverBecomesDebtFree={neverBecomesDebtFree}
+              endBalance={endBalance}
+              endDate={endDate}
             />
           </>
         ) : null}
@@ -536,6 +553,9 @@ export default function DebtTool() {
               debts={debtsData?.data}
               snowballResultsWithExtra={selectedMethod}
               snowballResultsWithoutExtra={snowballResultsWithoutExtra}
+              neverBecomesDebtFree={neverBecomesDebtFree}
+              endBalance={endBalance}
+              endDate={endDate}
             />
           </div>
         </div>
