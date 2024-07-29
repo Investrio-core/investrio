@@ -25,6 +25,7 @@ interface Props {
   setSelectedOption?: Function;
   skippable?: Boolean;
   onSkip?: Function;
+  aboveInput?: JSX.Element;
 }
 
 export default function MultiInputBlock({
@@ -46,6 +47,7 @@ export default function MultiInputBlock({
   setSelectedOption,
   skippable = false,
   onSkip,
+  aboveInput = undefined,
 }: Props) {
   useEffect(() => {
     if (number !== lastSavedNumber) setNumber(lastSavedNumber);
@@ -71,6 +73,7 @@ export default function MultiInputBlock({
       <div
         className={`bg-white rounded-[18px] border border-violet-200 max-w-[100%] px-[16px] py-[16px]`}
       >
+        {aboveInput}
         <div className="flex w-[98%] justify-between content-center items-center text-[32px] font-bold">
           <IconButton
             onClick={() =>
