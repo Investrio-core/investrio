@@ -1,4 +1,40 @@
 import { Results } from "@/app/hooks/calculatorsSnowball";
+import { formatCurrency } from "@/app/utils/formatters";
+import dayjs from "dayjs";
+
+export function getDebtFreeDate(neverDebtFree?: boolean, results?: Results) {
+  const lastPayment =
+    results?.["payments"]?.[results?.["payments"].length - 1];
+
+  const endDate = lastPayment
+    ? dayjs(lastPayment["accounts"][0].paymentDate).format("MMMM YYYY")
+    : "";
+
+  const endBalance = lastPayment?.balance ?? 0;
+
+  if (lastPayment === undefined) {
+    return (
+      <span className="text-nowrap text-sm">
+        Add Debts to calculate debt free date
+      </span>
+    );
+  } else if (neverDebtFree) {
+    return (
+      <span className="text-nowrap text-sm">
+        Debt at {endDate}:{" "}
+        <span className="text-red-500 font-bold">
+          {formatCurrency(endBalance)}
+        </span>
+      </span>
+    );
+  }
+  return (
+    <span className="text-nowrap text-sm">
+      Debt Free By&nbsp;
+      {dayjs(endDate).format("MMMM YYYY")}
+    </span>
+  );
+}
 
 export function getSummaryStatistics(
   snowballResultsWithExtra: Results | undefined,
@@ -20,6 +56,7 @@ export function getSummaryStatistics(
       totalInterestPaid,
       minPayment,
       totalInterestSaved,
+      // endBalance,
     };
   } else if (
     snowballResultsWithExtra &&
@@ -76,6 +113,11 @@ export function getSummaryStatistics(
     );
   }
 
+  const debtFreeBy = dayjs(endDate);
+  const neverBecomesDebtFree = endBalance === undefined || endBalance > 0;
+  const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
+  const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
+
   return {
     betterMethod,
     endDate,
@@ -84,5 +126,7 @@ export function getSummaryStatistics(
     minPayment,
     totalInterestSaved,
     endBalance,
+    neverBecomesDebtFree,
+    debtFreeMonthYear: `${month} ${year}`,
   };
 }

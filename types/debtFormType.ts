@@ -36,3 +36,18 @@ export type FinancialRecord = {
   extraPayAmount: number;
   periodicity: string;
 };
+
+export type FinancialRecordSchema = {
+  userId: string;
+  id?: string;
+  title: string;
+  minPayAmount: number;
+  interestRate: number;
+  type: string;
+  initialBalance: number;
+  extraPayAmount: number;
+  periodicity: string;
+  payDueDate: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
