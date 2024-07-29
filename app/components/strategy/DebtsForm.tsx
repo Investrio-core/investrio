@@ -7,7 +7,8 @@ import { Dispatch, SetStateAction } from "react";
 import { DebtFormType } from "@/types/debtFormType";
 import { toast } from "react-toastify";
 import ToastComponent from "../toast";
-import { ButtonWithIcon } from "@/app/components/ui/buttons";
+import { ButtonWithIcon, ToolTipButton } from "@/app/components/ui/buttons";
+import { StrategyFormTooltip } from "./add-strategy/FormTooltip";
 
 const DEFAULT_PERIODICITY = "MONTH";
 
@@ -77,7 +78,7 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
   }, [minimumPayment]);
 
   return (
-    <>
+    <div>
       {customToast}
       <Form id="debt-form" onSubmit={submit}>
         <div className="grid grid-cols-4 md:grid-cols-12 gap-3 gap-y-8">
@@ -160,6 +161,6 @@ export default function DebtsForm({ setDebts, debts }: DebtsFormProps) {
           </div>
         </div>
       </Form>
-    </>
+    </div>
   );
 }
