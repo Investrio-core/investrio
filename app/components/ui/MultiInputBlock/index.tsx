@@ -12,11 +12,20 @@ interface Props {
   setNumber: Function;
   sectionTitle: string;
   sectionTitleStyles: string;
+  sectionTitleStyle?: object;
   step: number;
-  onSubmit: Function;
-  isLoading: boolean;
+  onSubmit?: Function;
+  isLoading?: boolean;
   min?: number;
   max?: number;
+  addPadding?: boolean;
+  inputFieldName?: string;
+  optionalValues?: number[];
+  selectedOption?: number;
+  setSelectedOption?: Function;
+  skippable?: Boolean;
+  onSkip?: Function;
+  aboveInput?: JSX.Element;
 }
 
 export default function MultiInputBlock({
@@ -25,11 +34,20 @@ export default function MultiInputBlock({
   setNumber,
   sectionTitle,
   sectionTitleStyles,
+  sectionTitleStyle = {},
   step,
   onSubmit,
   isLoading,
   min,
   max,
+  addPadding = true,
+  inputFieldName = undefined,
+  optionalValues,
+  selectedOption,
+  setSelectedOption,
+  skippable = false,
+  onSkip,
+  aboveInput = undefined,
 }: Props) {
   useEffect(() => {
     if (number !== lastSavedNumber) setNumber(lastSavedNumber);
@@ -37,14 +55,25 @@ export default function MultiInputBlock({
 
   return (
     <>
-      <div className="flex justify-between mb-[24px]">
+      <div
+        className={`flex justify-between ${
+          addPadding ? "mb-[24px]" : "mb-[2px]"
+        }`}
+      >
         <h3
-          className={`text-center text-xl font-medium text-indigo-800 leading-7 w-[100%] justify-self-center align-self-center ${sectionTitleStyles}`}
+          className={`${
+            sectionTitleStyles ??
+            `text-center text-xl font-medium text-indigo-800 leading-7 w-[100%] justify-self-center align-self-center`
+          }`}
+          style={{ ...sectionTitleStyle }}
         >
           {sectionTitle}
         </h3>
       </div>
-      <div className="bg-white rounded-[18px] border border-violet-200 px-[16px] py-[16px] max-w-[100%]">
+      <div
+        className={`bg-white rounded-[18px] border border-violet-200 max-w-[100%] px-[16px] py-[16px]`}
+      >
+        {aboveInput}
         <div className="flex w-[98%] justify-between content-center items-center text-[32px] font-bold">
           <IconButton
             onClick={() =>
@@ -58,10 +87,10 @@ export default function MultiInputBlock({
             disabled={number === 0}
           />
 
-          <div className="max-w-[50%] align-self-center justify-self-center">
+          <div className="max-w-[62%] align-self-center justify-self-center">
             <BoundInput
               // label="Amount"
-              name="extraPayAmount"
+              name={inputFieldName ?? "extraPayAmount"}
               type="currency"
               placeholder="$00.00"
               // inline
@@ -87,12 +116,47 @@ export default function MultiInputBlock({
             max={max}
           />
         </div>
-        {number !== lastSavedNumber ? (
+        {optionalValues ? (
+          <div className="flex flex-row mx-[8px] gap-[8px]">
+            {optionalValues.map((value: number) => {
+              return (
+                <div
+                  onClick={() => setSelectedOption && setSelectedOption(value)}
+                  className={`w-[98.33px] h-10 flex justify-center items-center ${
+                    selectedOption === value ? "bg-indigo-950" : "bg-neutral-50"
+                  } rounded-md shadow-md`}
+                  key={value}
+                >
+                  <div
+                    className={`text-center ${
+                      selectedOption === value
+                        ? "text-white"
+                        : "text-indigo-950"
+                    } text-base font-medium leading-tight`}
+                  >
+                    {formatCurrency(value)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+        {number !== lastSavedNumber && onSubmit ? (
           <div className="mt-4 flex flex-col gap-2">
             <SimpleButton
               type="submit"
               text="Save"
               onClick={() => onSubmit()}
+              disabled={isLoading}
+            />
+          </div>
+        ) : null}
+        {skippable && number === lastSavedNumber ? (
+          <div className="mt-4 flex flex-col gap-2">
+            <SimpleButton
+              type="submit"
+              text="Skip"
+              onClick={() => onSkip && onSkip()}
               disabled={isLoading}
             />
           </div>

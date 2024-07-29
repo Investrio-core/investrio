@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://app.investrio.io"),
   title: "Investrio | Personalized Financial Planning & Advisory",
   description:
     "Eliminate your debt & build your future. Investrio provides a personal approach to your finances and beyond. Helping you move financially forward.",
@@ -29,12 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin={"anonymous"}
-        />
+        /> */}
+
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"

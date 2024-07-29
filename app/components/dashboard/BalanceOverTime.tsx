@@ -2,22 +2,44 @@ import CustomLineChart from "@/app/components/ui/charts/CustomLineChart";
 import { formatNumberToKFormat } from "@/app/utils/formatters";
 import { Area } from "recharts";
 import { Data } from "./results.types";
+import { PaymentPlanObject } from "@/app/hooks/calculatorsSnowball/types";
 
 type Props = {
   data: Data[];
+  results: PaymentPlanObject[];
 };
 
-export const BalanceOverTime = ({ data }: Props) => {
-  const totalBalance = data[0].totalInitialBalance;
+export const BalanceOverTime = ({ data, results }: Props) => {
+  // needs name, balance, paymentDate, remainingBalance
+  // const totalBalance = data[0].totalInitialBalance;
+  const totalBalance =
+    typeof results?.[0]?.accounts?.reduce === "function"
+      ? results?.[0]?.accounts?.reduce((acc, next) => {
+          return acc + next.balanceStart;
+        }, 0)
+      : 0;
+  // let modifiedData = data?.map((item) => {
+  //   return {
+  //     name: new Date(item.paymentDate).toLocaleDateString("en-US", {
+  //       month: "short",
+  //       year: "2-digit",
+  //     }),
+  //     label: "oi",
+  //     balance: item.remainingBalance,
+  //   };
+  // });
 
-  let modifiedData = data?.map((item) => {
+  let modifiedData = results?.map((item) => {
     return {
-      name: new Date(item.paymentDate).toLocaleDateString("en-US", {
-        month: "short",
-        year: "2-digit",
-      }),
+      name: new Date(item?.accounts?.[0]?.paymentDate).toLocaleDateString(
+        "en-US",
+        {
+          month: "short",
+          year: "2-digit",
+        }
+      ),
       label: "oi",
-      balance: item.remainingBalance,
+      balance: item.balance,
     };
   });
 

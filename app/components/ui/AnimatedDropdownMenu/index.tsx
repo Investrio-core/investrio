@@ -34,7 +34,7 @@ const AnimatedDropdownMenu = ({
       <motion.div animate={open ? "open" : "closed"} className="relative">
         <button
           onClick={() => setOpen((pv) => !pv)}
-          className="border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors shadow-md"
+          className="border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors md:shadow-md"
         >
           {renderImage ? (
             <Image

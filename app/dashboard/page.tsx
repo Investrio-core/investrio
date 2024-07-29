@@ -18,6 +18,6 @@ export default function Dashboard() {
 
       mixpanelCalled.current = true;
     }
-    redirect("/dashboard/debts");
+    // redirect("/dashboard/debts");
   }, []);
 }

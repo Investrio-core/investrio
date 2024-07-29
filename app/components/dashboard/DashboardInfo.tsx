@@ -71,16 +71,16 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
   const month = debtFreeBy.format("MMMM");
   const year = debtFreeBy.format("YYYY");
 
-  if (!data?.length) {
-    return (
-      <div className="text-center mx-auto">
-        <h2>No Information has been registered yet.</h2>
-        <Link href={"/dashboard/debts/add"} onClick={() => Mixpanel.getInstance().track('setup_strategy_start')}>
-          <Button text="Set up Strategy" classProp="mx-auto" />
-        </Link>
-      </div>
-    );
-  }
+  // if (!data?.length) {
+  //   return (
+  //     <div className="text-center mx-auto">
+  //       <h2>No Information has been registered yet.</h2>
+  //       <Link href={"/dashboard/debts/add"} onClick={() => Mixpanel.getInstance().track('setup_strategy_start')}>
+  //         <Button text="Set up Strategy" classProp="mx-auto" />
+  //       </Link>
+  //     </div>
+  //   );
+  // }
 
   const minPayment = snowball?.data?.reduce(
     (prev, curr) => prev + curr.minPayAmount,
@@ -92,8 +92,7 @@ export const DashboardInfo = ({ data }: ResultsProps) => {
   }
 
   return (
-    <div>
-      
+    <div>   
       <div className="my-12 w-full gap-9">
         <div className="flex gap-9 overflow-x-auto min-w-full">
           <Card icon="calendar" label="Min. Payment" value={minPayment || 0} />

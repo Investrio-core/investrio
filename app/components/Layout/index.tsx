@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { Loading } from "../ui/Loading";
 import Paywall from "../Paywall";
+import MobileNavigator from "./MobileNavigator";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useSession();
@@ -26,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {/* {user.isShowPaywall && <Paywall />} */}
       <div className="grid grid-cols-1 lg:flex max-w-[100vw] min-h-fit">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between hidden lg:block">
           <div className="lg:w-[190px]">
             <SideMenu />
           </div>
@@ -40,6 +41,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Topbar user={user} />
           </section>
           <section className="lg:w-[calc(100vw-190px)]">{children}</section>
+        </div>
+        <div className="block lg:hidden mt-[42px] md:mt-[0px] bg-violet-50">
+          <MobileNavigator />
         </div>
       </div>
     </>

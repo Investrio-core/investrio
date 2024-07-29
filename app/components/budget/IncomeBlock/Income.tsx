@@ -29,6 +29,7 @@ interface IncomeBlockProps {
   sumCategories: number;
   setLoading: (value: boolean) => void;
   isLoading: boolean;
+  incomeAfterExpenses: number;
 }
 
 const Income = ({
@@ -37,6 +38,7 @@ const Income = ({
   setLoading,
   isLoading,
   sumCategories,
+  incomeAfterExpenses,
 }: IncomeBlockProps) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -93,7 +95,7 @@ const Income = ({
     }
   }, [updateIsPending, createIsPending]);
 
-  const incomeAfterExpenses = budgetInfo.income - sumCategories;
+  // const incomeAfterExpenses = budgetInfo.income - sumCategories;
   const formattedIncome = formatCurrency(incomeAfterExpenses);
 
   return (

@@ -9,7 +9,7 @@ import { formatCurrency, formatPercent } from "@/app/utils/formatters";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { TbEdit } from "react-icons/tb";
 import { GoTrash } from "react-icons/go";
 
@@ -19,6 +19,8 @@ type DebtsTableProps = {
   data: DebtFormType[];
   onEditDebt: (index: string) => void;
   onDeleteDebt: (index: string) => void;
+  colors?: string[];
+  showSummary?: boolean;
 };
 
 const debtTypesMapper = {
@@ -33,7 +35,11 @@ export default function DebtsTable({
   data,
   onEditDebt,
   onDeleteDebt,
+  colors,
+  showSummary = false,
 }: DebtsTableProps) {
+  const [_showSummary, setShowSummary] = useState(showSummary);
+
   const columns = [
     columnHelper.accessor("debtType", {
       header: "Debts",
@@ -49,12 +55,25 @@ export default function DebtsTable({
       ),
     }),
     columnHelper.accessor("debtName", {
-      cell: (info) => info.getValue(),
-      header: "",
+      cell: (info) =>
+        colors ? (
+          <div className="flex gap-[4px] items-center justify-start">
+            <div
+              style={{
+                backgroundColor: colors[info.row.index % colors.length],
+              }}
+              className="w-3 h-3 rounded"
+            ></div>
+            <div>{info.getValue()}</div>
+          </div>
+        ) : (
+          info.getValue()
+        ),
+      header: "Name",
       footer: "Total Debt",
     }),
     columnHelper.accessor("balance", {
-      header: "Outstanding Balance",
+      header: "Balance",
       cell: (info) => formatCurrency(info.renderValue()),
       footer: () => {
         const totalBalance = data.reduce((previous, current) => {
@@ -96,10 +115,10 @@ export default function DebtsTable({
       },
     }),
     columnHelper.accessor("dueDate", {
-      header: "Start Month",
+      header: _showSummary ? "" : "Start Month",
       cell: (info) => (
         <div className="flex items-center justify-between">
-          <span>{dayjs().format("MMM")}</span>
+          {_showSummary ? <></> : <span>{dayjs().format("MMM")}</span>}
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="inline-flex w-full justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
@@ -118,7 +137,7 @@ export default function DebtsTable({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 z-50 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white p-2 shadow-lg ring-1 ring-black/5 focus:outline-none">
+              <Menu.Items className="absolute top-[-4px] right-0 z-50 [z-9999] w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white p-2 shadow-lg ring-1 ring-black/5 focus:outline-none">
                 <div className="px-1 py-1 ">
                   <Menu.Item>
                     {({ active }) => (
@@ -176,47 +195,82 @@ export default function DebtsTable({
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className="text-md bg-[#F6FAFD] font-light" key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
+              {headerGroup.headers
+                .filter(
+                  (x, idx) =>
+                    !_showSummary ||
+                    [1, 2, headerGroup.headers.length - 1].includes(idx)
+                )
+                .map((header) => (
+                  <th
+                    className="text-md bg-[#F6FAFD] font-light"
+                    key={header.id}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
             </tr>
           ))}
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td className="text-black" key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+              {row
+                .getVisibleCells()
+                .filter(
+                  (x, idx) =>
+                    !_showSummary ||
+                    [1, 2, row.getVisibleCells().length - 1].includes(idx)
+                )
+                .map((cell) => (
+                  <td className="text-black" key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
             </tr>
           ))}
         </tbody>
         <tfoot>
           {table.getFooterGroups().map((footerGroup) => (
             <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th className="font-bold text-black" key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
+              {footerGroup.headers
+                .filter(
+                  (x, idx) =>
+                    !_showSummary ||
+                    [1, 2, footerGroup.headers.length - 1].includes(idx)
+                )
+                .map((header) => (
+                  <th className="font-bold text-black" key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
             </tr>
           ))}
         </tfoot>
       </table>
+      {showSummary ? (
+        <button
+          onClick={() => setShowSummary((prevState) => !prevState)}
+          className="mt-[8px] inline-flex items-center w-full justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+        >
+          <PiDotsThreeCircleLight className="text-2xl" aria-hidden="true" />
+          <span
+            className={`text-base/[9px] ml-[2px] text-slate-600 relative top-[-2px]`}
+          >
+            {_showSummary ? "see more..." : "see less..."}
+          </span>
+        </button>
+      ) : null}
     </div>
   );
 }

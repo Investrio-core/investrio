@@ -1,12 +1,15 @@
 import { useSession } from "next-auth/react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import MonthPicker from "../../components/budget/MonthPicker";
+import TopbarDropdown from "../TopbarDropdown";
 
 interface Props {
   sectionHeader: string;
   sectionSubheader: string;
-  date: Date | null;
-  setDate: (date: Date | null) => void;
+  date?: Date | null;
+  setDate?: (date: Date | null) => void;
+  useMonthPicker?: boolean;
+  Button?: () => JSX.Element;
 }
 
 export default function PageHeader({
@@ -14,25 +17,37 @@ export default function PageHeader({
   sectionSubheader,
   date,
   setDate,
+  useMonthPicker = true,
+  Button = undefined,
 }: Props) {
   const { data } = useSession();
   const { user } = data!;
-  const { name } = user;
+  const { image, name, email, id } = user;
   const firstName = name?.split(" ")[0];
 
   return (
-    <div className="px-[16px] py-[8px] flex flex-col gap-[16px]">
-      <div className="block lg:hidden flex-col justify-start items-start inline-flex">
-        <div className="text-slate-950 text-base font-normal']">
-          {Greeter()}
+    <div className="px-[16px] py-[12px] flex flex-col gap-[12px]">
+      <div className="block lg:hidden flex-col justify-center items-center inline-flex">
+        <div className="text-slate-950 text-base font-normal flex flex-row items-center justify-center">
+          {Greeter()}&nbsp;&nbsp;
+          <TopbarDropdown
+            image={image}
+            name={name?.split(" ")[0]}
+            email={email}
+          />
         </div>
         <div className="text-slate-950 text-[32px] font-semibold']">
-          {firstName}
+          {/* {firstName} */}
+          {/* <TopbarDropdown
+            image={image}
+            name={name?.split(" ")[0]}
+            email={email}
+          /> */}
         </div>
       </div>
       {/* w-[343px] h-[60px] */}
-      <div className="h-[60px] px-4 py-[27px] bg-white rounded-xl border border-zinc-200 justify-start items-center gap-2.5 inline-flex">
-        <div className="grow shrink basis-0 h-10 justify-between items-center flex">
+      <div className="h-[48px] px-4 py-[12px] bg-white rounded-xl border border-zinc-200 justify-start items-center gap-2.5 inline-flex">
+        <div className="grow shrink basis-0 h-8 justify-between items-center flex">
           <input
             placeholder="Type a question, talk to us!"
             className="w-[207px] h-[21px] text-zinc-500 text-sm font-normal'] leading-[21px] focus:outline-none"
@@ -62,7 +77,10 @@ export default function PageHeader({
         </div>
         <div className="self-center self-justify-center">
           {/* <div className="w-[200px] flex justify-end items-center"> */}
-          <MonthPicker date={date} setDate={setDate} />
+          {useMonthPicker && date !== undefined && setDate !== undefined ? (
+            <MonthPicker date={date} setDate={setDate} />
+          ) : null}
+          {Button ? <Button /> : null}
         </div>
       </div>
     </div>
