@@ -259,6 +259,7 @@ const tabs = [
   },
   {
     name: "Profile",
+    route: "/profile",
     Icon: ProfileSvg,
     subTabs: [],
   },
@@ -293,11 +294,10 @@ export default function MobileNavigator() {
   const BaseTabs = tabs.map(({ name, Icon, route, subTabs }) => {
     return (
       <div
-        className={`${
-          route === asPath
-            ? "bg-violet-100 border border-primary rounded"
-            : "bg-white"
-        } px-[10px] py-[4px]`}
+        className={`${route === asPath
+          ? "bg-violet-100 border border-primary rounded"
+          : "bg-white"
+          } px-[10px] py-[4px]`}
       >
         <motion.div
           animate={tab !== name}
@@ -323,8 +323,8 @@ export default function MobileNavigator() {
   return (
     <div className="bg-white w-[100vw] fixed bottom-[-1px] z-[9999] shadow-lg px-9 pt-1 pb-[0px] rounded-tl-[40px] rounded-tr-[40px] border border-zinc-200 justify-between items-start inline-flex">
       {tabSelected &&
-      selectedTab?.subTabs?.length !== undefined &&
-      selectedTab?.subTabs?.length > 0 ? (
+        selectedTab?.subTabs?.length !== undefined &&
+        selectedTab?.subTabs?.length > 0 ? (
         <>
           <div className="px-[4px] py-[4px] mr-[6px]">
             <motion.div
@@ -350,11 +350,10 @@ export default function MobileNavigator() {
           {selectedTab?.subTabs.map(({ name, Icon, subTab: st }) => {
             return (
               <div
-                className={`${
-                  st === subTab
-                    ? "bg-violet-100 border border-primary rounded"
-                    : "bg-white"
-                } px-[4px] py-[4px] flex flex-col justify-between items-start inline-flex min-w-[60px] flex justify-center align-items`}
+                className={`${st === subTab
+                  ? "bg-violet-100 border border-primary rounded"
+                  : "bg-white"
+                  } px-[4px] py-[4px] flex flex-col justify-between items-start inline-flex min-w-[60px] flex justify-center align-items`}
               >
                 <motion.div
                   animate={tab === name}

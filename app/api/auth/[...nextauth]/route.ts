@@ -22,7 +22,7 @@ const setRefreshCookie = (cookiesToSet: string[]) => {
       value: cookieValue,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: MAX_AGE * 1000, 
+      maxAge: MAX_AGE * 1000,
       path: cookieValue.path,
       sameSite: 'lax',
       expires: new Date(cookieValue.expires),
@@ -84,7 +84,7 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      
+
       if (trigger === 'update') {
         token.accessToken = session.accessToken
       }
@@ -160,12 +160,12 @@ export const authOptions: AuthOptions = {
           user.stripeCustomerId = authUser.stripeCustomerId
           user.subscriptionStatus = authUser.subscriptionStatus
           user.trialEndsAt = authUser.trialEndsAt
-          
+
           return true;
         } catch (err) {
           // throw new Error("Error")
           return false;
-        } 
+        }
       }
 
       //SignUp
@@ -191,8 +191,7 @@ export const authOptions: AuthOptions = {
 
           const createdUser = await response.json();
 
-
-          user.id = createdUser.id 
+          user.id = createdUser.id
           // @ts-ignore
           user.accessToken = createdUser.accessToken
 
