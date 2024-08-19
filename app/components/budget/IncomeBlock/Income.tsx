@@ -30,6 +30,9 @@ interface IncomeBlockProps {
   setLoading: (value: boolean) => void;
   isLoading: boolean;
   incomeAfterExpenses: number;
+  renderAfterInput?: JSX.Element;
+  titleText?: string;
+  inputText?: string;
 }
 
 const Income = ({
@@ -39,6 +42,9 @@ const Income = ({
   isLoading,
   sumCategories,
   incomeAfterExpenses,
+  renderAfterInput,
+  titleText,
+  inputText = "What is your monthly after tax income?",
 }: IncomeBlockProps) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -99,31 +105,42 @@ const Income = ({
   const formattedIncome = formatCurrency(incomeAfterExpenses);
 
   return (
-    <div className="relative lg:w-[50%] p-[24px] bg-indigo-50 rounded-[18px] border border-violet-200 mx-[16px] mt-[16px] mb-[10px] flex flex-col items-center justify-center">
-      <MultiInputBlock
-        number={income}
-        lastSavedNumber={budgetInfo?.income}
-        setNumber={setIncome}
-        sectionTitle={"Monthly After Tax Income"}
-        step={100}
-        min={0}
-        max={30000}
-        isLoading={isLoading}
-        onSubmit={onSubmit}
-        sectionTitleStyles=""
-      />
-      {budgetInfo?.income ? (
-        <div className="text-lg mt-3">
-          <span
-            className={`font-bold ${
-              incomeAfterExpenses < 0 ? "text-red-700" : "text-green-700"
-            } `}
-          >
-            {formattedIncome}{" "}
-          </span>
-          left to spend
+    <div className="mt-[28px]">
+      {titleText ? (
+        <div className="text-center text-[#100d40] text-2xl font-semibold leading-[33.60px]">
+          {titleText}
         </div>
       ) : null}
+
+      <div className="relative lg:w-[70%] p-[24px] rounded-[18px] border border-violet-200 mx-[16px] mt-[8px] mb-[10px] flex flex-col items-center justify-center">
+        {/* <div className="border border-violet-200 mx-[16px] mt-[8px] mb-[10px] flex flex-col items-center justify-center"> */}
+        <MultiInputBlock
+          number={income}
+          lastSavedNumber={budgetInfo?.income}
+          setNumber={setIncome}
+          sectionTitle={inputText}
+          step={100}
+          min={0}
+          max={30000}
+          isLoading={isLoading}
+          onSubmit={onSubmit}
+          sectionTitleStyles="text-center text-[#100d40] text-xl font-normal leading-7"
+        />
+        {budgetInfo?.income ? (
+          <div className="text-lg mt-3 relative top-[-14px]">
+            <span
+              className={`font-bold ${
+                incomeAfterExpenses < 0 ? "text-red-700" : "text-green-700"
+              } `}
+            >
+              {formattedIncome}{" "}
+            </span>
+            monthly income remaining
+          </div>
+        ) : null}
+
+        {renderAfterInput ?? null}
+      </div>
     </div>
   );
 };
