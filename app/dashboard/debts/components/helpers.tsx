@@ -127,7 +127,7 @@ export function getSummaryStatistics(
   const timeSavedString = `${
     timeSavedYears * -1 > 0 ? `${timeSavedYears * -1} years, ` : ""
   }${endDateWithout.diff(debtFreeBy, "months") * -1} months`;
-  console.log(timeSavedString);
+  // console.log(timeSavedString);
 
   const monthsFaster =
     endDateWithout.diff(debtFreeBy, "years") * -12 +
