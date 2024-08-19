@@ -33,6 +33,7 @@ type Props = {
   neverBecomesDebtFree?: boolean;
   endBalance?: number;
   endDate?: Date | string;
+  monthsFaster?: string;
 };
 
 export const DebtsComparison = ({
@@ -42,6 +43,7 @@ export const DebtsComparison = ({
   snowballResultsWithoutExtra,
   neverBecomesDebtFree,
   endBalance,
+  monthsFaster,
 }: Props) => {
   const [selected, setSelected] = useState("with-investrio");
 
@@ -59,9 +61,9 @@ export const DebtsComparison = ({
     balance: data.balance,
   }));
 
-  const monthsFaster =
-    (snowballResultsWithoutExtra?.totalPayments ?? 0) -
-    (snowballResultsWithExtra?.totalPayments ?? 0);
+  // const monthsFaster =
+  //   (snowballResultsWithoutExtra?.totalPayments ?? 0) -
+  //   (snowballResultsWithExtra?.totalPayments ?? 0);
 
   const savedInterest =
     (snowballResultsWithoutExtra?.totalInterestPaid ?? 0) -
@@ -83,38 +85,46 @@ export const DebtsComparison = ({
   );
   const showFallBack = !debtData?.length && !(debtData?.length > 0);
 
+  // ${selected === "with-investrio" ? "border-2" : ""}`}
   return showFallBack ? (
     fallback
   ) : (
     <>
-      <div className="my-2 w-full gap-9 md:px-[24px] md:mx-[24px] md:my-[24px]">
+      <div className="w-full gap-9 md:px-[24px] md:mx-[24px] md:my-[24px]">
         <div className="w-full rounded-lg">
           {snowballResultsWithExtra ? (
             <label
               className={`flex h-full flex-col gap-5
-            rounded-2xl border-[#9248F8] bg-white p-4 transition-all hover:border-2
-            ${selected === "with-investrio" ? "border-2" : ""}`}
+            rounded-2xl bg-white p-4 transition-all`}
             >
-              <div className="flex items-center justify-between text-left">
+              {/* <div className="flex items-center justify-between text-left">
                 <div>
                   <h2 className={"text-2xl font-semibold text-[#9248F8]"}>
                     With Investrio
                   </h2>
                   <div className="text-2xl w-[200px]">
                     {withEndDate}
-                    {/* Debt Free By: <br />{" "}
-                  {dayjs(withEndDate).format("MMMM - YYYY")} */}
+                    Debt Free By: <br />{" "}
+                  {dayjs(withEndDate).format("MMMM - YYYY")}
                   </div>
                 </div>
-              </div>
-              <div className="border-b-2 border-gray-100" />
+              </div> */}
+
               {/* lg:grid-cols-12 */}
               <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-4 shadow-sm lg:col-span-6">
+                <div className="col-span-4 lg:col-span-6">
                   {withGraph !== undefined ? (
-                    <Card fullWidth title="Balance over time">
+                    <div>
+                      <div className="text-[#03091d] text-xl font-medium">
+                        Debts in Progress
+                      </div>
                       <CustomLineChart
-                        data={withGraph}
+                        data={withGraph.map((next, idx) => {
+                          return {
+                            ...next,
+                            withoutBalance: withoutGraph?.[idx]?.balance || 0,
+                          };
+                        })}
                         area={
                           <Area
                             dataKey="balance"
@@ -123,20 +133,31 @@ export const DebtsComparison = ({
                             fill="url(#primary)"
                           />
                         }
+                        secondArea={
+                          <Area
+                            dataKey="withoutBalance"
+                            strokeWidth={3}
+                            // stroke="#8884d8"
+                            // fill="green"
+                            stroke="rgba(129, 123, 130, 0.5)"
+                            fillOpacity={1}
+                            fill="url(#colorWithoutBalance)"
+                          />
+                        }
                       />
-                    </Card>
+                    </div>
                   ) : null}
                 </div>
 
-                <div className="col-span-4 lg:col-span-6">
-                  <div className="flex flex-col gap-3 gap-y-6">
-                    <div className="flex flex-col md:flex-row items-center gap-3">
-                      <div className="flex flex-col items-center justify-center gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">
+                <div className="col-span-4 lg:col-span-6 text-center">
+                  <div className="flex flex-col gap-3 gap-y-[24px] px-[12px] text-center">
+                    <div className="flex flex-col md:flex-row gap-3 text-center">
+                      <div className="flex flex-col items-center justify-center gap-[4px] rounded-xl w-[100%]">
                         <MoneyIcon width="30" height="30" viewBox="0 0 64 64" />
-                        <div className="px-[8px]">
-                          <span className="text-base text-center text-indigo-900 font-medium">
+                        <div className="">
+                          <span className="text-[#26294d] text-base font-medium">
                             You can get out of debt faster and also save{" "}
-                            <strong>
+                            <strong className="text-[#4ad582]">
                               {formatCurrency(savedInterest) || "$0"}
                             </strong>{" "}
                             in interest!{" "}
@@ -146,13 +167,23 @@ export const DebtsComparison = ({
                         </h1> */}
                         </div>
                       </div>
-                      <div className="flex gap-4 rounded-xl border-b-2 border-[#330F6626] bg-[#FBF7FF] p-5 w-[100%]">
-                        <div className="text-left px-[8px]">
-                          <span>Save time, pay</span>
-                          <br />
-                          <span className="text-sm">
-                            <span className="text-2xl font-extrabold">
-                              {monthsFaster}{" "}
+                      <div className="flex gap-4 rounded-xl w-[100%] text-center">
+                        <div
+                          className="text-base font-medium w-[100%] text-center"
+                          style={{ textAlign: "center" }}
+                        >
+                          <span style={{ textAlign: "center" }}>
+                            Save time, pay
+                          </span>
+                          <span
+                            className="text-medium"
+                            style={{ textAlign: "center" }}
+                          >
+                            <span className="font-extrabold">
+                              {" "}
+                              <strong className="text-[#4ad582]">
+                                {monthsFaster}
+                              </strong>{" "}
                             </span>
                             month{monthsFaster > 1 && "s"} faster!
                           </span>
@@ -160,13 +191,13 @@ export const DebtsComparison = ({
                       </div>
                     </div>
 
-                    <div className="flex-col justify-start items-center gap-0.5 inline-flex">
+                    {/* <div className="flex-col justify-start items-center gap-0.5 inline-flex">
                       <TimeIcon width="36" height="36" />
                       <div className="text-center text-indigo-900 text-base font-medium pt-[2px] px-[8px]">
                         Investrio can help you get there with accountability and
                         automation
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                       {/* <div className="text-2xl w-[200px]">
@@ -195,64 +226,69 @@ export const DebtsComparison = ({
             </div>
           )}
         </div>
-        <div className="mt-5 w-full rounded-lg">
-          <label
-            onClick={() => setSelected("with-without-planning")}
-            className="flex h-full flex-col gap-5 rounded-2xl border-[#9248F8] bg-white p-4 transition-all"
-          >
-            <div className="flex items-center justify-between text-left">
-              <div>
-                <h2 className={"text-2xl font-semibold with-without-planning"}>
-                  Without Planning
-                </h2>
-                <div className="text-2xl w-[200px]">
-                  {withoutEndDate}
-                  {/* Debt Free Date: <br />{" "}
+        {withGraph === undefined ? (
+          <div className="mt-5 w-full rounded-lg">
+            <label
+              onClick={() => setSelected("with-without-planning")}
+              className="flex h-full flex-col gap-5 rounded-2xl border-[#9248F8] bg-white p-4 transition-all"
+            >
+              <div className="flex items-center justify-between text-left">
+                <div>
+                  <h2
+                    className={"text-2xl font-semibold with-without-planning"}
+                  >
+                    Without Planning
+                  </h2>
+                  <div className="text-2xl w-[200px]">
+                    {withoutEndDate}
+                    {/* Debt Free Date: <br />{" "}
                   {dayjs(withoutEndDate).format("MMMM - YYYY")} */}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="border-b-2 border-gray-100" />
-
-            {/* lg:grid-cols-12 */}
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-4 shadow-sm lg:col-span-6">
-                {withoutGraph !== undefined ? (
-                  <Card title="Balance over time" fullWidth>
-                    <CustomLineChart
-                      data={withoutGraph}
-                      area={
-                        <Area
-                          dataKey="balance"
-                          strokeWidth={3}
-                          stroke="#8884d8"
-                          fill="url(#primary)"
-                        />
-                      }
-                    />
-                  </Card>
-                ) : null}
-              </div>
-
-              <div className="col-span-4 lg:col-span-6">
-                <div className="flex flex-col gap-3 gap-y-6 pb-[32px] pt-[12px]">
-                  <div className="flex-col justify-start items-center gap-[5px] inline-flex">
-                    <PiggyIcon width="36" height="36" />
-                    <div className="text-center text-indigo-900 text-base font-medium pt-[5px] px-[8px]">
-                      In this plan, we assume you are paying the minimum.
+              <div className="border-b-2 border-gray-100" />
+              {/* lg:grid-cols-12 */}
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-4 shadow-sm lg:col-span-6">
+                  {withoutGraph !== undefined ? (
+                    <div>
+                      <div className="text-[#03091d] text-xl font-medium">
+                        Debts in Progress
+                      </div>
+                      <CustomLineChart
+                        data={withoutGraph}
+                        area={
+                          <Area
+                            dataKey="balance"
+                            strokeWidth={3}
+                            stroke="#8884d8"
+                            fill="url(#primary)"
+                          />
+                        }
+                      />
                     </div>
-                  </div>
+                  ) : null}
+                </div>
 
-                  <div className="flex-col justify-start items-center gap-[5px] inline-flex">
+                <div className="col-span-4 lg:col-span-6">
+                  <div className="flex flex-col gap-3 gap-y-6 pb-[32px] pt-[12px]">
                     <div className="flex-col justify-start items-center gap-[5px] inline-flex">
-                      <TimeIcon width="36" height="36" />
+                      <PiggyIcon width="36" height="36" />
                       <div className="text-center text-indigo-900 text-base font-medium pt-[5px] px-[8px]">
-                        The debt will take longer to pay off and it is more
-                        expensive.
+                        In this plan, we assume you are paying the minimum.
                       </div>
                     </div>
-                  </div>
-                  {/* <div className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
+
+                    <div className="flex-col justify-start items-center gap-[5px] inline-flex">
+                      <div className="flex-col justify-start items-center gap-[5px] inline-flex">
+                        <TimeIcon width="36" height="36" />
+                        <div className="text-center text-indigo-900 text-base font-medium pt-[5px] px-[8px]">
+                          The debt will take longer to pay off and it is more
+                          expensive.
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div className="flex flex-col md:flex-row gap-y-5 items-center justify-evenly text-purple font-semibold">
                     <div className="text-2xl w-[200px]">
                       Total Interest: <br /> {formatCurrency(totalInterestPaid)}
                     </div>
@@ -264,7 +300,7 @@ export const DebtsComparison = ({
                     </div>
                   </div> */}
 
-                  {/* <div className="flex flex-col md:flex-row justify-center items-center gap-3">
+                    {/* <div className="flex flex-col md:flex-row justify-center items-center gap-3">
                     <div className="flex items-center gap-4 rounded-xl bg-[#F6F6F6] p-5 text-[#747682]">
                       <TbAlertHexagon className="text-5xl" />
                       <span className="text-left text-sm">
@@ -273,11 +309,12 @@ export const DebtsComparison = ({
                       </span>
                     </div>
                   </div> */}
+                  </div>
                 </div>
               </div>
-            </div>
-          </label>
-        </div>
+            </label>
+          </div>
+        ) : null}
       </div>
       {/* <div className="mb-5 border-b-2 border-gray-100 p-3" /> */}
 
