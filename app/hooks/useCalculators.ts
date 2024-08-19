@@ -1,4 +1,5 @@
 // import { DebtFormType } from "@/types/debtFormType";
+import { useMemo } from "react";
 import { REPAYMENT_STRATEGIES } from "./calculatorsSnowball";
 import Snowball from "./calculatorsSnowball/Snowball";
 
@@ -93,10 +94,7 @@ function paymentScheduleCalculator(
       : REPAYMENT_STRATEGIES.AVALANCHE
   );
   const snowballPaymentPlan = snowball.createPaymentPlan();
-  // console.log("-- real payment plan --");
-  // console.log(snowballPaymentPlan);
 
-  // console.log("-- calculating snowball payment plan --");
   // const snowballTest = new Snowball(
   //   DUMMY_DEBTS_TEST.map((debt) => ({
   //     name: debt.title,
@@ -115,8 +113,41 @@ function paymentScheduleCalculator(
   return snowballPaymentPlan;
 }
 
-export default function useCalculators() {
+export default function useCalculators(debtsData, extraPayment) {
+  const snowballResultsWithoutExtra = useMemo(
+    () =>
+      debtsData !== undefined
+        ? paymentScheduleCalculator(debtsData?.data ?? [], "snowball", 0)
+        : undefined,
+    [debtsData?.data]
+  );
+
+  const snowballResultsWithExtra = useMemo(() => {
+    if (debtsData === undefined) return undefined;
+
+    if (extraPayment === 0) return undefined;
+
+    return paymentScheduleCalculator(
+      debtsData?.data ?? [],
+      "snowball",
+      extraPayment
+    );
+  }, [debtsData?.data, extraPayment]);
+
+  const avalancheResultsWithExtra = useMemo(() => {
+    if (debtsData === undefined) return undefined;
+    if (extraPayment === 0) return undefined;
+    return paymentScheduleCalculator(
+      debtsData?.data ?? [],
+      "avalanche",
+      extraPayment
+    );
+  }, [debtsData?.data, extraPayment]);
+
   return {
     paymentScheduleCalculator,
+    snowballResultsWithoutExtra,
+    snowballResultsWithExtra,
+    avalancheResultsWithExtra,
   };
 }
