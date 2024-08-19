@@ -2,16 +2,15 @@
 
 import { useTabContext } from "@/app/context/TabContext/context";
 import { motion } from "framer-motion";
-import { VscGraphLine } from "react-icons/vsc";
 import { GrOptimize } from "react-icons/gr";
-import { GoGitCompare } from "react-icons/go";
 import { TbChecklist } from "react-icons/tb";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import { AiOutlinePieChart } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
+import { FaRegLightbulb } from "react-icons/fa";
+import { GiExpense } from "react-icons/gi";
 
 const HomeSvg = ({ fill = "none" }: { fill?: string }) => (
   <svg
@@ -192,14 +191,14 @@ export const DEBT_SUMMARY = "summary";
 export const ADD_DEBT = "add";
 export const SUGGESTIONS = "suggestions";
 export const PRIORITIES = "priorities";
+export const DEBT_STEPS = [DEBT_SUMMARY, ADD_DEBT, SUGGESTIONS, PRIORITIES];
 
 //budget
 export const INCOME_STEP = "income";
 export const BREAKDOWN_STEP = "suggestedBreakdown";
 export const BUDGET_STEP = "budget";
-import { BsCashCoin } from "react-icons/bs";
-import { FaRegLightbulb } from "react-icons/fa";
-import { GiExpense } from "react-icons/gi";
+export const BUDGET_STEPS = [INCOME_STEP, BREAKDOWN_STEP, BUDGET_STEP];
+
 const tabs = [
   {
     name: "Home",
@@ -319,69 +318,73 @@ export default function MobileNavigator() {
       </div>
     );
   });
-
   return (
     <div className="bg-white w-[100vw] fixed bottom-[-1px] z-[9999] shadow-lg px-9 pt-1 pb-[0px] rounded-tl-[40px] rounded-tr-[40px] border border-zinc-200 justify-between items-start inline-flex">
-      {tabSelected &&
-      selectedTab?.subTabs?.length !== undefined &&
-      selectedTab?.subTabs?.length > 0 ? (
-        <>
-          <div className="px-[4px] py-[4px] mr-[6px]">
-            <motion.div
-              // animate={tab === name}
-              variants={innerTabsVariants}
-              className="min-width-[100%] flex-col justify-start items-center inline-flex"
-              onClick={() => {
-                // setSubTab("");
-                setTabSelected(false);
-              }}
-            >
-              <div className="w-6 h-6 justify-self-center align-center">
-                <motion.span variants={actionIconVariants}>
-                  {/* <IoMdArrowRoundBack /> */}
-                  <HomeSvg />
-                </motion.span>
-              </div>
-              <div className="text-center text-gray-800 text-xs font-medium leading-tight tracking-tight">
-                Back
-              </div>
-            </motion.div>
-          </div>
-          {selectedTab?.subTabs.map(({ name, Icon, subTab: st }) => {
-            return (
-              <div
-                className={`${
-                  st === subTab
-                    ? "bg-violet-100 border border-primary rounded"
-                    : "bg-white"
-                } px-[4px] py-[4px] flex flex-col justify-between items-start inline-flex min-w-[60px] flex justify-center align-items`}
-              >
-                <motion.div
-                  animate={tab === name}
-                  variants={innerTabsVariants}
-                  className={`min-width-[100%] flex-col justify-center items-center inline-flex self-center justify-self-center`}
-                  onClick={() => {
-                    setSubTab(st);
-                  }}
-                >
-                  <div className="w-6 h-6 justify-self-center align-center pl-[4px]">
-                    <motion.span variants={actionIconVariants}>
-                      <Icon />
-                    </motion.span>
-                  </div>
-                  <div className="text-gray-800 text-xs font-medium leading-tight tracking-tight">
-                    {name}
-                  </div>
-                </motion.div>
-              </div>
-            );
-          })}
-        </>
-      ) : (
-        <>{BaseTabs}</>
-      )}
+      {BaseTabs}
     </div>
   );
+  // return (
+  //   <div className="bg-white w-[100vw] fixed bottom-[-1px] z-[9999] shadow-lg px-9 pt-1 pb-[0px] rounded-tl-[40px] rounded-tr-[40px] border border-zinc-200 justify-between items-start inline-flex">
+  //     {tabSelected &&
+  //     selectedTab?.subTabs?.length !== undefined &&
+  //     selectedTab?.subTabs?.length > 0 ? (
+  //       <>
+  //         <div className="px-[4px] py-[4px] mr-[6px]">
+  //           <motion.div
+  //             // animate={tab === name}
+  //             variants={innerTabsVariants}
+  //             className="min-width-[100%] flex-col justify-start items-center inline-flex"
+  //             onClick={() => {
+  //               // setSubTab("");
+  //               setTabSelected(false);
+  //             }}
+  //           >
+  //             <div className="w-6 h-6 justify-self-center align-center">
+  //               <motion.span variants={actionIconVariants}>
+  //                 {/* <IoMdArrowRoundBack /> */}
+  //                 <HomeSvg />
+  //               </motion.span>
+  //             </div>
+  //             <div className="text-center text-gray-800 text-xs font-medium leading-tight tracking-tight">
+  //               Back
+  //             </div>
+  //           </motion.div>
+  //         </div>
+  //         {selectedTab?.subTabs.map(({ name, Icon, subTab: st }) => {
+  //           return (
+  //             <div
+  //               className={`${
+  //                 st === subTab
+  //                   ? "bg-violet-100 border border-primary rounded"
+  //                   : "bg-white"
+  //               } px-[4px] py-[4px] flex flex-col justify-between items-start inline-flex min-w-[60px] flex justify-center align-items`}
+  //             >
+  //               <motion.div
+  //                 animate={tab === name}
+  //                 variants={innerTabsVariants}
+  //                 className={`min-width-[100%] flex-col justify-center items-center inline-flex self-center justify-self-center`}
+  //                 onClick={() => {
+  //                   setSubTab(st);
+  //                 }}
+  //               >
+  //                 <div className="w-6 h-6 justify-self-center align-center pl-[4px]">
+  //                   <motion.span variants={actionIconVariants}>
+  //                     <Icon />
+  //                   </motion.span>
+  //                 </div>
+  //                 <div className="text-gray-800 text-xs font-medium leading-tight tracking-tight">
+  //                   {name}
+  //                 </div>
+  //               </motion.div>
+  //             </div>
+  //           );
+  //         })}
+  //       </>
+  //     ) : (
+  //       <>{BaseTabs}</>
+  //     )}
+  //   </div>
+  // );
 }
 
 const actionIconVariants = {
