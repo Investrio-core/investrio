@@ -145,7 +145,7 @@ const reshapeDebtsForBudget = (debts: FinancialRecordSchema[], budgetDebts) => {
     })) ?? [];
 
   const repaymentStep = budgetDebts?.find(
-    (debt) => debt.name === DEBT_REPAYMENT_STRATEGY_NAME
+    (debt: { name: string }) => debt.name === DEBT_REPAYMENT_STRATEGY_NAME
   );
   if (repaymentStep) {
     reshapedDebts = [repaymentStep, ...reshapedDebts];
