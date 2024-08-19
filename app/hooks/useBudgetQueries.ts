@@ -36,7 +36,9 @@ export default function useBudgetQueries(
     mutationFn: async (category: any) => {
       if (setIsLoading && typeof setIsLoading === "function")
         setIsLoading(true);
-      if (year === undefined || month === undefined || budgetID) return {};
+      if (year === undefined || month === undefined || budgetID === undefined) {
+        return {};
+      }
 
       queryClient.setQueryData(["budget-tool", year, month], (oldData: any) => {
         if (oldData?.data === undefined) return oldData;
