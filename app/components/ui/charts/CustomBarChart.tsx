@@ -64,7 +64,9 @@ const COLORS = [
 ];
 
 const formatYAxis = (value: number): string => {
-  return value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString();
+  return value >= 100000
+    ? `${(value / 1000).toFixed(0)}k`
+    : `$${value.toString()}`;
 };
 
 const getColorForKey = (
@@ -137,7 +139,7 @@ export const CustomBarChart = ({
           content={<CustomTooltip data={data} />}
           wrapperStyle={{ zIndex: 9999 }}
         />
-        <Legend layout="horizontal" verticalAlign="top" align="right" />
+        <Legend layout="horizontal" verticalAlign="bottom" align="right" />
         {Object.keys(transformedData?.[0] ?? {})
           .filter((key) => key !== "name")
           .map((key) => (

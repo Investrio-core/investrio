@@ -30,10 +30,12 @@ interface RepaymentShape {
 
 export type CheckboxTableProps = {
   snowballResultsCurrentMonth: AccountMonth[];
+  _setPercentDown?: Function;
 };
 
 export const CheckboxTable = ({
   snowballResultsCurrentMonth,
+  _setPercentDown,
 }: CheckboxTableProps) => {
   const [list, setList] = useState<Info[]>([]);
   const [totalBalance, setTotalBalance] = useState<number>(0);
@@ -67,6 +69,7 @@ export const CheckboxTable = ({
       100
     ).toFixed(2);
     setPercentDown(percentDown);
+    _setPercentDown && _setPercentDown(percentDown);
     setList(newList);
   };
 
@@ -101,6 +104,7 @@ export const CheckboxTable = ({
       100
     ).toFixed(2);
     setPercentDown(percentDown);
+    _setPercentDown && _setPercentDown(percentDown);
 
     setList(reshapedList);
   };
@@ -116,7 +120,7 @@ export const CheckboxTable = ({
   const balanceDecreasing = Number(percentDown) > 0;
 
   return (
-    <div className="rounded-lg w-full border border-[#EDF2F6] display flex flex-col justify-start p-8 py-2 lg:py-3 lg:py-4 overflow-y-auto h-full bg-white rounded-2xl shadow">
+    <div className="rounded-lg w-full display flex flex-col justify-start p-8 py-2 lg:py-3 lg:py-4 overflow-y-auto h-full bg-white">
       <div className="mb-[8px] flex justify-start items-center gap-[8px]">
         <div className="w-9 h-5 inline-flex relative self-center justify-self-center mr-[4px]">
           <Calender />

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export type CategoryType = "needs" | "savings" | "debts" | "wants";
 
 interface CategoryBlockProps {
+  renderAfterInput?: JSX.Element;
   budgetInfo: {
     needs: { value: number; name: string }[];
     wants: { value: number; name: string }[];
@@ -31,6 +32,7 @@ const CategoryBlock = ({
   budgetInfo,
   date,
   setLoading,
+  renderAfterInput,
 }: CategoryBlockProps) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -44,6 +46,7 @@ const CategoryBlock = ({
     mutationFn: async (category: any) => {
       setLoading(true);
 
+      
       const data = await axiosAuth.post(`/budget/create`, {
         ...category,
         year,
@@ -54,6 +57,10 @@ const CategoryBlock = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["budget-tool", year, month] });
+    },
+    onError: (e) => {
+      console.log("something went wrong creating a budget item");
+      console.error(e);
     },
   });
 
@@ -107,7 +114,12 @@ const CategoryBlock = ({
   };
 
   return (
-    <div className="w-[100vw] lg:w-full bg-white mt-[12px] rounded-[12px] border lg:p-[24px] mb-[20px]">
+    <div className="w-[100vw] lg:w-[100%] lg:w-full bg-white mt-[12px] rounded-[12px] border lg:p-[24px] mb-[20px]">
+      {renderAfterInput ? (
+        <div className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px]">
+          {renderAfterInput}
+        </div>
+      ) : null}
       {categories.map((category) => {
         const name = category.name as "needs" | "savings" | "debts" | "wants";
         const items = budgetInfo[name];

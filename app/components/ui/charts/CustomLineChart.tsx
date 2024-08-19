@@ -11,7 +11,9 @@ import {
 
 type Props = {
   data: any[];
+  secondaryData?: any[];
   area: ReactNode;
+  secondArea?: ReactNode;
   showPayloadNameOnLabel?: boolean; // default true
 };
 
@@ -49,7 +51,9 @@ const formatXAxis = (tickItem: string) => {
 
 export default function CustomLineChart({
   data,
+  secondaryData,
   area,
+  secondArea,
   showPayloadNameOnLabel = true,
 }: Props) {
   const possibleColors = [
@@ -75,7 +79,7 @@ export default function CustomLineChart({
         }}
       >
         <defs>
-          {possibleColors.map(({ id, color }, idx) => (
+          {/* {possibleColors.map(({ id, color }, idx) => (
             <linearGradient
               key={`${id}-${color}-${idx}`}
               id={id}
@@ -87,7 +91,26 @@ export default function CustomLineChart({
               <stop offset="5%" stopColor={color} stopOpacity={0.6} />
               <stop offset="95%" stopColor={color} stopOpacity={0.1} />
             </linearGradient>
-          ))}
+          ))} */}
+
+          <linearGradient
+            key={`primary`}
+            id={"primary"}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1"
+          >
+            <stop offset="50%" stopColor={"#8833ff"} stopOpacity={0.6} />
+            <stop offset="100%" stopColor={"#8833ff"} stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id="colorWithoutBalance" x1="0" y1="0" x2="0" y2="1">
+            {/* <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} /> */}
+            {/* b9b6ca */}
+            <stop offset="50%" stopColor="#b9b6ca" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#b9b6ca" stopOpacity={0} />
+          </linearGradient>
         </defs>
         <XAxis
           interval={"preserveStartEnd"}
@@ -111,6 +134,7 @@ export default function CustomLineChart({
           }
         />
         {area}
+        {secondArea}
       </AreaChart>
     </ResponsiveContainer>
   );

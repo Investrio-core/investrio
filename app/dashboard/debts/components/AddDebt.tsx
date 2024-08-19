@@ -31,32 +31,7 @@ export default function AddDebt({
   const submitNewDebt = (values: DebtFormType) => {
     createDebt({ newDebt: values });
     // cancel();
-
-    // if (extraPaymentAmount === undefined) {
-    //   setNewDebt(values);
-    //   setShowAdditionalPaymentForm(true);
-    // } else {
-    //   // setDebts((prevState) => [...prevState, values]);
-    //   console.log("creating new debt with", extraPaymentAmount);
-    //   console.log("-- newDebt: --");
-    //   console.log(newDebt);
-    //   // createDebt({ newDebt: newDebt, extraPayAmount: extraPaymentAmount });
-    //   createDebt({ newDebt: values, extraPayAmount: extraPaymentAmount });
-    //   cancel();
-    // }
   };
-
-  // const submitWithAdditionalPayment = () => {
-  //   if (newDebt) {
-  //     // setDebts((prevState: DebtFormType[]) => [...prevState, newDebt]);
-  //     console.log(
-  //       "creating new debt after extrapayment form with",
-  //       extraPaymentAmount
-  //     );
-  //     createDebt({ newDebt, extraPayAmount: extraPaymentAmount });
-  //     cancel();
-  //   }
-  // };
 
   return (
     <div className="flex flex-col mt-[12px] px-[16px] py-[16px] xl:px-10 bg-indigo-50 rounded-[18px] border border-violet-200 lg:max-w-[500px] lg:mx-[28px]">

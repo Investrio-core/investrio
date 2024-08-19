@@ -34,23 +34,35 @@ export default function useBudgetQueries(
   const { mutateAsync: update } = useMutation({
     mutationKey: ["category"],
     mutationFn: async (category: any) => {
-      if (setIsLoading && typeof setIsLoading === "function")
+      if (setIsLoading && typeof setIsLoading === "function") {
         setIsLoading(true);
-      if (year === undefined || month === undefined || budgetID) return {};
+      }
 
-      queryClient.setQueryData(["budget-tool", year, month], (oldData: any) => {
-        if (oldData?.data === undefined) return oldData;
+      if (year === undefined || month === undefined || budgetID === undefined) {
+        return {};
+      }
 
-        const categoryKey = Object.keys(category)?.[0];
-        if (categoryKey) {
-          const newData = {
-            ...oldData,
-            data: { ...oldData.data, [categoryKey]: category[categoryKey] },
-          };
-          return newData;
-        }
-        return oldData;
-      });
+      try {
+        queryClient.setQueryData(
+          ["budget-tool", year, month],
+          (oldData: any) => {
+            if (oldData?.data === undefined) return oldData;
+
+            const categoryKey = Object.keys(category)?.[0];
+            if (categoryKey) {
+              const newData = {
+                ...oldData,
+                data: { ...oldData.data, [categoryKey]: category[categoryKey] },
+              };
+              return newData;
+            }
+            return oldData;
+          }
+        );
+      } catch (e) {
+        console.log("Problem updating query cache");
+        console.error(e);
+      }
 
       const data = await axiosAuth.put(`/budget/update-category/${budgetID}`, {
         ...category,
