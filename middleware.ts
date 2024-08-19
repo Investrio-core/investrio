@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getToken } from "next-auth/jwt";
 
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const params = request.nextUrl.searchParams;
 
+  // TODO: check if token has expired?
+  // - weird next-auth bug
   const token = await getToken({
     req: request,
     secret: process.env.SECRET_KEY,
