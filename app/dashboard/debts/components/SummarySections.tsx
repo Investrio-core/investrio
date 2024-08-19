@@ -18,6 +18,21 @@ import { Loading } from "@/app/components/ui/Loading";
 import Mixpanel from "@/services/mixpanel";
 import { useComparisonData } from "@/app/hooks/useData/useComparisonData";
 
+export const getDebtFreeInfo = (
+  endDate: Date,
+  endBalance?: number,
+  format = "MMMM YYYY"
+) => {
+  const debtFreeBy = dayjs(endDate);
+  const neverBecomesDebtFree = endBalance === undefined || endBalance > 0;
+  const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
+  const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
+  const formattedString = neverBecomesDebtFree
+    ? "Never"
+    : debtFreeBy.format(format);
+  return { debtFreeBy, neverBecomesDebtFree, month, year, formattedString };
+};
+
 interface SummaryData {
   betterMethod: string;
   endDate?: Date | string;
@@ -26,6 +41,7 @@ interface SummaryData {
   totalInterestSaved: number;
   extraPayAmount?: number;
   endBalance?: number;
+  timeSavedString?: string;
 }
 
 export const SummarySection = ({
@@ -36,6 +52,7 @@ export const SummarySection = ({
   minPayment,
   totalInterestSaved,
   endBalance,
+  timeSavedString,
 }: SummaryData) => {
   // const axiosAuth = useAxiosAuth();
   // const queryClient = useQueryClient();
@@ -113,27 +130,50 @@ export const SummarySection = ({
   //   new Date(data?.[data.length - 1]?.paymentDate).getTime()
   // );
 
-  const debtFreeBy = dayjs(endDate);
-  const neverBecomesDebtFree = endBalance === undefined || endBalance > 0;
-  const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
-  const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
+  // const debtFreeBy = dayjs(endDate);
+  // const neverBecomesDebtFree = endBalance === undefined || endBalance > 0;
+  // const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
+  // const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
+  const { debtFreeBy, neverBecomesDebtFree, month, year } = getDebtFreeInfo(
+    endDate,
+    endBalance
+  );
+
+  console.log("interest saved");
+  console.log(totalInterestSaved);
+
+  console.log("time saved");
+  console.log(timeSavedString);
 
   return (
     <div>
-      <div className="w-full">
+      <div className="max-w-[95vw] bg-white rounded-[18px] border border-[#d2daff] px-[10px] pt-[11px] pb-[14px] mx-[12px] align-self-center">
         {/* flex-wrap lg:flex-nowrap */}
-        <div className="flex gap-2 lg:gap-9 overflow-x-auto min-w-full">
+        {/* <div className="flex gap-2 lg:gap-9 overflow-x-auto min-w-full"> */}
+        <div className="text-[#000118] text-base font-medium leading-normal mb-[10px] px-[2px]">
+          Planned Extra Payments Impact
+        </div>
+        <div className="flex gap-[8px] lg:gap-9 mx-[-4px]">
           <Card icon="debt-free" label="Debt Free" date={{ month, year }} />
-          {totalInterestSaved > 0 ? (
+          {timeSavedString ? (
             <Card
               icon="total-saved"
-              label="Total Saved"
+              label="Payoff Accelerated"
+              // value={snowball?.totalInterestPaid}
+              value={timeSavedString}
+              sublabel="While in Repayment Plan"
+            />
+          ) : null}
+          {/* {totalInterestSaved > 0 ? (
+            <Card
+              icon="total-saved"
+              label="Interest Saved"
               // value={snowball?.totalInterestPaid}
               value={totalInterestSaved}
               sublabel="While in Repayment Plan"
             />
-          ) : null}
-          <Card
+          ) : null} */}
+          {/* <Card
             icon="extra-payment"
             label={`Interest Paid ${
               neverBecomesDebtFree
@@ -143,11 +183,11 @@ export const SummarySection = ({
             // value={snowball?.totalInterestPaid}
             value={totalInterestPaid}
             sublabel="While in Repayment Plan"
-          />
+          /> */}
           {betterMethod ? (
             <Card
               icon="extra-payment"
-              label="Method"
+              label="Strategy"
               // value={snowball?.totalInterestPaid}
               value={betterMethod}
               sublabel="While in Repayment Plan"
@@ -158,14 +198,14 @@ export const SummarySection = ({
             label="Total Balance"
             value={totalInitialBalance || 0}
           /> */}
-          <Card icon="calendar" label="Min. Payment" value={minPayment || 0} />
-          <Card
+          {/* <Card icon="calendar" label="Min. Payment" value={minPayment || 0} /> */}
+          {/* <Card
             icon="extra-payment"
             label="Extra payment"
             value={extraPayAmount}
             // onEditClick={handleChangeAdditionalPaymentModalOpen}
             // withEdit
-          />
+          /> */}
         </div>
       </div>
       {/* <AdditionalPaymentModal
