@@ -332,6 +332,8 @@ export const expenseEmojiMapping = {
   loan: "0x1F4B0", // 💰
   "loan repayments": "0x1F4B0", // 💰
   "credit card": "0x1F4B3", // 💳
+  CreditCard: "0x1F4B3", // 💳
+  creditCard: "0x1F4B3", // 💳
   "student loan": "0x1F393", // 🎓
   "student loans": "0x1F393", //
   // "mortgage": "0x1F3E0",        // 🏠
