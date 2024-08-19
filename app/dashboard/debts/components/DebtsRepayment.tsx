@@ -24,11 +24,13 @@ export const DashboardInfo = ({
   debtsData,
   snowballResultsWithExtra,
   snowballResultsWithoutExtra,
+  _setPercentDown,
 }: {
   // data: Data[];
   debtsData: Data[];
   snowballResultsWithExtra?: Results;
   snowballResultsWithoutExtra?: Results;
+  _setPercentDown?: Function;
 }) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -97,7 +99,7 @@ export const DashboardInfo = ({
   return showFallBack ? (
     fallback
   ) : (
-    <div className="flex-grow mt-[12px]">
+    <div className="flex-grow mt-[12px] rounded-[18px] border border-[#d2daff] mx-[12px] mb-[8px]">
       <div className="my-1 w-full lg:w-[100%] lg:gap-9">
         <div className="flex mt-1 lg:mt-9 gap-[8px] lg:gap-9">
           <div className="w-full">
@@ -105,6 +107,7 @@ export const DashboardInfo = ({
               <div className="col-span-5 gap-[8px] md:col-span-2">
                 <CheckboxTable
                   // infos={debts ?? []}
+                  _setPercentDown={_setPercentDown}
                   snowballResultsCurrentMonth={
                     snowballResultsWithExtra?.payments?.[0]?.accounts ??
                     snowballResultsWithoutExtra?.payments?.[0]?.accounts
@@ -121,7 +124,7 @@ export const DashboardInfo = ({
                 />
               </div>
             </div>
-            <div className="mt-[8px] lg:mt-9">
+            {/* <div className="mt-[8px] lg:mt-9">
               <BalanceOverTime
                 data={[]}
                 results={
@@ -129,7 +132,7 @@ export const DashboardInfo = ({
                   snowballResultsWithoutExtra?.payments
                 }
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
