@@ -129,13 +129,33 @@ export function ScaledPieChart({
       return { name: name, value: income ? income * value : 1 * value };
     });
 
+  // if (renderPercentValues) {
+  //   scaledData = values
+  //     ? values?.map(({ name, value }) => ({
+  //         name: name,
+  //         // value: (value / income).toFixed(1),
+  //         value: value / income,
+  //       }))
+  //     : scaledData;
+
+  //   // ratios.map(({ name, value }) => {
+  //   //   return { name: name, value: income ? income * value : 1 * value };
+  //   // });
+  // }
+
+  let sumRatio: number = 0;
+
   if (renderPercentValues) {
     scaledData = values
-      ? values?.map(({ name, value }) => ({
-          name: name,
-          // value: (value / income).toFixed(1),
-          value: value / income,
-        }))
+      ? values?.map(({ name, value }) => {
+          const ratio = value / income;
+          sumRatio += ratio;
+          return {
+            name: name,
+            // value: (value / income).toFixed(1),
+            value: ratio,
+          };
+        })
       : scaledData;
 
     // ratios.map(({ name, value }) => {
@@ -304,7 +324,13 @@ export function ScaledPieChart({
                     ></div>
                     {entry.name}
                   </div>
-                  <span className="font-medium mr-[10px] justify-end items-end">
+                  <span
+                    className={`font-medium mr-[10px] justify-end items-end ${
+                      sumRatio > 1 && renderPercentValues
+                        ? "text-red-500 font-bold"
+                        : ""
+                    }`}
+                  >
                     {income && !renderPercentValues
                       ? dollarFormatter.format(entry.value)
                       : `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
