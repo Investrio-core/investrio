@@ -18,6 +18,7 @@ import Image from "next/image";
 import { CategoryType } from "../CategoryBlock";
 import useDebtQueries from "@/app/hooks/useDebtQueries";
 import { DebtFormType } from "@/types/debtFormType";
+import Mixpanel from "@/services/mixpanel";
 
 type Locale = "wants" | "savings" | "needs" | "debts";
 
@@ -152,6 +153,7 @@ const CategoryBlockItem = ({
     if (name === "debts") {
       const reshapedDebt = formatDebtForSubmission(data);
       await createDebt({ newDebt: reshapedDebt });
+      Mixpanel.getInstance().track("added_debt_using_budget_tool");
     } else {
       const newCategory = [...items, data];
       const dataToUpdate = { [name]: newCategory } as Record<
@@ -181,7 +183,8 @@ const CategoryBlockItem = ({
   }) => {
     if (name === "debts" && data?.id) {
       const formattedDebt = formatDebtForSubmission(data);
-      updateDebt({ updatedDebt: formattedDebt });
+      await updateDebt({ updatedDebt: formattedDebt });
+      Mixpanel.getInstance().track("edited_debt_using_budget_tool");
     } else {
       const index = items.map((i) => i.name).indexOf(data.oldName);
       if (index !== -1) {
@@ -206,6 +209,7 @@ const CategoryBlockItem = ({
   const onDeleteSubmit = async (item: { name: string; id?: string }) => {
     if (name === "debts" && item?.id) {
       await deleteRecords([item.id]);
+      Mixpanel.getInstance().track("deleted_debt_using_budget_tool");
     } else {
       const newCategory = [...items].filter(({ name }) => name !== item.name);
       const dataToUpdate = { [name]: newCategory } as Record<
