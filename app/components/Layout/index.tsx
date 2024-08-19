@@ -40,7 +40,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <section className="hidden lg:block">
             <Topbar user={user} />
           </section>
-          <section className="lg:w-[calc(100vw-190px)]">{children}</section>
+          <section>{children}</section>
+          {/* <section className="lg:w-[calc(100vw-190px)]">{children}</section> */}
         </div>
         <div className="block lg:hidden mt-[42px] md:mt-[0px] bg-violet-50">
           <MobileNavigator />
