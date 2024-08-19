@@ -1,4 +1,5 @@
 import React from "react";
+import { backgroundColor } from "@/app/utils/constants";
 
 export default function DebtsLayout({
   children,
@@ -7,9 +8,10 @@ export default function DebtsLayout({
 }) {
   return (
     //  h-screen
-    <div className="flex min-h-[91vh] justify-center items-center overflow-auto bg-violet-50">
-      <div className="w-full flex justify-center items-center">
-        <div>{children}</div>
+    // <div className="flex min-h-[91vh] justify-center items-center overflow-auto bg-violet-50"></div>
+    <div className={`flex min-h-[91vh] overflow-auto ${backgroundColor}`}>
+      <div className="w-full flex">
+        <div className="w-full flex">{children}</div>
       </div>
     </div>
   );
