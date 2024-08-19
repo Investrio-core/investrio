@@ -76,7 +76,7 @@ export default function MultiInputBlock({
       </div>
       {/* border border-violet-200 */}
       <div
-        className={`bg-white rounded-[18px] max-w-[100%] px-[42px] pt-[16px]`}
+        className={`bg-white rounded-[18px] max-w-[100%] px-[42px] pt-[16px] flex flex-col`}
       >
         <div className={"mx-[-30px]"}>{aboveInput}</div>
         <div className="flex w-[98%] justify-between content-center items-center text-[32px] font-bold">
@@ -147,7 +147,7 @@ export default function MultiInputBlock({
           </div>
         ) : null}
         {number !== lastSavedNumber && onSubmit ? (
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-[4px] ml-[-25px] mr-[-50px] flex flex-col gap-2">
             <SimpleButton
               type="submit"
               text={submitButtonText}
