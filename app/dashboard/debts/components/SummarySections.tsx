@@ -135,32 +135,32 @@ export const SummarySection = ({
   // const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
   // const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
   const { debtFreeBy, neverBecomesDebtFree, month, year } = getDebtFreeInfo(
-    endDate,
+    typeof endDate === "string" ? new Date(endDate) : endDate ?? new Date(),
     endBalance
   );
 
-  console.log("interest saved");
-  console.log(totalInterestSaved);
+  // console.log("interest saved");
+  // console.log(totalInterestSaved);
 
-  console.log("time saved");
-  console.log(timeSavedString);
+  // console.log("time saved");
+  // console.log(timeSavedString);
 
   return (
     <div>
-      <div className="max-w-[95vw] bg-white rounded-[18px] border border-[#d2daff] px-[10px] pt-[11px] pb-[14px] mx-[12px] align-self-center">
+      <div className="bg-white rounded-[18px] border border-[#d2daff] px-[10px] pt-[11px] pb-[14px] mx-[12px] align-self-center">
         {/* flex-wrap lg:flex-nowrap */}
         {/* <div className="flex gap-2 lg:gap-9 overflow-x-auto min-w-full"> */}
         <div className="text-[#000118] text-base font-medium leading-normal mb-[10px] px-[2px]">
           Planned Extra Payments Impact
         </div>
-        <div className="flex gap-[8px] lg:gap-9 mx-[-4px]">
+        <div className="flex gap-[8px] lg:gap-9 mx-[-4px] items-center justify-center w-[91vw]">
           <Card icon="debt-free" label="Debt Free" date={{ month, year }} />
           {timeSavedString ? (
             <Card
               icon="total-saved"
               label="Payoff Accelerated"
               // value={snowball?.totalInterestPaid}
-              value={timeSavedString}
+              value={neverBecomesDebtFree ? "N/A" : timeSavedString}
               sublabel="While in Repayment Plan"
             />
           ) : null}
