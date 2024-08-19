@@ -93,13 +93,13 @@ export default function useDebtQueries(setDebts?: Function) {
   } = useMutation({
     mutationKey: ["financials"],
     mutationFn: async ({
-      debts,
+      // debts,
       newDebt,
-      extraPayAmount,
-    }: {
-      debts: DebtFormType[];
+    }: // extraPayAmount,
+    {
+      // debts: DebtFormType[];
       newDebt: DebtFormType;
-      extraPayAmount: number;
+      // extraPayAmount: number;
     }) => {
       if (
         sessionData === undefined ||
@@ -112,7 +112,7 @@ export default function useDebtQueries(setDebts?: Function) {
       const newDebtFormatted = formatDebtsForApi(
         sessionData.user.id,
         [newDebt],
-        String(extraPayAmount ?? 0)
+        String(0) // String(extraPayAmount ?? 0)
       );
 
       return await axiosAuth.post(
@@ -135,27 +135,30 @@ export default function useDebtQueries(setDebts?: Function) {
   } = useMutation({
     mutationKey: ["financials"],
     mutationFn: async ({
-      debts,
+      // debts,
       updatedDebt,
-      extraPayAmount,
-    }: {
-      debts: DebtFormType[];
+    }: // extraPayAmount,
+    {
+      // debts: DebtFormType[];
       updatedDebt: DebtFormType;
-      extraPayAmount: number;
+      // extraPayAmount: number;
     }) => {
+
       if (
         sessionData === undefined ||
         sessionData === null ||
         !sessionData.user ||
         !sessionData.user.id
-      )
+      ) {
         return;
+      }
 
       const updatedDebtFormatted = formatDebtsForApi(
         sessionData.user.id,
         [updatedDebt],
-        String(extraPayAmount ?? 0)
+        String(0) // String(extraPayAmount ?? 0)
       );
+
 
       return await axiosAuth.post(
         `/dashboard/strategy/update/${sessionData.user.id}`,
