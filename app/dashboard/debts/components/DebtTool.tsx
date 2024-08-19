@@ -77,6 +77,7 @@ export default function DebtTool() {
   const [extraPayment, setExtraPayment] = useState(0);
   const [percentDown, _setPercentDown] = useState(0);
   const axiosAuth = useAxiosAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     createDebt,
@@ -141,18 +142,25 @@ export default function DebtTool() {
 
   const __extraPayment =
     budgetInfo?.data?.debts?.find(
-      (debt) => debt.name === DEBT_REPAYMENT_STRATEGY_NAME
+      (debt: { name: string }) => debt.name === DEBT_REPAYMENT_STRATEGY_NAME
     )?.value || 0;
 
-  const { update: updateBudgetCategory } = useBudgetQueries();
+  const _year = date?.getFullYear();
+  const _month = date?.getMonth();
+  const { update: updateBudgetCategory } = useBudgetQueries(
+    _year,
+    _month,
+    setIsLoading,
+    budgetInfo?.data?.id
+  );
 
   const updateDebtRepaymentStrategy = async () => {
     const debts = budgetInfo?.data?.debts.filter(
-      (debt) => debt.name !== DEBT_REPAYMENT_STRATEGY_NAME
+      (debt: { name: string }) => debt.name !== DEBT_REPAYMENT_STRATEGY_NAME
     );
 
-    console.log("old debts");
-    console.log(debts);
+    // console.log("old debts");
+    // console.log(debts);
 
     const newDebts = [
       {
@@ -163,22 +171,25 @@ export default function DebtTool() {
       ...debts,
     ];
 
-    console.log(newDebts);
+    // console.log(newDebts);
 
     const updateResult = await updateBudgetCategory({ debts: newDebts });
-    console.log(updateResult);
+    // console.log(updateResult);
     toast.success("Repayment Strategy updated");
   };
 
-  console.log("-- in debt tool with extra payment --");
-  console.log(budgetInfo);
-  console.log(__extraPayment);
+  // console.log("-- in debt tool with extra payment --");
+  // console.log(budgetInfo);
+  // console.log(__extraPayment);
 
   const budgetProgress = (
     <BudgetProgress
       hasBudgetData={hasBudgetData}
       income={income}
       totalExpenses={totalExpenses}
+      incomeAfterExpenses={incomeAfterExpenses}
+      extraPayment={extraPayment}
+      oldExtraPayment={__extraPayment}
     />
   );
 
@@ -223,37 +234,6 @@ export default function DebtTool() {
     snowballResultsWithExtra,
     avalancheResultsWithExtra,
   } = useCalculators(debtsData, extraPayment);
-  // const {snowballResultsWithoutExtra, snowballResultsWithExtra, avalancheResultsWithExtra}
-
-  // const snowballResultsWithoutExtra = useMemo(
-  //   () =>
-  //     debtsData !== undefined
-  //       ? paymentScheduleCalculator(debtsData?.data ?? [], "snowball", 0)
-  //       : undefined,
-  //   [debtsData?.data]
-  // );
-
-  // const snowballResultsWithExtra = useMemo(() => {
-  //   if (debtsData === undefined) return undefined;
-
-  //   if (extraPayment === 0) return undefined;
-
-  //   return paymentScheduleCalculator(
-  //     debtsData?.data ?? [],
-  //     "snowball",
-  //     extraPayment
-  //   );
-  // }, [debtsData?.data, extraPayment]);
-
-  // const avalancheResultsWithExtra = useMemo(() => {
-  //   if (debtsData === undefined) return undefined;
-  //   if (extraPayment === 0) return undefined;
-  //   return paymentScheduleCalculator(
-  //     debtsData?.data ?? [],
-  //     "avalanche",
-  //     extraPayment
-  //   );
-  // }, [debtsData?.data, extraPayment]);
 
   // console.log("-- AVALANCHE --");
   // console.log(avalancheResultsWithExtra);
@@ -294,6 +274,7 @@ export default function DebtTool() {
   //     </div>
   //   </div>
   // );
+
   const showFallBack =
     !debtsData?.data?.length && !(debtsData?.data?.length > 0);
 
@@ -339,7 +320,7 @@ export default function DebtTool() {
   );
 
   const { formattedString, debtFreeBy, month, year } = getDebtFreeInfo(
-    endDate,
+    typeof endDate === "string" ? new Date(endDate) : endDate ?? new Date(),
     endBalance,
     "MMM YYYY"
   );
@@ -435,20 +416,24 @@ export default function DebtTool() {
         ) : null}
 
         {subTab === "EDIT_STEP" ? (
-          <div className="rounded-[18px] border border-[#d2daff] px-[16px] mx-[18px] mt-[12px] mb-[24px]">
-            {extraPaymentInput}
-            <DebtsComparison
-              userId={session?.user?.id}
-              debts={debtsData?.data}
-              snowballResultsWithExtra={selectedMethod}
-              // snowballResultsWithExtra={snowballResultsWithExtra}
-              snowballResultsWithoutExtra={snowballResultsWithoutExtra}
-              neverBecomesDebtFree={neverBecomesDebtFree}
-              endBalance={endBalance}
-              endDate={endDate}
-              monthsFaster={monthsFaster}
-            />
-          </div>
+          <>
+            <div className="px-[24px]">{budgetProgress}</div>
+
+            <div className="rounded-[18px] border border-[#d2daff] px-[16px] mx-[18px] mt-[12px] mb-[24px]">
+              {extraPaymentInput}
+              <DebtsComparison
+                userId={session?.user?.id}
+                debts={debtsData?.data}
+                snowballResultsWithExtra={selectedMethod}
+                // snowballResultsWithExtra={snowballResultsWithExtra}
+                snowballResultsWithoutExtra={snowballResultsWithoutExtra}
+                neverBecomesDebtFree={neverBecomesDebtFree}
+                endBalance={endBalance}
+                endDate={endDate}
+                monthsFaster={monthsFaster}
+              />
+            </div>
+          </>
         ) : null}
 
         {DEBT_MOBILE_STEPS[step] === DEBT_SUMMARY || subTab === DEBT_SUMMARY ? (
