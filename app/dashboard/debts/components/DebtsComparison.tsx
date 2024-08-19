@@ -33,7 +33,7 @@ type Props = {
   neverBecomesDebtFree?: boolean;
   endBalance?: number;
   endDate?: Date | string;
-  monthsFaster?: string;
+  monthsFaster?: number;
 };
 
 export const DebtsComparison = ({
@@ -154,41 +154,73 @@ export const DebtsComparison = ({
                     <div className="flex flex-col md:flex-row gap-3 text-center">
                       <div className="flex flex-col items-center justify-center gap-[4px] rounded-xl w-[100%]">
                         <MoneyIcon width="30" height="30" viewBox="0 0 64 64" />
-                        <div className="">
-                          <span className="text-[#26294d] text-base font-medium">
-                            You can get out of debt faster and also save{" "}
-                            <strong className="text-[#4ad582]">
-                              {formatCurrency(savedInterest) || "$0"}
-                            </strong>{" "}
-                            in interest!{" "}
-                          </span>
-                          {/* <h1 className="text-2xl font-black">
+                        {neverBecomesDebtFree ? (
+                          <></>
+                        ) : (
+                          <div className="">
+                            <span className="text-[#26294d] text-base font-medium">
+                              You can get out of debt faster and also save{" "}
+                              <strong className="text-[#4ad582]">
+                                {formatCurrency(savedInterest) || "$0"}
+                              </strong>{" "}
+                              in interest!{" "}
+                            </span>
+                            {/* <h1 className="text-2xl font-black">
                           {formatCurrency(savedInterest) || "$0"}
                         </h1> */}
-                        </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex gap-4 rounded-xl w-[100%] text-center">
-                        <div
-                          className="text-base font-medium w-[100%] text-center"
-                          style={{ textAlign: "center" }}
-                        >
-                          <span style={{ textAlign: "center" }}>
-                            Save time, pay
-                          </span>
-                          <span
-                            className="text-medium"
+                      {neverBecomesDebtFree ? (
+                        <div className="flex gap-4 rounded-xl w-[100%] text-center">
+                          <div
+                            className="text-base font-medium w-[100%] text-center"
                             style={{ textAlign: "center" }}
                           >
-                            <span className="font-extrabold">
-                              {" "}
-                              <strong className="text-[#4ad582]">
-                                {monthsFaster}
-                              </strong>{" "}
+                            <span style={{ textAlign: "center" }}>
+                              With your current debt, interest rate and
+                              repayment strategy you will
                             </span>
-                            month{monthsFaster > 1 && "s"} faster!
-                          </span>
+                            <span
+                              className="text-medium"
+                              style={{ textAlign: "center" }}
+                            >
+                              <span className="font-extrabold">
+                                {" "}
+                                <strong className="text-red-500">
+                                  never
+                                </strong>{" "}
+                              </span>
+                              get out of debt. Please schedule a call with us to
+                              see how we can help you.
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="flex gap-4 rounded-xl w-[100%] text-center">
+                          <div
+                            className="text-base font-medium w-[100%] text-center"
+                            style={{ textAlign: "center" }}
+                          >
+                            <span style={{ textAlign: "center" }}>
+                              Save time, pay
+                            </span>
+                            <span
+                              className="text-medium"
+                              style={{ textAlign: "center" }}
+                            >
+                              <span className="font-extrabold">
+                                {" "}
+                                <strong className="text-[#4ad582]">
+                                  {monthsFaster}
+                                </strong>{" "}
+                              </span>
+                              month{monthsFaster && monthsFaster > 1 && "s"}{" "}
+                              faster!
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* <div className="flex-col justify-start items-center gap-0.5 inline-flex">
