@@ -84,7 +84,7 @@ export default function Profile() {
                         height={80}
                     />
 
-                    <UpdateHandle />
+                    {/* <UpdateHandle /> */}
 
                     <UpdateForm
                         onSubmit={onSubmit}
