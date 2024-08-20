@@ -1,14 +1,20 @@
 "use client"
 import Form from "@/app/components/ui/Form";
 import { Switch } from "@mui/material";
+import 'react-phone-number-input/style.css'
+import PhoneInput, { type Value } from 'react-phone-number-input'
+
 
 interface Props {
-    onSubmit: (data: { name: string; email: string; phoneNumber: string }) => void;
+    onSubmit: (data: { name: string; email: string; phoneNumber: Value | undefined }) => void;
     error: string;
     isLoading: boolean;
     userName: string;
+    setUserName: Function;
     userEmail: string;
-    userPhoneNumber: string | null;
+    setUserEmail: Function;
+    userPhoneNumber: Value | undefined;
+    setUserPhoneNumber: (value?: Value | undefined) => void;
     showNotifications: boolean;
     setShowNotifications: Function;
     setWindowOpen: Function;
@@ -20,8 +26,11 @@ export default function UpdateForm({
     error,
     isLoading,
     userName,
+    setUserName,
     userEmail,
+    setUserEmail,
     userPhoneNumber,
+    setUserPhoneNumber,
     showNotifications,
     setShowNotifications,
     setWindowOpen,
@@ -37,7 +46,7 @@ export default function UpdateForm({
     }
     return (
         <>
-            <Form onSubmit={onSubmit} className="w-full">
+            <div>
                 <div className="mb-5">
                     <label className="text-left">
                         <span
@@ -49,6 +58,8 @@ export default function UpdateForm({
                     <input
                         type="name"
                         placeholder={userName}
+                        value={loginType !== "google" ? userName : undefined}
+                        onChange={loginType !== "google" ? (e) => setUserName(e.target.value) : undefined}
                         disabled={loginType === "google"}
                         name="name"
                         className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
@@ -66,6 +77,8 @@ export default function UpdateForm({
                     <input
                         type="email"
                         placeholder={userEmail}
+                        value={loginType !== "google" ? userEmail : undefined}
+                        onChange={loginType !== "google" ? (e) => setUserEmail(e.target.value) : undefined}
                         disabled={loginType === "google"}
                         name="email"
                         className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
@@ -80,12 +93,21 @@ export default function UpdateForm({
                             Phone Number
                         </span>
                     </label>
-                    <input
+                    {/* <input
                         type="phone"
                         placeholder={userPhoneNumber ? userPhoneNumber : "Your phone number"}
                         name="phoneNumber"
                         className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
+                    /> */}
+
+                    <PhoneInput
+                        value={userPhoneNumber ? userPhoneNumber : ""}
+                        defaultCountry="US"
+                        onChange={setUserPhoneNumber}
+                        className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
+                        placeholder={userPhoneNumber ? userPhoneNumber : "Your phone number"}
                     />
+
                 </div>
 
                 <div className="flex items-center justify-between w-full">
@@ -122,11 +144,13 @@ export default function UpdateForm({
                         style={{
                             borderRadius: "12px",
                         }}
+                        onClick={() => onSubmit({ name: userName, email: userEmail, phoneNumber: userPhoneNumber })}
                     >
                         {isLoading ? "Loading..." : "Update"}
                     </button>
                 </div>
-            </Form>
+            </div>
+
             <div className="form-control mt-6">
                 <button
                     onClick={handleWindowOpen}

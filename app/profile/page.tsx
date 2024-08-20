@@ -1,15 +1,14 @@
 "use client";
 
-import PageHeader from "@/app/components/Layout/PageHeader";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import UpdateForm from "./components/UpdateForm";
-import UpdateHandle from "./components/UpdateHandle";
 import LogoutWindow from "./components/LogoutWindow";
 import { AxiosError } from "axios";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
-import { useRouter } from "next/navigation";
+import { isValidPhoneNumber, type Value } from 'react-phone-number-input'
+import { toast } from "react-toastify";
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -22,14 +21,16 @@ interface ProfileData {
 }
 
 export default function Profile() {
+    const axiosAuth = useAxiosAuth();
     const { data } = useSession();
     const { user } = data!;
     const { image } = user;
     const [showNotifications, setShowNotifications] = useState<boolean>(false);
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
+    const [userName, setUserName] = useState<string>("");
+    const [userEmail, setUserEmail] = useState<string>("");
+    const [userPhoneNumber, setUserPhoneNumber] = useState<Value | undefined>("" as Value);
     const [isWindowOpen, setWindowOpen] = useState<boolean>(false);
-    const axiosAuth = useAxiosAuth();
-    const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
@@ -38,6 +39,9 @@ export default function Profile() {
             try {
                 const response = await axiosAuth.get(`${API_URL}/user/profile`);
                 setProfileData(response.data);
+                setUserName(response.data.name);
+                setUserEmail(response.data.email);
+                setUserPhoneNumber(response.data.phoneNumber ? response.data.phoneNumber as Value : undefined);
             } catch (err: AxiosError | any) {
                 console.error("Error fetching profile data:", err.message);
                 setError("Failed to load profile data.");
@@ -49,13 +53,20 @@ export default function Profile() {
     async function onSubmit(data: {
         name: string;
         email: string;
-        phoneNumber: string;
+        phoneNumber: Value | undefined;
     }) {
         try {
             setIsLoading(true);
             setError("");
-            await axiosAuth.post(`${API_URL}/user/update-profile`, data);
-            window.location.reload();
+            if (!isValidPhoneNumber(data.phoneNumber!)) {
+                setError("Phone Number is invalid");
+            } else {
+                const updateData = { ...data, phoneNumber: data.phoneNumber as string }
+                const response = await axiosAuth.post(`${API_URL}/user/update-profile`, updateData);
+                if (response.status === 200) {
+                    toast.success("Profile updated");
+                }
+            }
         } catch (err: AxiosError | any) {
             console.log(err.message);
             setError(err.response.data);
@@ -84,15 +95,16 @@ export default function Profile() {
                         height={80}
                     />
 
-                    {/* <UpdateHandle /> */}
-
                     <UpdateForm
                         onSubmit={onSubmit}
                         error={error}
                         isLoading={isLoading}
-                        userName={profileData!.name}
-                        userEmail={profileData!.email}
-                        userPhoneNumber={profileData!.phoneNumber}
+                        userName={userName}
+                        setUserName={setUserName}
+                        userEmail={userEmail}
+                        setUserEmail={setUserEmail}
+                        userPhoneNumber={userPhoneNumber}
+                        setUserPhoneNumber={setUserPhoneNumber}
                         showNotifications={showNotifications}
                         setShowNotifications={setShowNotifications}
                         setWindowOpen={setWindowOpen}
