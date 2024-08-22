@@ -40,7 +40,7 @@ export default function PageHeader({
           <div className="text-slate-950 text-base font-normal flex flex-row items-center text-white text-xl w-[100vw] relative">
             {Greeter()}&nbsp;<strong>{name?.split(" ")[0]}</strong>! &nbsp;
           </div>
-          <div className="flex flex-row justify-center align-center flex-end justify-self-center">
+          <div className="flex flex-row justify-center align-center flex-end justify-self-center gap-[6px]">
             <div className="flex items-center justify-center gap-[20px]">
               <IoSearch
                 className={iconClasses}
