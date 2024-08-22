@@ -29,8 +29,38 @@ export default function BudgetProgress({
       : extraPayment + oldExtraPayment ?? 0);
 
   return (
-    <div className="h-9 w-[100%] relative mt-[38px] mb-[0px] bg-white rounded-[18px] border border-2 border-violet-200">
-      <div className="font-md text-violet-500 font-bold mx-[4px] relative top-[-28px] left-[3%]">
+    <div className="relative w-[100%]">
+      <LinearProgress
+        sx={{
+          borderRadius: "15%",
+          marginTop: "3px",
+          maxWidth: "89%",
+          position: "relative",
+          top: "18px",
+          left: "6%",
+          backgroundColor: "darkred",
+          "& .MuiLinearProgress-bar": {
+            backgroundColor: hasBudgetData ? "darkgreen" : "darkgrey",
+          },
+        }}
+        variant="determinate"
+        value={(1 - totalExpenses / income) * 100}
+      />
+
+      <div className="h-[41px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80 w-[100%] ">
+        <div className="h-5 text-center text-black text-xs font-medium text-nowrap">
+          💸 Available Disposable Income
+        </div>
+        <div className="w-12 h-5 text-center text-[#40405c] text-[10px] font-normal">
+          {formatCurrency(available)}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="h-10 w-[100%] relative mt-[38px] mb-[0px] bg-white rounded-[18px] border border-2 border-violet-200">
+      <div className="font-md text-violet-500 font-bold mx-[4px] relative top-[-30px] left-[3%]">
         {hasBudgetData
           ? "Monthly Disposable Income"
           : "Set a budget to plan better"}
@@ -39,10 +69,10 @@ export default function BudgetProgress({
         sx={{
           borderRadius: "15%",
           marginTop: "3px",
-          maxWidth: "92%",
+          maxWidth: "89%",
           position: "relative",
-          top: "-28px",
-          left: "5%",
+          top: "-24px",
+          left: "6%",
           backgroundColor: "darkred",
           "& .MuiLinearProgress-bar": {
             backgroundColor: hasBudgetData ? "darkgreen" : "darkgrey",
@@ -55,7 +85,7 @@ export default function BudgetProgress({
         style={{
           position: "absolute",
           color: "darkgreen",
-          top: "4px",
+          top: "8px",
           left: "13%",
           transform: "translateX(-50%)",
         }}
@@ -66,7 +96,7 @@ export default function BudgetProgress({
         style={{
           position: "absolute",
           color: "black",
-          top: "4px",
+          top: "8px",
           left: "50%",
           transform: "translateX(-50%)",
         }}
@@ -78,7 +108,7 @@ export default function BudgetProgress({
         style={{
           position: "absolute",
           color: "darkred",
-          top: "4px",
+          top: "8px",
           left: "87%",
           transform: "translateX(-50%)",
         }}

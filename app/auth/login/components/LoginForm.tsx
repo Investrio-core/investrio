@@ -10,6 +10,7 @@ import { signIn, useSession } from "next-auth/react";
 import { clearSession, saveSession } from "@/app/utils/session";
 import Mixpanel from "@/services/mixpanel";
 import Link from "next/link";
+import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -61,7 +62,7 @@ export default function LoginForm() {
       });
 
       if (response?.ok) {
-        router.push("/dashboard");
+        router.push(HOME_DASHBOARD_PAGE);
       } else {
         setError("Invalid Credentials");
       }

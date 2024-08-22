@@ -8,6 +8,7 @@ import Mixpanel from "@/services/mixpanel";
 import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
+import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,7 +40,7 @@ export default function SignUpPage() {
         email: data.email,
         password: data.password,
         // ## Register callback:
-        callbackUrl: "/dashboard/debts/add",
+        callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
       });
 
       Mixpanel.getInstance().identify(user.data.id, data.email, data.name);

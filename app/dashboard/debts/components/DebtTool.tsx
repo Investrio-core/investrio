@@ -196,6 +196,7 @@ export default function DebtTool() {
   useEffect(() => {
     if (Array.isArray(debtsData?.data)) {
       let totalDebt = 0;
+      setSubTab("PLANNER_STEP");
 
       setDebts(
         debtsData?.data?.map((r: FinancialRecord) => {
@@ -330,7 +331,8 @@ export default function DebtTool() {
       className={`lg:px-[28px] lg:py-[26px] ${backgroundColor} max-w-[100vw] md:max-w-[100vw] flex flex-col`}
     >
       {/* Mobile version */}
-      <div className="lg:hidden md:hidden flex flex-col">
+      <div className="flex flex-col">
+        {/* <div className="lg:hidden md:hidden flex flex-col"> */}
         <PageHeader
           sectionHeader={"Payoff Planner"}
           sectionSubheader={"Debt"}
@@ -381,14 +383,15 @@ export default function DebtTool() {
         {/* {headerSummary} */}
         {subTab === "PLANNER_STEP" ? (
           <>
-            <div className="w-[316px] h-[41px] mx-[24px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
-              <div className="w-[102px] h-5 text-center text-black text-xs font-medium">
+            <div className="h-[41px] mx-[24px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
+              <div className="h-5 text-center text-black text-xs font-medium text-nowrap">
                 💸 Debt Free Date
               </div>
               <div className="w-12 h-5 text-center text-[#40405c] text-[10px] font-normal">
                 {formattedString}
               </div>
             </div>
+            <div className="px-[24px]">{budgetProgress}</div>
             <DashboardInfo
               debtsData={debtsData?.data}
               snowballResultsWithExtra={selectedMethod} //{snowballResultsWithExtra}
@@ -417,8 +420,6 @@ export default function DebtTool() {
 
         {subTab === "EDIT_STEP" ? (
           <>
-            <div className="px-[24px]">{budgetProgress}</div>
-
             <div className="rounded-[18px] border border-[#d2daff] px-[16px] mx-[18px] mt-[12px] mb-[24px]">
               {extraPaymentInput}
               <DebtsComparison
@@ -454,8 +455,12 @@ export default function DebtTool() {
               extraPaymentAmount={extraPaymentAmount}
               setExtraPaymentAmount={setExtraPaymentAmount}
               cancel={() => {
-                setSubTab(DEBT_SUMMARY);
-                setStep(0);
+                if (Array.isArray(debtsData?.data)) {
+                  setSubTab("PLANNER_STEP");
+                } else {
+                  setSubTab(DEBT_SUMMARY);
+                  setStep(0);
+                }
               }}
             />
           </>
@@ -487,7 +492,7 @@ export default function DebtTool() {
         ) : null}
       </div>
       {/* Desktop version */}
-      <div className="hidden md:block lg:block">
+      {/* <div className="hidden md:block lg:block">
         <PageHeader
           sectionHeader={"Payoff Planner"}
           sectionSubheader={"Debt"}
@@ -495,7 +500,6 @@ export default function DebtTool() {
             <ButtonWithIcon
               icon={<AiOutlinePlusCircle className="text-2xl" />}
               classProp="font-semibold"
-              // disabled={formHasError}
               text="Add Debt"
               onClick={() => setShowAddDebt(true)}
             />
@@ -511,7 +515,7 @@ export default function DebtTool() {
           totalInterestSaved={totalInterestSaved}
           endBalance={endBalance}
         />
-        {/* <div className="grid grid-cols-4 lg:flex max-w-[100vw] min-h-fit"> */}
+    
         <div className="flex flex-wrap">
           <div className="flex flex-row">
             <DebtSummary
@@ -533,10 +537,10 @@ export default function DebtTool() {
               />
             ) : null}
 
-            {/* <div className="flex"> */}
+
 
             <DashboardInfo
-              // data={data?.data}
+    
               debtsData={debtsData?.data}
               snowballResultsWithExtra={selectedMethod}
               snowballResultsWithoutExtra={snowballResultsWithoutExtra}
@@ -545,7 +549,7 @@ export default function DebtTool() {
           <div className="col-span-2">
             <DebtsComparison
               userId={session?.user?.id}
-              // data={data?.data}
+
               debts={debtsData?.data}
               snowballResultsWithExtra={selectedMethod}
               snowballResultsWithoutExtra={snowballResultsWithoutExtra}
@@ -555,7 +559,7 @@ export default function DebtTool() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="mt-[10px] text-[#6C7278] text-center text-base mt-[24px] mb-[18px]">
         © 2024 Investrio. All rights reserved
