@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useMemo } from "react";
 
-const categories = ["wants", "needs", "savings", "debts"];
+const categories = ["needs", "wants", "savings", "debts"];
 
 export default function useBudgetData(date?: Date | null) {
   const axiosAuth = useAxiosAuth();
@@ -72,7 +72,11 @@ export default function useBudgetData(date?: Date | null) {
 
   const incomeAfterExpenses = (data?.data?.income ?? 0) - sumCategories;
 
-  const hasBudgetData = Object.keys(data?.data ?? {}).length > 0;
+  const hasBudgetData =
+    data?.data !== undefined && Object.keys(data?.data ?? {}).length > 0;
+
+  console.log("-- budget data --");
+  console.log(data);
 
   return {
     data,
