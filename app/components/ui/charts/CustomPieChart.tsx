@@ -14,7 +14,7 @@ export const COLORS = [
   "#480CA8",
 ];
 
-const FIGMA_COLORS = [
+export const FIGMA_COLORS = [
   "#165DFF",
   "#14C9C9",
   "#F7BA1E",
@@ -166,6 +166,8 @@ export function ScaledPieChart({
   const dollarFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   });
 
   // const ValueJsx = (
@@ -314,15 +316,15 @@ export function ScaledPieChart({
                     renderShape === "flex-row" ? "mb-[8px]" : ""
                   }`}
                 >
-                  <div className="flex gap-2 items-center">
+                  <div className="flex gap-[6px] items-center">
                     <div
                       style={{
                         backgroundColor:
                           colorsArray[index % colorsArray.length],
                       }}
-                      className="w-3 h-3 rounded"
+                      className="w-3 h-3 rounded-[50%]"
                     ></div>
-                    {entry.name}
+                    <div className="mr-[10px]">{entry.name}</div>
                   </div>
                   <span
                     className={`font-medium mr-[10px] justify-end items-end ${
