@@ -118,8 +118,8 @@ export const DashboardInfo = ({
                 <Balance
                   data={[]}
                   results={
-                    snowballResultsWithExtra?.payments ??
-                    snowballResultsWithoutExtra?.payments
+                    snowballResultsWithExtra?.payments?.slice(0, 6) ??
+                    snowballResultsWithoutExtra?.payments?.slice(0, 6)
                   }
                 />
               </div>
