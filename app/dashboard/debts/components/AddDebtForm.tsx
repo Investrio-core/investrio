@@ -150,33 +150,36 @@ export default function DebtsForm({
               required={true}
               setFormHasError={setFormHasError}
             />
-            <div>
-              <Input
-                label="Minimum Payment"
-                labelStyles="text-slate-400 text-sm font-semibold uppercase tracking-tight"
-                containerStyles="max-w-[48%] max-[375px]:max-w-[100%]"
-                style={{ color: "#8E8ECC" }}
-                name="minPayment"
-                type="currency"
-                placeholder="$00.00"
-                error={minPayAmountError}
-                onChange={setMinimumPayment}
-                inline={true}
-                defaultValue="0"
-                // required={true}
-                // minNumberValue={
-                //   debtValue > 0.01 ? Number((debtValue * 0.03).toFixed(2)) : 0.01
-                // } // Minimum payment is at least 3% of the balance
-                setFormHasError={setFormHasError}
-              />
-              {minimumPayment === undefined ||
-              suggestedMinimum > minimumPayment ? (
-                <span className="text-xs text-red-500">
-                  {`The minimum recommended value for this field is ${suggestedMinimum}`}
-                </span>
-              ) : null}
-            </div>
+            <Input
+              label="Minimum Payment"
+              labelStyles="text-slate-400 text-sm font-semibold uppercase tracking-tight"
+              containerStyles="max-w-[48%] max-[375px]:max-w-[100%]"
+              style={{ color: "#8E8ECC" }}
+              name="minPayment"
+              type="currency"
+              placeholder="$00.00"
+              error={minPayAmountError}
+              onChange={setMinimumPayment}
+              inline={true}
+              defaultValue="0"
+              // required={true}
+              // minNumberValue={
+              //   debtValue > 0.01 ? Number((debtValue * 0.03).toFixed(2)) : 0.01
+              // } // Minimum payment is at least 3% of the balance
+              setFormHasError={setFormHasError}
+            />
           </div>
+          <div className="col-span-4 md:col-span-12 flex gap-[12px] max-[375px]:flex-col w-[100%] items-end justify-end">
+            {
+              // minimumPayment === undefined ||
+              suggestedMinimum > minimumPayment ? (
+                <span className="text-xs text-red-400 self-end">
+                  {`Recommended value for this field is ${suggestedMinimum}`}
+                </span>
+              ) : null
+            }
+          </div>
+
           {/* <div className="col-span-4 md:col-span-3">
             <Input
               label="Outstanding Balance"
