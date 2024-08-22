@@ -126,16 +126,19 @@ const Income = ({
           onSubmit={onSubmit}
           sectionTitleStyles="text-center text-[#100d40] text-xl font-normal leading-7"
         />
-        {budgetInfo?.income ? (
-          <div className="text-lg mt-3 relative top-[-14px]">
+        {budgetInfo?.income && typeof incomeAfterExpenses === "number" ? (
+          <div className="text-lg mt-3 relative top-[-14px] text-center">
+            {incomeAfterExpenses < 0 ? "You are over budget by " : ""}
             <span
               className={`font-bold ${
                 incomeAfterExpenses < 0 ? "text-red-700" : "text-green-700"
               } `}
             >
-              {formattedIncome}{" "}
+              {formattedIncome}
             </span>
-            monthly income remaining
+            {incomeAfterExpenses < 0
+              ? ". Here’s a breakdown:"
+              : " monthly income remaining"}
           </div>
         ) : null}
 
