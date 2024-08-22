@@ -11,6 +11,14 @@ import { IoAdd } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
 import { GiExpense } from "react-icons/gi";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import BudgetIcon from "@/public/icons/budget.svg";
+import { MdOutlineDashboard } from "react-icons/md";
+import {
+  BUDGET_PAGE,
+  DEBTS_PAGE,
+  HOME_DASHBOARD_PAGE,
+} from "@/app/utils/constants";
 
 const HomeSvg = ({ fill = "none" }: { fill?: string }) => (
   <svg
@@ -201,14 +209,14 @@ export const BUDGET_STEPS = [INCOME_STEP, BREAKDOWN_STEP, BUDGET_STEP];
 
 const tabs = [
   {
-    name: "Home",
-    route: "/dashboard",
-    Icon: HomeSvg,
+    name: "Dashboard",
+    route: HOME_DASHBOARD_PAGE,
+    Icon: () => <MdOutlineDashboard className="relative top-[4px]" />, // HomeSvg
   },
   {
     name: "Budget",
-    route: "/dashboard/budget",
-    Icon: BudgetSvg,
+    route: BUDGET_PAGE,
+    Icon: () => <BudgetIcon className="relative left-[-4px] top-[-6px]" />, // BudgetSvg
     subTabs: [
       {
         name: "Income",
@@ -230,8 +238,10 @@ const tabs = [
   },
   {
     name: "Debt",
-    route: "/dashboard/debts",
-    Icon: DebtSvg,
+    route: DEBTS_PAGE,
+    Icon: () => (
+      <FaHandHoldingDollar className="relative left-[4px] top-[2px]" />
+    ), //DebtSvg,
     subTabs: [
       {
         name: "Summary",
