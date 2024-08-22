@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { formatCurrency } from "@/app/utils/formatters";
-import { AccountMonth } from "@/app/hooks/calculatorsSnowball";
+import { AccountMonth, PaymentObject } from "@/app/hooks/calculatorsSnowball";
 import Calender from "@/public/icons/calendar-styled.svg";
 
 type Info = {
@@ -29,7 +29,7 @@ interface RepaymentShape {
 }
 
 export type CheckboxTableProps = {
-  snowballResultsCurrentMonth: AccountMonth[];
+  snowballResultsCurrentMonth?: PaymentObject[];
   _setPercentDown?: Function;
 };
 
@@ -73,7 +73,9 @@ export const CheckboxTable = ({
     setList(newList);
   };
 
-  const reshapeList = (snowballResultsCurrentMonth: AccountMonth[]) => {
+  const reshapeList = (snowballResultsCurrentMonth?: AccountMonth[]) => {
+    if (snowballResultsCurrentMonth === undefined) return [];
+
     let totalBalance = 0;
     let totalBalanceEnd = 0;
     const reshapedList =
@@ -126,15 +128,23 @@ export const CheckboxTable = ({
           <Calender />
         </div>
         <div className="text-[#2b3674] font-medium leading-loose self-center justify-self-center mt-[20px]">
-          After This Month
+          Repayment Strategy
         </div>
       </div>
 
       <div className="w-[100%] h-[39px] justify-between items-center inline-flex mb-[14px]">
-        <div className="text-right text-[#a3aed0] text-normal font-medium leading-normal">
-          Total Balance
+        <div className="flex flex-col gap-[4px]">
+          <div className="text-black-500 text-sm font-medium leading-normal">
+            Total Debt
+          </div>
+          <div className="text-[#a3aed0] text-xs font-medium leading-normal">
+            Month over Month
+          </div>
         </div>
         <div className="flex-col justify-start items-end inline-flex">
+          <div className="text-right text-[#2b3674] text-base font-bold leading-tight">
+            {formatCurrency(totalBalance)}
+          </div>
           <div className="justify-start items-center gap-1 inline-flex">
             <div className="w-5 h-5 relative" />
             <div
@@ -144,9 +154,6 @@ export const CheckboxTable = ({
             >
               {balanceDecreasing ? `+${percentDown}` : `${percentDown}`}%
             </div>
-          </div>
-          <div className="text-right text-[#2b3674] text-base font-bold leading-tight">
-            {formatCurrency(totalBalance)}
           </div>
         </div>
       </div>
