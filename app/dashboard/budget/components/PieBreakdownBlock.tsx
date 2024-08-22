@@ -27,7 +27,7 @@ export default function PieBreakdownBlock({
   useBasicLabel?: boolean;
   renderPercentValues?: boolean;
   renderShape?: string;
-  paddingY?: number;
+  paddingY?: string;
   values?: {
     name: string;
     value: number;
