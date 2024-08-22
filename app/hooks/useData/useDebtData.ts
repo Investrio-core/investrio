@@ -47,5 +47,17 @@ export default function useDebtData() {
     // },
   });
 
-  return { data: debtsData };
+  const hasDebtData = useMemo(() => {
+    const debts = debtsData?.data;
+    if (
+      debts === undefined ||
+      debts?.length === undefined ||
+      debts.length === 0
+    ) {
+      return false;
+    }
+    return true;
+  }, [debtsData?.data]);
+
+  return { data: debtsData, hasDebtData };
 }
