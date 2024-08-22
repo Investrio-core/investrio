@@ -106,7 +106,7 @@ export function getSummaryStatistics(
   }
 
   const lastPaymentWithout =
-    selectedMethod?.["payments"]?.[
+    snowballResultsWithoutExtra?.["payments"]?.[
       snowballResultsWithoutExtra?.["payments"].length - 1
     ];
   const endDateWithout = dayjs(
@@ -124,14 +124,18 @@ export function getSummaryStatistics(
   // console.log(timeSavedYears);
   // console.log("time saved months");
   // console.log(endDateWithout.diff(debtFreeBy, "months"));
-  const timeSavedString = `${
-    timeSavedYears * -1 > 0 ? `${timeSavedYears * -1} years, ` : ""
-  }${endDateWithout.diff(debtFreeBy, "months") * -1} months`;
+  // const timeSavedString = `${
+  //   timeSavedYears * -1 > 0 ? `${timeSavedYears * -1} years, ` : ""
+  // }${endDateWithout.diff(debtFreeBy, "months") * -1} months`;
+
+  const timeSavedString = `${endDateWithout.diff(debtFreeBy, "months")} months`;
   // console.log(timeSavedString);
 
-  const monthsFaster =
-    endDateWithout.diff(debtFreeBy, "years") * -12 +
-    endDateWithout.diff(debtFreeBy, "months") * -1;
+  // const monthsFaster =
+  //   endDateWithout.diff(debtFreeBy, "years") * -12 +
+  //   endDateWithout.diff(debtFreeBy, "months") * -1;
+
+  const monthsFaster = endDateWithout.diff(debtFreeBy, "months");
 
   // const timeSavedString = `${
   //   monthsFaster > 12 ? `${(monthsFaster / 12).toFixed(0)} years, ` : ""
