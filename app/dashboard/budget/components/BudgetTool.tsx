@@ -209,6 +209,53 @@ export const combineDebtAndBudgetData = (
   };
 };
 
+export async function duplicateBudgetForLaterMonth(year, month, budgetInfo, axiosAuth, create) {
+  if (
+    year === undefined ||
+    month === undefined ||
+    budgetInfo?.data === undefined
+  ) {
+    return;
+  }
+
+  if (
+    budgetInfo?.data !== undefined &&
+    Object.keys(budgetInfo?.data)?.length > 0
+  ) {
+    return;
+  }
+
+  axiosAuth.get(`/budget/get-latest`).then((latestBudgetInfo) => {
+    if (
+      latestBudgetInfo?.data === undefined ||
+      Object.keys(latestBudgetInfo?.data)?.length === 0 ||
+      (year === latestBudgetInfo?.data?.year &&
+        month === latestBudgetInfo?.data?.month) ||
+      year < latestBudgetInfo?.data?.year ||
+      (year === latestBudgetInfo?.data?.year &&
+        month === latestBudgetInfo?.data?.month)
+    ) {
+      return;
+    }
+
+    const { data } = latestBudgetInfo;
+    const wants = data?.["wants"].filter(
+      (item: BudgetItem) => item?.recurringExpense === "true"
+    );
+    const needs = data?.["needs"].filter(
+      (item: BudgetItem) => item?.recurringExpense === "true"
+    );
+    const savings = data?.["savings"].filter(
+      (item: BudgetItem) => item?.recurringExpense === "true"
+    );
+    const debts = data?.["debts"].filter(
+      (item: BudgetItem) => item?.recurringExpense === "true"
+    );
+    const newBudget = { ...data, wants, needs, savings, debts };
+    create(newBudget);
+  });
+}
+
 export default function BudgetTool() {
   const [date, setDate] = useState<Date | null | undefined>(new Date());
   // const [step, setStep] = useState<BudgetMobileSteps>(INCOME_STEP);
@@ -217,18 +264,19 @@ export default function BudgetTool() {
   const axiosAuth = useAxiosAuth();
   const mixpanelCalled = useRef<boolean>(false);
   const queryClient = useQueryClient();
+  const [latestIncome, setLatestIncome] = useState(0);
 
   const { setTabs, setSubTab, subTab: step, tab, state } = useTabContext();
 
   const year = date?.getFullYear();
   const month = date?.getMonth();
 
-  const { paymentScheduleCalculator } = useCalculators();
-  const snowballResultsWithExtra = paymentScheduleCalculator(
-    [],
-    "snowball",
-    1000
-  );
+  // const { paymentScheduleCalculator } = useCalculators();
+  // const snowballResultsWithExtra = paymentScheduleCalculator(
+  //   [],
+  //   "snowball",
+  //   1000
+  // );
 
   const {
     data: budgetInfo,
@@ -290,50 +338,7 @@ export default function BudgetTool() {
   }, [date]);
 
   useEffect(() => {
-    if (
-      year === undefined ||
-      month === undefined ||
-      budgetInfo?.data === undefined
-    ) {
-      return;
-    }
-
-    if (
-      budgetInfo?.data !== undefined &&
-      Object.keys(budgetInfo?.data)?.length > 0
-    ) {
-      return;
-    }
-
-    axiosAuth.get(`/budget/get-latest`).then((latestBudgetInfo) => {
-      if (
-        latestBudgetInfo?.data === undefined ||
-        Object.keys(latestBudgetInfo?.data)?.length === 0 ||
-        (year === latestBudgetInfo?.data?.year &&
-          month === latestBudgetInfo?.data?.month) ||
-        year < latestBudgetInfo?.data?.year ||
-        (year === latestBudgetInfo?.data?.year &&
-          month === latestBudgetInfo?.data?.month)
-      ) {
-        return;
-      }
-
-      const { data } = latestBudgetInfo;
-      const wants = data?.["wants"].filter(
-        (item: BudgetItem) => item?.recurringExpense === "true"
-      );
-      const needs = data?.["needs"].filter(
-        (item: BudgetItem) => item?.recurringExpense === "true"
-      );
-      const savings = data?.["savings"].filter(
-        (item: BudgetItem) => item?.recurringExpense === "true"
-      );
-      const debts = data?.["debts"].filter(
-        (item: BudgetItem) => item?.recurringExpense === "true"
-      );
-      const newBudget = { ...data, wants, needs, savings, debts };
-      create(newBudget);
-    });
+    duplicateBudgetForLaterMonth(year, month, budgetInfo, axiosAuth, create);
   }, [budgetInfo?.data, year, month]);
 
   useEffect(() => {
@@ -345,6 +350,7 @@ export default function BudgetTool() {
       // setStep(BUDGET_STEP);
       setSubTab(BUDGET_STEP);
       setFirstLoadCompleted(true);
+      setLatestIncome(budgetInfo?.data?.income);
     }
   }, [budgetInfo?.data]);
 
@@ -454,6 +460,7 @@ export default function BudgetTool() {
             date={{ year, month }}
             incomeAfterExpenses={_incomeAfterExpenses}
             titleText="Let’s Build Your Plan!"
+            setLatestIncome={setLatestIncome}
           />
         ) : null}
 
@@ -481,6 +488,7 @@ export default function BudgetTool() {
           <PieBreakdownBlock
             income={budgetInfo?.data?.income}
             goBack={setPrev}
+            useBasicLabel
             // values={reshapedBudgetData}
             // values={_summedCategories}
           />
