@@ -71,6 +71,11 @@ export default function LoginForm() {
     }
   }
 
+  function forgetPasswordHandler() {
+    sessionStorage.setItem('userData', JSON.stringify({ type: "passwordReset" }))
+    router.push('/auth/verification');
+  }
+
   return (
     <>
       <SigninButton />
@@ -99,12 +104,13 @@ export default function LoginForm() {
           </div>
 
           <div className="mt-[5px] text-base text-right">
-            <Link
-              href={"/auth/reset-password"}
+            <button
+              // href={"/auth/reset-password"}
+              onClick={forgetPasswordHandler}
               className="font-light text-violet-600"
             >
               Forgot Password
-            </Link>
+            </button>
           </div>
 
           {error && <p className="text-left text-sm text-red-500">{error}</p>}
