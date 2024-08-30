@@ -4,9 +4,25 @@ import Image from "next/image";
 import LoginForm from "@/app/auth/login/components/LoginForm";
 import Link from "next/link";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 export default function Login() {
-  const [showSteps, setShowSteps] = useState(true);
+  const [showSteps, setShowSteps] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisited');
+    console.log("hasVisited: ", hasVisited);
+    if (hasVisited === null) {
+      setShowSteps(true);
+      localStorage.setItem('hasVisited', 'true');
+    } else {
+      setShowSteps(false);
+    }
+  }, []);
+
+  if (showSteps === null) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col justify-center align-center overflow-auto">
