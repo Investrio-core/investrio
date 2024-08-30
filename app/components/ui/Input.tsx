@@ -176,7 +176,7 @@ const Input: React.FC<InputProps> = (props) => {
           onBlur={onBlur as any}
         />
 
-        {(label === 'Create password' || label === 'Password') && (
+        {(label === 'Create password' || label === 'Password' || label === 'Confirm password') && (
           <button
             type="button"
             onClick={togglePasswordVisibility}
