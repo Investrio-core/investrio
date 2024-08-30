@@ -8,6 +8,7 @@ import Mixpanel from "@/services/mixpanel";
 import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
+import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,6 +16,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSteps, setShowSteps] = useState(true);
+  const router = useRouter();
 
   async function onSubmit(data: {
     name: string;
@@ -38,10 +40,19 @@ export default function SignUpPage() {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
+        redirect: false,
         // ## Register callback:
         // callbackUrl: "/dashboard/debts/add",
-        callbackUrl: "/auth/signup/completion",
+        // callbackUrl: "/auth/signup/completion",
       });
+
+      await axios.post(
+        `${API_URL}/user/send-verification`,
+        { email: data.email, type: "signup" }
+      );
+
+      sessionStorage.setItem('userData', JSON.stringify({ email: data.email, type: "signup" }));
+      router.push(`/auth/verification`);
 
       Mixpanel.getInstance().identify(user.data.id, data.email, data.name);
       Mixpanel.getInstance().track("registration");
