@@ -383,15 +383,15 @@ export default function DebtTool() {
         {/* {headerSummary} */}
         {subTab === "PLANNER_STEP" ? (
           <>
-            <div className="h-[41px] mx-[24px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
-              <div className="h-5 text-center text-black text-xs font-medium text-nowrap">
+            <div className="h-[41px] mx-[16px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
+              <div className="h-5 text-center text-black text-sm font-medium text-nowrap">
                 💸 Debt Free Date
               </div>
-              <div className="w-12 h-5 text-center text-[#40405c] text-[10px] font-normal">
+              <div className="w-12 h-5 text-center text-[#40405c] text-sm font-normal mr-[4px]">
                 {formattedString}
               </div>
             </div>
-            <div className="px-[24px]">{budgetProgress}</div>
+            <div className="px-[16px]">{budgetProgress}</div>
             <DashboardInfo
               debtsData={debtsData?.data}
               snowballResultsWithExtra={selectedMethod} //{snowballResultsWithExtra}
@@ -420,6 +420,7 @@ export default function DebtTool() {
 
         {subTab === "EDIT_STEP" ? (
           <>
+            <div className="px-[16px]">{budgetProgress}</div>
             <div className="rounded-[18px] border border-[#d2daff] px-[16px] mx-[18px] mt-[12px] mb-[24px]">
               {extraPaymentInput}
               <DebtsComparison
