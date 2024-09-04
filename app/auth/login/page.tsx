@@ -7,22 +7,15 @@ import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingInt
 import { useState, useEffect } from "react";
 
 export default function Login() {
-  const [showSteps, setShowSteps] = useState<boolean | null>(null);
+  const [showSteps, setShowSteps] = useState<boolean>(false);
 
   useEffect(() => {
     const hasVisited = localStorage.getItem('hasVisited');
-    console.log("hasVisited: ", hasVisited);
     if (hasVisited === null) {
       setShowSteps(true);
       localStorage.setItem('hasVisited', 'true');
-    } else {
-      setShowSteps(false);
     }
   }, []);
-
-  if (showSteps === null) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col justify-center align-center overflow-auto">
