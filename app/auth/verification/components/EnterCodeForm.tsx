@@ -83,7 +83,6 @@ export default function EnterCodeForm({
                 router.push(DESTINATION[type]);
             }
         } catch (err: AxiosError | any) {
-            console.log(err.message);
             setError(err.response.data);
         } finally {
             setIsLoading(false);

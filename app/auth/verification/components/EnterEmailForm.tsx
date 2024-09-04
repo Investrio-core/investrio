@@ -30,13 +30,13 @@ export default function EnterEmailForm({
                 `${API_URL}/user/send-verification`,
                 { email: data.newEmail, type: type }
             );
+            setEmail(data.newEmail);
         } catch (err: AxiosError | any) {
             console.log(err.message);
             setError(err.response.data);
         } finally {
             setIsLoading(false);
         }
-        setEmail(data.newEmail);
     }
 
     return (
