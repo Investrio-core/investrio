@@ -211,8 +211,8 @@ export const EditDebtModal = ({
                       // }
                       // setFormHasError={setEditFormHasError}
                     />
-                    <span className="text-md text-red-500">
-                      {`The minimum recommended value for this field is ${Number(
+                    <span className="text-sm text-red-500 text-center">
+                      {`Recommended value for this field is ${Number(
                         (editOutstandingBalance * 0.03).toFixed(2)
                       )}`}
                     </span>
