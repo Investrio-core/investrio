@@ -50,6 +50,7 @@ import { useRouter } from "next/navigation";
 import { DEBTS_PAGE, BUDGET_PAGE } from "@/app/utils/constants";
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
+import Suggestions from "@/app/components/Suggestions/Suggestions";
 
 const LockedWidget = ({ sectionName }: { sectionName: string }) => (
   <div className="flex items-center justify-center w-[100%] min-h-[150px] flex-col gap[-12px] relative">
@@ -63,7 +64,7 @@ const LockedWidget = ({ sectionName }: { sectionName: string }) => (
 );
 
 export default function DashboardTool() {
-  const [date, setDate] = useState<Date | null | undefined>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const year = date?.getFullYear();
   const month = date?.getMonth();
@@ -148,10 +149,10 @@ export default function DashboardTool() {
     >
       <div className="lg:hidden md:hidden">
         <PageHeader
-          // sectionHeader={"Lifestyle Planner"}
-          // sectionSubheader={"Budget"}
-          date={date}
-          setDate={setDate}
+        // sectionHeader={"Lifestyle Planner"}
+        // sectionSubheader={"Budget"}
+        // date={date}
+        // setDate={setDate}
         />
         <div
           className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px]"
@@ -161,7 +162,22 @@ export default function DashboardTool() {
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          <AccountSetupProgress />
+          <AccountSetupProgress
+            budgetCompleted={hasBudgetData}
+            debtCompleted={hasDebtData}
+          />
+        </div>
+
+        <div className="my-[12px] mx-[14px]">
+          <Suggestions context={"dashboard"} />
+        </div>
+
+        <div className="my-[22px] mx-[14px] ml-[20px] self-center self-justify-center justify-between flex flex-row">
+          {/* <div className="w-[200px] flex justify-end items-center"> */}
+          <div className="text-xl font-semibold uppercase tracking-tight align-self-start self-start text-[#8e8ecc]">
+            THIS MONTH
+          </div>
+          <MonthPicker date={date} setDate={setDate} />
         </div>
 
         <div

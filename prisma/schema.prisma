@@ -54,36 +54,51 @@ model FinancialRecord {
   extraPayAmount  Float             @default(0) @map("extra_payment")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
-  userId          String?            @map("user_id")
-  user            User?              @relation(fields: [userId], references: [id])
+  userId          String?           @map("user_id")
+  user            User?             @relation(fields: [userId], references: [id])
   PaymentSchedule PaymentSchedule[]
 
   @@unique([title, userId])
 }
 
 model User {
-  name                  String
-  createdAt             DateTime                  @default(now()) @map("created_at")
-  email                 String                    @unique
-  id                    String                    @id @default(cuid())
-  password              String?
-  lastLogin             DateTime                  @default(now()) @map("last_login")
-  debts                 FinancialRecord[]
-  paymentSchedule       PaymentSchedule[]
-  snowball              SnowballPaymentSchedule[]
-  stripeCustomerId      String?    
-  subscriptionStatus    SubscriptionStatus?    
-  isActive              Boolean?                    
-  isTrial               Boolean?
-  trialEndsAt           DateTime?
-  isShowPaywall         Boolean?
-  isAddedFreeStrategy   Boolean?
+  name                String
+  createdAt           DateTime                  @default(now()) @map("created_at")
+  email               String                    @unique
+  id                  String                    @id @default(cuid())
+  password            String?
+  lastLogin           DateTime                  @default(now()) @map("last_login")
+  debts               FinancialRecord[]
+  paymentSchedule     PaymentSchedule[]
+  snowball            SnowballPaymentSchedule[]
+  stripeCustomerId    String?
+  subscriptionStatus  SubscriptionStatus?
+  isActive            Boolean?
+  isTrial             Boolean?
+  trialEndsAt         DateTime?
+  isShowPaywall       Boolean?
+  isAddedFreeStrategy Boolean?
+  priority            String[]
+  phoneNumber         String?
+  loginType           AccountType?
 
   @@map("users")
 }
 
+enum AccountType {
+  google
+  credentials
+}
+
 enum DebitType {
   CreditCard
+  AutoLoan
+  PersonalLoan
+  StudentLoan
+  Mortgage
+  MedicalLoan
+  Taxes
+  Other
 }
 
 enum SubscriptionStatus {
@@ -97,16 +112,16 @@ enum Periodicity {
 }
 
 model BudgetMonth {
-  id              String                    @id @default(cuid())
-  createdAt       DateTime                  @default(now()) @map("created_at")
-  income          Float
-  needs           Json
-  wants           Json
-  savings         Json
-  debts           Json
-  month           Float
-  year            Float
-  userId          String
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  income    Float
+  needs     Json
+  wants     Json
+  savings   Json
+  debts     Json
+  month     Float
+  year      Float
+  userId    String
 
   @@unique([userId, year, month])
 }

@@ -209,7 +209,13 @@ export const combineDebtAndBudgetData = (
   };
 };
 
-export async function duplicateBudgetForLaterMonth(year, month, budgetInfo, axiosAuth, create) {
+export async function duplicateBudgetForLaterMonth(
+  year,
+  month,
+  budgetInfo,
+  axiosAuth,
+  create
+) {
   if (
     year === undefined ||
     month === undefined ||

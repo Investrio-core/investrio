@@ -153,7 +153,7 @@ export const SummarySection = ({
         <div className="text-[#000118] text-base font-medium leading-normal mb-[10px] px-[2px]">
           Planned Extra Payments Impact
         </div>
-        <div className="flex gap-[8px] lg:gap-9 mx-[-4px] items-center justify-center w-[91vw]">
+        <div className="flex gap-[8px] lg:gap-9 mx-[-4px] items-center justify-around w-[91vw]">
           <Card icon="debt-free" label="Debt Free" date={{ month, year }} />
           {timeSavedString ? (
             <Card

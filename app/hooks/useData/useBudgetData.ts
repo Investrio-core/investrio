@@ -72,11 +72,10 @@ export default function useBudgetData(date?: Date | null) {
 
   const incomeAfterExpenses = (data?.data?.income ?? 0) - sumCategories;
 
-  const hasBudgetData =
-    data?.data !== undefined && Object.keys(data?.data ?? {}).length > 0;
-
-  console.log("-- budget data --");
-  console.log(data);
+  const hasBudgetData = useMemo(
+    () => data?.data !== undefined && Object.keys(data?.data ?? {}).length > 0,
+    [data?.data]
+  );
 
   return {
     data,

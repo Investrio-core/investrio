@@ -105,6 +105,7 @@ export function ScaledPieChart({
   useBasicLabel = false,
   renderPercentValues = false,
   renderShape = "",
+  shouldUseIncome = true,
 }: {
   income: number;
   values?: {
@@ -121,6 +122,7 @@ export function ScaledPieChart({
   useBasicLabel?: boolean;
   renderPercentValues?: boolean;
   renderShape?: string;
+  shouldUseIncome?: boolean;
 }) {
   const colorsArray = colorsToUse ?? FIGMA_COLORS;
   let scaledData =
@@ -144,15 +146,18 @@ export function ScaledPieChart({
   // }
 
   let sumRatio: number = 0;
+  let sum: number = 0;
 
   if (renderPercentValues) {
     scaledData = values
       ? values?.map(({ name, value }) => {
-          const ratio = value / income;
+          const ratio = value / (income ? income : 100);
           sumRatio += ratio;
+          sum += value;
           return {
             name: name,
             // value: (value / income).toFixed(1),
+            // value: ratio?.toFixed ? ratio.toFixed(0) : ratio,
             value: ratio,
           };
         })
@@ -191,6 +196,13 @@ export function ScaledPieChart({
 
   return (
     <>
+      {shouldUseIncome && !income ? (
+        // <div className="text-center text-slate-400 text-2xl font-medium leading-normal capitalize mt-2">
+        <div className="px-[10px] pt-[10px] text-black text-base font-medium text-md text-center leading-normal">
+          Set your income to get an accurate representation of your monthly
+          spending
+        </div>
+      ) : null}
       {title ? (
         // <div className="text-center text-slate-400 text-2xl font-medium leading-normal capitalize mt-2">
         <div className="px-[10px] pt-[10px] text-black text-base font-medium text-lg leading-normal">
@@ -309,38 +321,56 @@ export function ScaledPieChart({
         {showChartMap ? (
           <div className="w-[240px] md:w-[200px] lg:w-[220px]">
             <ul>
-              {scaledData.map((entry, index) => (
-                <li
-                  key={index}
-                  className={`flex items-center justify-between md:gap-2 lg:gap-4 xl:gap-10 text-neutral-700 text-base font-normal leading-tight ${
-                    renderShape === "flex-row" ? "mb-[8px]" : ""
-                  }`}
-                >
-                  <div className="flex gap-[6px] items-center">
-                    <div
-                      style={{
-                        backgroundColor:
-                          colorsArray[index % colorsArray.length],
-                      }}
-                      className="w-3 h-3 rounded-[50%]"
-                    ></div>
-                    <div className="mr-[10px]">{entry.name}</div>
-                  </div>
-                  <span
-                    className={`font-medium mr-[10px] justify-end items-end ${
-                      sumRatio > 1 && renderPercentValues
-                        ? "text-red-500 font-bold"
-                        : ""
+              {scaledData.map((entry, index) => {
+                return (
+                  <li
+                    key={index}
+                    className={`flex items-center justify-between md:gap-2 lg:gap-4 xl:gap-10 text-neutral-700 text-base font-normal leading-tight ${
+                      renderShape === "flex-row" ? "mb-[8px]" : ""
                     }`}
                   >
-                    {income && !renderPercentValues
-                      ? dollarFormatter.format(entry.value)
-                      : `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
-                          1
-                        )}%`}
-                  </span>
-                </li>
-              ))}
+                    <div className="flex gap-[6px] items-center">
+                      <div
+                        style={{
+                          backgroundColor:
+                            colorsArray[index % colorsArray.length],
+                        }}
+                        className="w-3 h-3 rounded-[50%]"
+                      ></div>
+                      <div className="mr-[10px]">{entry.name}</div>
+                    </div>
+                    <span
+                      className={`font-medium mr-[10px] justify-end items-end ${
+                        sumRatio > 1 && renderPercentValues
+                          ? "text-red-500 font-bold"
+                          : ""
+                      }`}
+                    >
+                      {income !== undefined &&
+                      income !== 0 &&
+                      !renderPercentValues &&
+                      !shouldUseIncome
+                        ? dollarFormatter.format(entry.value)
+                        : ""}
+                      {income && !renderPercentValues
+                        ? dollarFormatter.format(entry.value)
+                        : `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
+                            1
+                          )}%`}
+                      {/* {income === undefined || income === 0
+                        ? `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
+                            1
+                          )}%`
+                        : ""} */}
+                      {(income === 0 || income === undefined) &&
+                      renderPercentValues &&
+                      shouldUseIncome
+                        ? `${((entry.value / sum) * 10000).toFixed(0)}%`
+                        : ""}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ) : null}

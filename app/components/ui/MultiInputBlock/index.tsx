@@ -107,7 +107,13 @@ export default function MultiInputBlock({
           </div>
 
           <IconButton
-            onClick={() => setNumber((prevValue: number) => prevValue + step)}
+            onClick={() =>
+              setNumber((prevValue: number | undefined) =>
+                !isNaN(prevValue) && prevValue !== undefined
+                  ? prevValue + step
+                  : step
+              )
+            }
             Icon={FaCirclePlus}
             className="text-cyan-950"
           />

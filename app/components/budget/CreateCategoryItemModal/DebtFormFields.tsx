@@ -20,34 +20,34 @@ export default function DebtFormFields({
             label: "Credit Card",
             value: "CreditCard",
           },
-          // {
-          //   label: "Auto Loan",
-          //   value: "AutoLoan",
-          // },
-          // {
-          //   label: "Personal Loan",
-          //   value: "PersonalLoan",
-          // },
-          // {
-          //   label: "Student Loan",
-          //   value: "StudentLoan",
-          // },
-          // {
-          //   label: "Mortgage",
-          //   value: "Mortgage",
-          // },
-          // {
-          //   label: "Medical Loan",
-          //   value: "MedicalLoan",
-          // },
-          // {
-          //   label: "Taxes",
-          //   value: "Taxes",
-          // },
-          // {
-          //   label: "Other",
-          //   value: "Other",
-          // },
+          {
+            label: "Auto Loan",
+            value: "AutoLoan",
+          },
+          {
+            label: "Personal Loan",
+            value: "PersonalLoan",
+          },
+          {
+            label: "Student Loan",
+            value: "StudentLoan",
+          },
+          {
+            label: "Mortgage",
+            value: "Mortgage",
+          },
+          {
+            label: "Medical Loan",
+            value: "MedicalLoan",
+          },
+          {
+            label: "Taxes",
+            value: "Taxes",
+          },
+          {
+            label: "Other",
+            value: "Other",
+          },
         ]}
         inline
         required
