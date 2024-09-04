@@ -18,6 +18,7 @@ import {
   BUDGET_PAGE,
   DEBTS_PAGE,
   HOME_DASHBOARD_PAGE,
+  WEALTH_PAGE,
 } from "@/app/utils/constants";
 
 const HomeSvg = ({ fill = "none" }: { fill?: string }) => (
@@ -263,6 +264,7 @@ const tabs = [
   },
   {
     name: "Wealth",
+    route: WEALTH_PAGE,
     Icon: InvestmentSvg,
     subTabs: [],
   },
