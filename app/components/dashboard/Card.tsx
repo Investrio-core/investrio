@@ -47,7 +47,8 @@ export const Card = ({
   };
 
   return (
-    <div className="relative max-w-fit-content lg:max-w-fit-content max-h-fit-content flex justify-between items-center gap-0 lg:gap-4 rounded-xl bg-white w-full ">
+    // <div className="relative max-w-fit-content lg:max-w-fit-content max-h-fit-content flex justify-between items-center gap-0 lg:gap-4 rounded-xl bg-white w-full ">
+    <div>
       <div className="py-0 my-0 rounded-[18px] border border-[#b1b2ff]/80 py-[4px] px-[12px]">
         <div className="flex flex-col lg:flex-row justify-center items-center min-w-fit-content py-0 my-0 lg:mb-4">
           <div>{renderCorrectIcon()}</div>
