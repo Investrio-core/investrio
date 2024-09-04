@@ -74,17 +74,21 @@ function paymentScheduleCalculator(
     initialBalance: number;
     interestRate: number;
     minPayAmount: number;
+    debtType: string;
   }[],
   strategy = REPAYMENT_STRATEGIES.SNOWBALL,
   additionalPayment: number
 ) {
+  // CHANGE THIS WHEN SUPPORTING OTHER DEBT TYPES IN THE CALCULATION:
   const accounts =
-    debts?.map((debt) => ({
-      name: debt.title,
-      balance: debt.initialBalance,
-      interest: debt.interestRate, // * 100,
-      minPayment: debt.minPayAmount,
-    })) ?? [];
+    debts
+      ?.filter((debt) => debt.debtType !== "CreditCard")
+      ?.map((debt) => ({
+        name: debt.title,
+        balance: debt.initialBalance,
+        interest: debt.interestRate, // * 100,
+        minPayment: debt.minPayAmount,
+      })) ?? [];
 
   const snowball = new Snowball(
     accounts,
@@ -113,6 +117,7 @@ function paymentScheduleCalculator(
   return snowballPaymentPlan;
 }
 
+// calculators only support credit card debts at the moment
 export default function useCalculators(debtsData, extraPayment) {
   const snowballResultsWithoutExtra = useMemo(
     () =>
