@@ -215,7 +215,7 @@ export const DebtsComparison = ({
                                   {monthsFaster}
                                 </strong>{" "}
                               </span>
-                              month{monthsFaster && monthsFaster > 1 && "s"}{" "}
+                              month{monthsFaster && monthsFaster > 1 ? "s" : ""}{" "}
                               faster!
                             </span>
                           </div>
