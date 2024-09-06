@@ -4,9 +4,18 @@ import Image from "next/image";
 import LoginForm from "@/app/auth/login/components/LoginForm";
 import Link from "next/link";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 export default function Login() {
-  const [showSteps, setShowSteps] = useState(true);
+  const [showSteps, setShowSteps] = useState<boolean>(false);
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisited');
+    if (hasVisited === null) {
+      setShowSteps(true);
+      localStorage.setItem('hasVisited', 'true');
+    }
+  }, []);
 
   return (
     <div className="flex flex-col justify-center align-center overflow-auto">
@@ -26,7 +35,7 @@ export default function Login() {
       ) : (
         <>
           <div className="text-center text-[#03091d] text-xl font-medium leading-[30px] tracking-wide mt-[-4rem]">
-            Login first to your account
+            Log into your account
           </div>
           <div className="text-center p-[12px] mt-[30px]">
             <LoginForm />

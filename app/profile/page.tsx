@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { isValidPhoneNumber, type Value } from 'react-phone-number-input'
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -29,10 +30,13 @@ export default function Profile() {
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [userName, setUserName] = useState<string>("");
     const [userEmail, setUserEmail] = useState<string>("");
+    const [originalEmail, setOriginalEmail] = useState<string>("")
     const [userPhoneNumber, setUserPhoneNumber] = useState<Value | undefined>("" as Value);
     const [isWindowOpen, setWindowOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const router = useRouter();
+
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -42,6 +46,7 @@ export default function Profile() {
                 setUserName(response.data.name);
                 setUserEmail(response.data.email);
                 setUserPhoneNumber(response.data.phoneNumber ? response.data.phoneNumber as Value : undefined);
+                setOriginalEmail(response.data.email);
             } catch (err: AxiosError | any) {
                 console.error("Error fetching profile data:", err.message);
                 setError("Failed to load profile data.");
@@ -58,13 +63,21 @@ export default function Profile() {
         try {
             setIsLoading(true);
             setError("");
-            if (!isValidPhoneNumber(data.phoneNumber!)) {
+            if (data.phoneNumber !== undefined && !isValidPhoneNumber(data.phoneNumber)) {
                 setError("Phone Number is invalid");
             } else {
-                const updateData = { ...data, phoneNumber: data.phoneNumber as string }
-                const response = await axiosAuth.post(`${API_URL}/user/update-profile`, updateData);
-                if (response.status === 200) {
-                    toast.success("Profile updated");
+                const updateData = data.phoneNumber === undefined ? { ...data, phoneNumber: null }
+                    : { ...data, phoneNumber: data.phoneNumber as string };
+                if (data.email === originalEmail) {
+
+                    const response = await axiosAuth.post(`${API_URL}/user/update-profile`, updateData);
+                    if (response.status === 200) {
+                        toast.success("Profile updated");
+                    }
+                } else {
+                    sessionStorage.setItem('userData', JSON.stringify({ email: data.email, type: "updateProfile", data: updateData }));
+                    await axiosAuth.post(`${API_URL}/user/send-verification`, { email: data.email, type: "updateProfile" });
+                    router.push('auth/verification');
                 }
             }
         } catch (err: AxiosError | any) {

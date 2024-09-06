@@ -27,6 +27,8 @@ export async function middleware(request: NextRequest) {
   if (
     !path.startsWith("/auth/login") &&
     !path.startsWith("/auth/signup") &&
+    !path.startsWith("/auth/verification") &&
+    !path.startsWith("/auth/resetPassword") &&
     !sessionToken
   ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
