@@ -9,10 +9,16 @@ import { toast } from "react-toastify";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { expenseEmojiMapping } from "./emoji-mapper";
 import RenderEmoji from "@/app/components/ui/RenderEmoji";
-import { BudgetItem } from "@/app/dashboard/budget/components/BudgetTool";
+import {
+  BudgetItem,
+  DEBT_REPAYMENT_STRATEGY_NAME,
+} from "@/app/dashboard/budget/components/BudgetTool";
 import { FiRepeat } from "react-icons/fi";
 import Image from "next/image";
 import { CategoryType } from "../CategoryBlock";
+import useDebtQueries from "@/app/hooks/useDebtQueries";
+import { DebtFormType } from "@/types/debtFormType";
+import Mixpanel from "@/services/mixpanel";
 
 type Locale = "wants" | "savings" | "needs" | "debts";
 
@@ -24,6 +30,8 @@ interface CategoryBlockItemProps {
   income: number;
   onSubmit: (data: Record<Locale, { name: string; value: number }[]>) => void;
 }
+
+interface DebtFormCategoryItem {}
 
 const CategoryBlockItem = ({
   category,
@@ -43,6 +51,8 @@ const CategoryBlockItem = ({
     value: 0,
     recurringExpense: undefined,
   });
+
+  const { createDebt, updateDebt, deleteRecords } = useDebtQueries();
 
   const [parent] = useAutoAnimate();
 
@@ -80,23 +90,83 @@ const CategoryBlockItem = ({
     return `${toFixed(percentage, 2)}%`;
   };
 
-  const onModalSubmit = async (data: {
-    value: number;
-    name: string | undefined;
-    recurringExpense: string | undefined;
-  }) => {
-    const newCategory = [...items, data];
-    const dataToUpdate = { [name]: newCategory } as Record<
-      Locale,
-      { name: string; value: number; recurringExpense?: string }[]
-    >;
-    await onSubmit(dataToUpdate);
+  /*
+  {
+    "name": "Visaz",
+    "value": null,
+    "recurringExpense": "true",
+    "debtCategory": "CreditCard",
+    "interestRate": "25.00%",
+    "initialBalance": "$20,000.00"
+}*/
+  // debt: BudgetItem
+  /*
+  export type DebtFormType = {
+    id?: string;
+    debtType: string;
+    debtName: string;
+    balance: string;
+    rate: string;
+    minPayment: string;
+    dueDate: string;
+    periodicity: string;
+    extraPayAmount?: string | number;
+};
+
+{
+    "name": "Test Debt",
+    "value": "$100.00",
+    "recurringExpense": "true",
+    "debtType": "AutoLoan",
+    "rate": "25.00%",
+    "balance": "$500.00",
+    "debtName": "Test Debt",
+    "minPayment": "$100.00"
+}
+  */
+
+  const formatDebtForSubmission = (debt): DebtFormType => {
+    return {
+      // ...debt,
+      id: selectedItem.id,
+      debtType: debt.debtType,
+      debtName: debt.name,
+      balance: debt.balance,
+      rate: debt.rate,
+      minPayment: debt.value,
+    } as DebtFormType;
+  };
+
+  const onSuccess = () => {
     toast.success("Expense added");
     setIsCategoryModalOpen(false);
   };
 
+  const onModalSubmit = async (data: {
+    value: number | string;
+    name: string | undefined;
+    recurringExpense: string | undefined;
+    rate?: string;
+    debtType?: string;
+    balance?: string;
+  }) => {
+    if (name === "debts") {
+      const reshapedDebt = formatDebtForSubmission(data);
+      await createDebt({ newDebt: reshapedDebt });
+      Mixpanel.getInstance().track("added_debt_using_budget_tool");
+    } else {
+      const newCategory = [...items, data];
+      const dataToUpdate = { [name]: newCategory } as Record<
+        Locale,
+        { name: string; value: number; recurringExpense?: string }[]
+      >;
+      await onSubmit(dataToUpdate);
+    }
+    onSuccess();
+  };
+
   const onItemClick = (item: {
-    value: number;
+    value: number | string;
     name: string;
     recurringExpense?: string;
   }) => {
@@ -109,47 +179,59 @@ const CategoryBlockItem = ({
     value: number;
     oldName: string;
     recurringExpense: string | undefined;
+    id?: string;
   }) => {
-    const index = items.map((i) => i.name).indexOf(data.oldName);
-    if (index !== -1) {
-      const newCategory: BudgetItem[] = [...items];
-      newCategory[index] = {
-        name: data.name,
-        value: data.value,
-        recurringExpense: data?.recurringExpense,
-      };
-      const dataToUpdate = { [name]: newCategory } as Record<
-        Locale,
-        { name: string; value: number; recurringExpense?: string }[]
-      >;
+    if (name === "debts" && data?.id) {
+      const formattedDebt = formatDebtForSubmission(data);
+      await updateDebt({ updatedDebt: formattedDebt });
+      Mixpanel.getInstance().track("edited_debt_using_budget_tool");
+    } else {
+      const index = items.map((i) => i.name).indexOf(data.oldName);
+      if (index !== -1) {
+        const newCategory: BudgetItem[] = [...items];
+        newCategory[index] = {
+          name: data.name,
+          value: data.value,
+          recurringExpense: data?.recurringExpense,
+        };
+        const dataToUpdate = { [name]: newCategory } as Record<
+          Locale,
+          { name: string; value: number; recurringExpense?: string }[]
+        >;
 
-      await onSubmit(dataToUpdate);
+        await onSubmit(dataToUpdate);
+      }
       toast.success("Expense updated");
       setIsEditCategoryModalOpen(false);
     }
   };
 
-  const onDeleteSubmit = async (item: { name: string }) => {
-    const newCategory = [...items].filter(({ name }) => name !== item.name);
-    const dataToUpdate = { [name]: newCategory } as Record<
-      Locale,
-      { name: string; value: number }[]
-    >;
+  const onDeleteSubmit = async (item: { name: string; id?: string }) => {
+    if (name === "debts" && item?.id) {
+      await deleteRecords([item.id]);
+      Mixpanel.getInstance().track("deleted_debt_using_budget_tool");
+    } else {
+      const newCategory = [...items].filter(({ name }) => name !== item.name);
+      const dataToUpdate = { [name]: newCategory } as Record<
+        Locale,
+        { name: string; value: number }[]
+      >;
+      await onSubmit(dataToUpdate);
+    }
     setIsDeleteCategoryItemModalOpen(false);
     setIsCategoryModalOpen(false);
     setIsEditCategoryModalOpen(false);
-    await onSubmit(dataToUpdate);
     toast.success("Expense deleted");
   };
 
   return (
-    <div className="flex text-base font-medium flex-col">
-      {/* <div className="text-slate-950 text-[28px] font-medium capitalize px-[12px] py-4">
+    <div className="flex text-base font-medium flex-col rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px]">
+      <div className="text-slate-950 text-[28px] font-medium capitalize px-[12px] py-4">
         {name}
-      </div> */}
+      </div>
 
-      <div className="w-[100%] h-[0px] border border-zinc-200"></div>
-      <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
+      {/* <div className="w-[100%] h-[0px] border border-zinc-200"></div> */}
+      {/* <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
         <div className="lg:w-4/6">CATEGORY</div>
         <div className="lg:w-1/6 lg:text-right">RECOMMENDED</div>
         <div className="lg:w-1/6 text-right">ACTUAL</div>
@@ -170,7 +252,41 @@ const CategoryBlockItem = ({
             {calculateActualPercentage()}
           </div>
         </div>
+      </div> */}
+
+      <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
+        <div className="w-3/6 lg:w-4/6 text-[#4c5f7f] text-md font-semibold uppercase tracking-tight">
+          ACTUAL
+        </div>
+        <div className="w-1/6 mr-[9%] lg:w-1/6 text-left text-[#8e8ecc] font-semibold text-md">
+          {calculateActualPercentage()}
+        </div>
+        <div className="w-2/6 lg:w-1/6 lg:text-right text-[#03091d] font-medium text-md">
+          {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
+        </div>
       </div>
+      <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
+        <div className="w-3/6 lg:w-4/6 text-[#9ca4ab] text-md font-semibold uppercase tracking-tight">
+          RECOMMENDED
+        </div>
+        <div className="w-1/6 mr-[9%] lg:w-1/6 text-left text-[#9ca4ab] font-semibold text-md">
+          {percent}%
+        </div>
+        <div className="w-2/6 lg:w-1/6 lg:text-right text-[#03091d] font-medium text-md">
+          {calculateRecommended()}
+        </div>
+
+        {/* <div className="lg:w-1/6 text-right flex flex-col justify-center">
+          <div className="text-lg">
+            {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
+          </div>
+          <div className="text-base text-[#8E8ECC]">
+            {calculateActualPercentage()}
+          </div>
+        </div> */}
+      </div>
+      <div className="w-[100%] h-[0px] border border-zinc-200"></div>
+
       <div ref={parent}>
         {items.map((item, idx) => (
           <div
@@ -178,11 +294,17 @@ const CategoryBlockItem = ({
             onClick={() => onItemClick(item)}
             className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50"
           >
-            <div className="w-1/3 lg:w-5/6 font-normal text-lg flex items-center">
+            <div className="w-2/3 lg:w-5/6 font-normal text-lg flex items-center">
               <RenderEmoji
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                symbol={expenseEmojiMapping[item.name?.toLowerCase()]}
+                symbol={
+                  item.type
+                    ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      expenseEmojiMapping[item.type]
+                    : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      expenseEmojiMapping[item.name?.toLowerCase()]
+                }
                 label={item.name}
                 fallback={expenseEmojiMapping["default"]}
                 className={"mr-[8px]"}
@@ -224,7 +346,7 @@ const CategoryBlockItem = ({
                 />
               )}
             </div>
-            <div className="w-2/3 lg:w-1/6 font-medium text-right flex flex-col justify-center">
+            <div className="w-1/3 lg:w-1/6 font-medium text-right flex flex-col justify-center">
               <div>{formatCurrency(item.value)}</div>
             </div>
           </div>
@@ -232,7 +354,7 @@ const CategoryBlockItem = ({
       </div>
       <div
         onClick={handleChangeCategoryModalOpen}
-        className="flex gap-2 text-xl text-purple-3 bg-purple-100 w-[100%] h-12 px-4 py-3 items-center justify-center self-center mb-[40px] hover:underline cursor-pointer gap-2 inline-flex"
+        className="flex gap-2 text-xl text-purple-3 bg-purple-100 w-[100%] h-12 px-4 py-3 items-center justify-center self-center hover:underline cursor-pointer gap-2 inline-flex mt-[4px] mb-[16px]"
       >
         {/* <FaCirclePlus color="#8740E2" /> */}
         <FaPlus color="#8740E2" />
@@ -251,15 +373,27 @@ const CategoryBlockItem = ({
         name={selectedItem.name}
         value={selectedItem.value}
         recurringExpense={selectedItem.recurringExpense}
+        balance={selectedItem?.initialBalance}
+        rate={String(selectedItem?.interestRate)}
+        debtType={selectedItem?.type}
+        // {...selectedItem}
         onClose={handleChangeEditCategoryModalOpen}
-        onSubmit={(data) =>
-          onEditSubmit({
-            name: data?.name,
-            value: data?.value,
-            oldName: data?.oldName,
-            recurringExpense: data?.recurringExpense,
-          })
-        }
+        onSubmit={async (data) => {
+          if (
+            category === "debts" &&
+            data?.name !== DEBT_REPAYMENT_STRATEGY_NAME
+          ) {
+            const reshapedDebt = formatDebtForSubmission(data);
+            await updateDebt({ updatedDebt: reshapedDebt });
+          } else {
+            onEditSubmit({
+              name: data?.name,
+              value: data?.value,
+              oldName: data?.oldName,
+              recurringExpense: data?.recurringExpense,
+            });
+          }
+        }}
         open={isEditCategoryModalOpen}
       />
       <DeleteCategoryItemModal

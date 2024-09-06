@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import Form from "../../ui/Form";
 import Select from "@/app/components/ui/Select";
 import { CategoryType } from "../CategoryBlock";
+import DebtFormFields from "../CreateCategoryItemModal/DebtFormFields";
+import { DEBT_REPAYMENT_STRATEGY_NAME } from "@/app/dashboard/budget/components/BudgetTool";
 
 type EditCategoryItemModalProps = {
   onClose: () => void;
@@ -29,6 +31,10 @@ type EditCategoryItemModalProps = {
   onDeleteClick: () => void;
   isDeleteCategoryItemModalOpen: boolean;
   recurringExpense?: string;
+
+  balance?: string;
+  debtType?: string;
+  rate?: string;
 };
 
 const EditCategoryItemModal = ({
@@ -41,6 +47,9 @@ const EditCategoryItemModal = ({
   onDeleteClick,
   isDeleteCategoryItemModalOpen,
   recurringExpense,
+  balance,
+  rate,
+  debtType,
 }: EditCategoryItemModalProps) => {
   const [currentValue, setCurrentValue] = useState(value || "");
   const [currentName, setCurrentName] = useState(name || "");
@@ -49,8 +58,14 @@ const EditCategoryItemModal = ({
     string | undefined
   >(recurringExpense);
 
-  const handleSubmit = () => {
-    if (name) {
+  const handleSubmit = (formValues) => {
+    console.log("submitting");
+    console.log(formValues);
+    console.log(name);
+    if (name && category === "debts" && name !== DEBT_REPAYMENT_STRATEGY_NAME) {
+      onSubmit(formValues);
+      onClose();
+    } else if (name) {
       const data: {
         name: string;
         value: number;
@@ -144,8 +159,12 @@ const EditCategoryItemModal = ({
                   />
 
                   <Input
-                    label="Amount"
-                    name="extraPayAmount"
+                    label={
+                      category === "debts"
+                        ? "Minimum Monthly Payment"
+                        : `Amount`
+                    }
+                    name="value"
                     type="currency"
                     setFormHasError={setFormHasError}
                     placeholder="$00.00"
@@ -178,6 +197,15 @@ const EditCategoryItemModal = ({
                       }
                     }}
                   />
+
+                  {category === "debts" &&
+                  name !== DEBT_REPAYMENT_STRATEGY_NAME ? (
+                    <DebtFormFields
+                      balance={balance}
+                      rate={rate}
+                      debtType={debtType}
+                    />
+                  ) : null}
 
                   <div className="mt-9 flex flex-col gap-2">
                     <SimpleButton

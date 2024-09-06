@@ -58,28 +58,22 @@ export default function OnboardingIntroSteps({
 
       <div className="flex flex-col justify-center align-center">
         <OnboardingIntroStep {...ONBOARDING_STEPS_DATA[currentStep]} />
-
         <StepsController
-          setNext={() => setCurrentStep((prevState) => prevState + 1)}
-          currentStep={currentStep}
-          numSteps={NUM_STEPS}
-          classes={`mt-[60px]`}
-        />
+          // setPrev={() =>
+          //   setCurrentStep((prevState) => {
+          //     if (prevState === 0) return 0;
+          //     return prevState - 1;
+          //   })
+          // }
+          // setSkip={() => setShowSteps(false)}
+          // renderLastNext
 
-        {/* <StepsController
           setNext={() => setCurrentStep((prevState) => prevState + 1)}
-          setPrev={() =>
-            setCurrentStep((prevState) => {
-              if (prevState === 0) return 0;
-              return prevState - 1;
-            })
-          }
-          setSkip={() => setShowSteps(false)}
           currentStep={currentStep}
           numSteps={NUM_STEPS}
-          renderLastNext
           classes={`mt-[60px]`}
-        /> */}
+          registerFlow={true}
+        />
       </div>
     </>
   );

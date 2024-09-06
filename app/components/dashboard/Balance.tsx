@@ -31,10 +31,10 @@ export const Balance = ({ data, results }: Props) => {
   });
 
   return (
-    <div className="card bg-white px-6 pt-6 w-full">
-      <div className="text-xl leading-5 font-bold text-[#03091D] flex justify-between mb-4">
+    <div className="bg-white px-6 pt-6 w-full">
+      {/* <div className="text-xl leading-5 font-bold text-[#03091D] flex justify-between mb-4">
         Monthly Payments
-      </div>
+      </div> */}
       <div className="flex justify-start items-start">
         <CustomBarChart
           data={data}

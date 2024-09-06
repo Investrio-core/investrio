@@ -10,6 +10,9 @@ import {
   YAxis,
 } from "recharts";
 import { formatCurrency } from "@/app/utils/formatters";
+import { FIGMA_COLORS } from "./CustomPieChart";
+
+const colorsArray = FIGMA_COLORS;
 
 interface DebtData {
   title: string;
@@ -64,7 +67,9 @@ const COLORS = [
 ];
 
 const formatYAxis = (value: number): string => {
-  return value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString();
+  return value >= 100000
+    ? `${(value / 1000).toFixed(0)}k`
+    : `$${value.toString()}`;
 };
 
 const getColorForKey = (
@@ -99,6 +104,12 @@ const CustomTooltip = ({ active, payload, label }: CustomToolTipProps) => {
   return null;
 };
 
+const renderLegendText = (value: string, entry: any) => {
+  // const { color } = entry;
+  //<div className="text-black/70 text-xs font-normal font-['Inter']">Visa</div>
+  return <span className="text-black/70 text-xs font-normal">{value}</span>;
+};
+
 export const CustomBarChart = ({
   data,
   alreadyTransformedData,
@@ -122,7 +133,7 @@ export const CustomBarChart = ({
     <ResponsiveContainer width="100%" height={300}>
       <BarChart
         data={transformedData}
-        margin={{ top: -10, right: 0, left: -20 }}
+        margin={{ top: -10, right: 0, left: -15 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -137,14 +148,21 @@ export const CustomBarChart = ({
           content={<CustomTooltip data={data} />}
           wrapperStyle={{ zIndex: 9999 }}
         />
-        <Legend layout="horizontal" verticalAlign="top" align="right" />
+        <Legend
+          layout="horizontal"
+          verticalAlign="bottom"
+          align="center"
+          formatter={renderLegendText}
+          iconSize={8}
+        />
         {Object.keys(transformedData?.[0] ?? {})
           .filter((key) => key !== "name")
-          .map((key) => (
+          .map((key, idx) => (
             <Bar
               key={key}
               dataKey={key}
-              fill={getColorForKey(key, data, labels)}
+              // fill={getColorForKey(key, data, labels)}
+              fill={colorsArray[idx % colorsArray.length]}
               stackId="a"
               barSize={20}
               animationBegin={20}

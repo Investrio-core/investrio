@@ -9,6 +9,7 @@ import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
 import { useRouter } from "next/navigation";
+import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -43,7 +44,8 @@ export default function SignUpPage() {
         redirect: false,
         // ## Register callback:
         // callbackUrl: "/dashboard/debts/add",
-        // callbackUrl: "/auth/signup/completion",
+        callbackUrl: "/auth/signup/completion",
+        // callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
       });
 
       await axios.post(

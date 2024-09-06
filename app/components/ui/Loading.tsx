@@ -13,7 +13,7 @@ export const Loading = ({
 }: LoadingProps) => {
   return (
     <div
-      className={clsx("flex justify-center items-center", {
+      className={clsx("flex justify-center items-center w-full flex", {
         "h-screen": hScreen,
       })}
     >

@@ -44,7 +44,7 @@ export const BalanceOverTime = ({ data, results }: Props) => {
   });
 
   return (
-    <div className="card bg-white px-6 pt-6 w-full">
+    <div className="bg-white px-6 pt-6 w-full">
       <div className="text-xl leading-5 font-bold text-[#03091D] flex justify-between mb-4 items-center ">
         Balance Over Time
       </div>

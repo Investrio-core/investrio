@@ -22,9 +22,10 @@ const CustomDatePickerInput = forwardRef<Ref, CustomDatePickerInputProps>(
   ({ value, onClick }, ref) => {
     return (
       <div
-        className="text-xl relative w-fit flex gap-4 items-center cursor-pointer"
+        className="text-md relative w-fit flex gap-[6px] items-center cursor-pointer z-25 font-medium mr-[8px]"
         ref={ref}
         onClick={onClick}
+        style={{ zIndex: "25 !important" }}
       >
         {value}
         <CalendarIcon className="hover:text-purple-3 focus:text-purple-3" />
@@ -38,12 +39,12 @@ const MonthPicker = ({ date, setDate }: MonthPickerProps) => {
     <DatePicker
       // @ts-ignore
       customInput={<CustomDatePickerInput />}
-      popperClassName="!left-[-50px]"
+      popperClassName="!left-[-75px]"
       onChange={(date) => setDate(date)}
-      calendarClassName="datepicker"
+      calendarClassName="datepicker z-25"
       showMonthYearPicker
       selected={date}
-      dateFormat={"MMMM, yyyy"}
+      dateFormat={"MMMM"} //, yyyy"}
     />
   );
 };

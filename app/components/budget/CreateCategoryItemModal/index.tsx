@@ -9,6 +9,7 @@ import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
 import Select from "@/app/components/ui/Select";
 import { CategoryType } from "../CategoryBlock";
+import DebtFormFields from "./DebtFormFields";
 
 type CreateCategoryItemModalProps = {
   onClose: () => void;
@@ -21,9 +22,9 @@ type CreateCategoryItemModalProps = {
     name,
     recurringExpense,
   }: {
-    value: number;
-    name: string | undefined;
-    recurringExpense: string | undefined;
+    value: number | string;
+    name: string;
+    recurringExpense?: string;
   }) => void;
   onChange?: (value: string) => void;
 };
@@ -57,12 +58,23 @@ const CreateCategoryItemModal = ({
     "true"
   );
 
-  const handleSubmit = () => {
-    onSubmit({
-      name: currentName,
-      value: Number(currentValue),
-      recurringExpense: recurringExpense,
-    });
+  const handleSubmit = (formValues: {
+    name: string;
+    recurringExpense?: string;
+    value: string | number;
+  }) => {
+    if (category === "debts") {
+      onSubmit({
+        ...formValues,
+      });
+    } else {
+      onSubmit({
+        name: currentName,
+        value: Number(currentValue),
+        recurringExpense: recurringExpense,
+      });
+    }
+
     onClose();
     Mixpanel.getInstance().track("add_item");
   };
@@ -85,6 +97,7 @@ const CreateCategoryItemModal = ({
       setCurrentName(name);
     }
   }, [value, name, open]);
+
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -135,8 +148,12 @@ const CreateCategoryItemModal = ({
                   />
 
                   <Input
-                    label="Amount"
-                    name="extraPayAmount"
+                    label={
+                      category === "debts"
+                        ? "Minimum Monthly Payment"
+                        : `Amount`
+                    }
+                    name="value"
                     type="currency"
                     placeholder="$00.00"
                     inline
@@ -168,6 +185,8 @@ const CreateCategoryItemModal = ({
                       }
                     }}
                   />
+
+                  {category === "debts" ? <DebtFormFields /> : null}
 
                   <div className="mt-9 flex flex-col gap-2">
                     <SimpleButton

@@ -9,11 +9,10 @@ export const StrategyFormTooltip = ({ Icon, containerClassName }: Props) => {
   return (
     <Tooltip
       text="Where do I find this info?"
-      containerClassName={containerClassName ?? "self-end"}
+      containerClassName={containerClassName ?? "self-start"}
       Icon={Icon}
       showCloseIcon={true}
     >
-      <div></div>
       <div className="text-left text-purple-2 text-sm">
         <h2 className="mb-4 text-base font-bold">Where do I find this info?</h2>
         <div className="flex flex-col gap-13 mt-3">

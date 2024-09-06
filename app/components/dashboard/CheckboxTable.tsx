@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { formatCurrency } from "@/app/utils/formatters";
-import { AccountMonth } from "@/app/hooks/calculatorsSnowball";
+import { AccountMonth, PaymentObject } from "@/app/hooks/calculatorsSnowball";
 import Calender from "@/public/icons/calendar-styled.svg";
 
 type Info = {
@@ -29,11 +29,13 @@ interface RepaymentShape {
 }
 
 export type CheckboxTableProps = {
-  snowballResultsCurrentMonth: AccountMonth[];
+  snowballResultsCurrentMonth?: PaymentObject[];
+  _setPercentDown?: Function;
 };
 
 export const CheckboxTable = ({
   snowballResultsCurrentMonth,
+  _setPercentDown,
 }: CheckboxTableProps) => {
   const [list, setList] = useState<Info[]>([]);
   const [totalBalance, setTotalBalance] = useState<number>(0);
@@ -67,10 +69,13 @@ export const CheckboxTable = ({
       100
     ).toFixed(2);
     setPercentDown(percentDown);
+    _setPercentDown && _setPercentDown(percentDown);
     setList(newList);
   };
 
-  const reshapeList = (snowballResultsCurrentMonth: AccountMonth[]) => {
+  const reshapeList = (snowballResultsCurrentMonth?: AccountMonth[]) => {
+    if (snowballResultsCurrentMonth === undefined) return [];
+
     let totalBalance = 0;
     let totalBalanceEnd = 0;
     const reshapedList =
@@ -101,6 +106,7 @@ export const CheckboxTable = ({
       100
     ).toFixed(2);
     setPercentDown(percentDown);
+    _setPercentDown && _setPercentDown(percentDown);
 
     setList(reshapedList);
   };
@@ -116,21 +122,29 @@ export const CheckboxTable = ({
   const balanceDecreasing = Number(percentDown) > 0;
 
   return (
-    <div className="rounded-lg w-full border border-[#EDF2F6] display flex flex-col justify-start p-8 py-2 lg:py-3 lg:py-4 overflow-y-auto h-full bg-white rounded-2xl shadow">
+    <div className="rounded-lg w-full flex flex-col justify-start p-8 py-2 lg:py-3 lg:py-4 h-full bg-white">
       <div className="mb-[8px] flex justify-start items-center gap-[8px]">
         <div className="w-9 h-5 inline-flex relative self-center justify-self-center mr-[4px]">
           <Calender />
         </div>
         <div className="text-[#2b3674] font-medium leading-loose self-center justify-self-center mt-[20px]">
-          After This Month
+          Repayment Strategy
         </div>
       </div>
 
       <div className="w-[100%] h-[39px] justify-between items-center inline-flex mb-[14px]">
-        <div className="text-right text-[#a3aed0] text-normal font-medium leading-normal">
-          Total Balance
+        <div className="flex flex-col gap-[4px]">
+          <div className="text-black-500 text-sm font-medium leading-normal">
+            Total Debt
+          </div>
+          <div className="text-[#a3aed0] text-xs font-medium leading-normal">
+            Month over Month
+          </div>
         </div>
         <div className="flex-col justify-start items-end inline-flex">
+          <div className="text-right text-[#2b3674] text-base font-bold leading-tight">
+            {formatCurrency(totalBalance)}
+          </div>
           <div className="justify-start items-center gap-1 inline-flex">
             <div className="w-5 h-5 relative" />
             <div
@@ -140,9 +154,6 @@ export const CheckboxTable = ({
             >
               {balanceDecreasing ? `+${percentDown}` : `${percentDown}`}%
             </div>
-          </div>
-          <div className="text-right text-[#2b3674] text-base font-bold leading-tight">
-            {formatCurrency(totalBalance)}
           </div>
         </div>
       </div>

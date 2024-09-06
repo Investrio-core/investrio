@@ -10,7 +10,7 @@ interface Props {
   number: number;
   lastSavedNumber: number;
   setNumber: Function;
-  sectionTitle: string;
+  sectionTitle?: string;
   sectionTitleStyles: string;
   sectionTitleStyle?: object;
   step: number;
@@ -26,6 +26,7 @@ interface Props {
   skippable?: Boolean;
   onSkip?: Function;
   aboveInput?: JSX.Element;
+  submitButtonText?: string;
 }
 
 export default function MultiInputBlock({
@@ -48,6 +49,7 @@ export default function MultiInputBlock({
   skippable = false,
   onSkip,
   aboveInput = undefined,
+  submitButtonText = "Save",
 }: Props) {
   useEffect(() => {
     if (number !== lastSavedNumber) setNumber(lastSavedNumber);
@@ -60,20 +62,23 @@ export default function MultiInputBlock({
           addPadding ? "mb-[24px]" : "mb-[2px]"
         }`}
       >
-        <h3
-          className={`${
-            sectionTitleStyles ??
-            `text-center text-xl font-medium text-indigo-800 leading-7 w-[100%] justify-self-center align-self-center`
-          }`}
-          style={{ ...sectionTitleStyle }}
-        >
-          {sectionTitle}
-        </h3>
+        {sectionTitle ? (
+          <h3
+            className={`${
+              sectionTitleStyles ??
+              `text-center text-xl font-medium text-indigo-800 leading-7 w-[100%] justify-self-center align-self-center`
+            }`}
+            style={{ ...sectionTitleStyle }}
+          >
+            {sectionTitle}
+          </h3>
+        ) : null}
       </div>
+      {/* border border-violet-200 */}
       <div
-        className={`bg-white rounded-[18px] border border-violet-200 max-w-[100%] px-[16px] py-[16px]`}
+        className={`bg-white rounded-[18px] max-w-[100%] px-[42px] pt-[16px] flex flex-col`}
       >
-        {aboveInput}
+        <div className={"mx-[-30px]"}>{aboveInput}</div>
         <div className="flex w-[98%] justify-between content-center items-center text-[32px] font-bold">
           <IconButton
             onClick={() =>
@@ -102,7 +107,13 @@ export default function MultiInputBlock({
           </div>
 
           <IconButton
-            onClick={() => setNumber((prevValue: number) => prevValue + step)}
+            onClick={() =>
+              setNumber((prevValue: number | undefined) =>
+                !isNaN(prevValue) && prevValue !== undefined
+                  ? prevValue + step
+                  : step
+              )
+            }
             Icon={FaCirclePlus}
             className="text-cyan-950"
           />
@@ -142,10 +153,10 @@ export default function MultiInputBlock({
           </div>
         ) : null}
         {number !== lastSavedNumber && onSubmit ? (
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-[4px] ml-[-25px] mr-[-50px] flex flex-col gap-2">
             <SimpleButton
               type="submit"
-              text="Save"
+              text={submitButtonText}
               onClick={() => onSubmit()}
               disabled={isLoading}
             />

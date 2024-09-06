@@ -14,12 +14,22 @@ export const COLORS = [
   "#480CA8",
 ];
 
-const FIGMA_COLORS = ["#F72585", "#7209B7", "#480CA8"]; //, "#FFBB28"];
+export const FIGMA_COLORS = [
+  "#165DFF",
+  "#14C9C9",
+  "#F7BA1E",
+  "#722ED1",
+  "#F72585",
+  "#7209B7",
+  "#480CA8",
+]; //, "#FFBB28"];
 
 const ratios = [
   { name: "Needs", value: 0.5 },
   { name: "Wants", value: 0.3 },
-  { name: "Savings/Debt", value: 0.2 },
+  // { name: "Savings/Debt", value: 0.2 },
+  { name: "Savings", value: 0.1 },
+  { name: "Debt", value: 0.1 },
 ];
 
 // const CustomLabel = ({ LabelJSX, ...props }) => {
@@ -32,6 +42,58 @@ const ratios = [
 //   );
 // };
 
+const getLabel = () => {
+  return (
+    <g>
+      <text
+        // x={x + 30}
+        // y={y + 25}
+        fill="#000"
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
+        Total:
+      </text>
+    </g>
+  );
+};
+
+const getLabelContent = () => {
+  return (
+    <text
+      offset="5"
+      x="100.5"
+      y="90"
+      className="text-[#4d5e80] text-xs font-semibold"
+      text-anchor="middle"
+    >
+      <tspan
+        x="170.5"
+        dy="-.85em"
+        className="text-[#4d5e80] text-xs font-semibold"
+      >
+        Total
+      </tspan>
+    </text>
+  );
+};
+
+const getValueContent = (value: string) => {
+  return (
+    <text
+      offset="5"
+      x="100.5"
+      y="90"
+      className="recharts-text font-bold"
+      text-anchor="middle"
+    >
+      <tspan x="170.5" dy=".7em">
+        {value}
+      </tspan>
+    </text>
+  );
+};
+
 export function ScaledPieChart({
   income,
   values,
@@ -39,61 +101,130 @@ export function ScaledPieChart({
   title,
   showChartMap = true,
   height = 250,
+  scale = 1,
+  useBasicLabel = false,
+  renderPercentValues = false,
+  renderShape = "",
+  shouldUseIncome = true,
 }: {
   income: number;
   values?: {
     name: string;
     value: number;
-    minPayment: number;
-    extraPayAmount: string | number | undefined;
+    minPayment?: number;
+    extraPayAmount?: string | number | undefined;
   }[];
   colorsToUse?: string[];
   title?: string;
   showChartMap?: boolean;
-  height?: number;
+  height?: number | string;
+  scale?: number;
+  useBasicLabel?: boolean;
+  renderPercentValues?: boolean;
+  renderShape?: string;
+  shouldUseIncome?: boolean;
 }) {
   const colorsArray = colorsToUse ?? FIGMA_COLORS;
-  const scaledData =
+  let scaledData =
     values ??
     ratios.map(({ name, value }) => {
       return { name: name, value: income ? income * value : 1 * value };
     });
 
+  // if (renderPercentValues) {
+  //   scaledData = values
+  //     ? values?.map(({ name, value }) => ({
+  //         name: name,
+  //         // value: (value / income).toFixed(1),
+  //         value: value / income,
+  //       }))
+  //     : scaledData;
+
+  //   // ratios.map(({ name, value }) => {
+  //   //   return { name: name, value: income ? income * value : 1 * value };
+  //   // });
+  // }
+
+  let sumRatio: number = 0;
+  let sum: number = 0;
+
+  if (renderPercentValues) {
+    scaledData = values
+      ? values?.map(({ name, value }) => {
+          const ratio = value / (income ? income : 100);
+          sumRatio += ratio;
+          sum += value;
+          return {
+            name: name,
+            // value: (value / income).toFixed(1),
+            // value: ratio?.toFixed ? ratio.toFixed(0) : ratio,
+            value: ratio,
+          };
+        })
+      : scaledData;
+
+    // ratios.map(({ name, value }) => {
+    //   return { name: name, value: income ? income * value : 1 * value };
+    // });
+  }
+
   const dollarFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   });
 
-  const ValueJsx = (
-    <div className="px-[16px] w-[100%] justify-between items-center inline-flex my-1">
-      <div className="text-center text-slate-400 text-2xl capitalize font-medium leading-normal">
-        Total balance
-      </div>
-      {/* <div className="flex-col justify-start items-end inline-flex">
-        <div className="justify-start items-center gap-1 inline-flex">
-          <div className="w-5 h-5 relative" />
-          <div className="text-center text-teal-500 text-xs font-bold leading-tight">
-            +2.45%
-          </div>
-        </div>
-        <div className="text-right text-indigo-900 text-base font-bold leading-tight">
-          {formatCurrency(income)}
-        </div>
-      </div> */}
-    </div>
-  );
+  // const ValueJsx = (
+  //   <div className="px-[16px] w-[100%] justify-between items-center inline-flex my-1">
+  //     <div className="text-center text-slate-400 text-2xl capitalize font-medium leading-normal">
+  //       Total balance
+  //     </div>
+  //     <div className="flex-col justify-start items-end inline-flex">
+  //       <div className="justify-start items-center gap-1 inline-flex">
+  //         <div className="w-5 h-5 relative" />
+  //         <div className="text-center text-teal-500 text-xs font-bold leading-tight">
+  //           +2.45%
+  //         </div>
+  //       </div>
+  //       <div className="text-right text-indigo-900 text-base font-bold leading-tight">
+  //         {formatCurrency(income)}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <>
+      {shouldUseIncome && !income ? (
+        // <div className="text-center text-slate-400 text-2xl font-medium leading-normal capitalize mt-2">
+        <div className="px-[10px] pt-[10px] text-black text-base font-medium text-md text-center leading-normal">
+          Set your income to get an accurate representation of your monthly
+          spending
+        </div>
+      ) : null}
       {title ? (
-        <div className="text-center text-slate-400 text-2xl font-medium leading-normal capitalize mt-2">
+        // <div className="text-center text-slate-400 text-2xl font-medium leading-normal capitalize mt-2">
+        <div className="px-[10px] pt-[10px] text-black text-base font-medium text-lg leading-normal">
           {title}
         </div>
       ) : null}
 
-      <div className="flex flex-col min-[1106px]:flex-row items-center justify-between relative">
-        <ResponsiveContainer width={"100%"} height={height}>
-          <PieChart width={200} height={height}>
+      <div
+        className={`flex flex-col min-[1106px]:flex-row items-center justify-between relative ${renderShape}`}
+        style={renderShape === "flex-row" ? { flexDirection: "row" } : {}}
+      >
+        <ResponsiveContainer
+          height={height}
+          width={"100%"}
+          // width={renderShape === "flex-row" ? "65%" : "100%"}
+          // minWidth="140px"
+          aspect={scale}
+        >
+          <PieChart
+          // width={renderShape === "flex-row" ? 120 : 200}
+          // height={height}
+          >
             <Pie
               data={scaledData}
               cx="50%"
@@ -101,6 +232,8 @@ export function ScaledPieChart({
               innerRadius={60}
               outerRadius={80}
               dataKey="value"
+              style={{ position: "relative" }}
+
               // label={({
               //   cx,
               //   cy,
@@ -138,14 +271,43 @@ export function ScaledPieChart({
               //   );
               // }}
             >
-              <Label
-                // value={income ? CustomLabel({ LabelJSX: ValueJsx }) : "100%"}
-                // value={income ? ValueJsx : "100%"}
-                value={income ? `${dollarFormatter.format(income)}` : "100%"}
-                position="center"
-                className="text-xl font-bold"
-                fill="#000"
-              />
+              {!useBasicLabel ? (
+                <Label
+                  // value={income ? CustomLabel({ LabelJSX: ValueJsx }) : "100%"}
+                  // value={income ? ValueJsx : "100%"}
+                  value={"Total"}
+                  // content={getLabel()}
+                  content={
+                    getLabelContent()
+                    // <div className="text-black">
+                    //   {income ? `${dollarFormatter.format(income)}` : "100%"}
+                    // </div>
+                  }
+                  position="centerTop"
+                  className="font-bold"
+                  fill="#000"
+                  // style={{ position: "relative", top: "-20px" }}
+                />
+              ) : null}
+              {useBasicLabel ? (
+                <Label
+                  value={income ? `${dollarFormatter.format(income)}` : "100%"}
+                  position="center"
+                  className="text-xl font-bold"
+                  fill="#000"
+                />
+              ) : (
+                <Label
+                  content={
+                    income
+                      ? getValueContent(dollarFormatter.format(income))
+                      : getValueContent("100%")
+                  }
+                  position="center"
+                  className="text-xl font-bold"
+                  fill="#000"
+                />
+              )}
 
               {scaledData.map((entry, index) => (
                 <Cell
@@ -159,28 +321,56 @@ export function ScaledPieChart({
         {showChartMap ? (
           <div className="w-[240px] md:w-[200px] lg:w-[220px]">
             <ul>
-              {scaledData.map((entry, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between md:gap-2 lg:gap-4 xl:gap-10 text-neutral-700 text-base font-normal leading-tight"
-                >
-                  <div className="flex gap-2 items-center">
-                    <div
-                      style={{
-                        backgroundColor:
-                          colorsArray[index % colorsArray.length],
-                      }}
-                      className="w-3 h-3 rounded"
-                    ></div>
-                    {entry.name}
-                  </div>
-                  <span className="font-medium mr-[10px] justify-end items-end">
-                    {income
-                      ? dollarFormatter.format(entry.value)
-                      : `${entry.value * 100}%`}
-                  </span>
-                </li>
-              ))}
+              {scaledData.map((entry, index) => {
+                return (
+                  <li
+                    key={index}
+                    className={`flex items-center justify-between md:gap-2 lg:gap-4 xl:gap-10 text-neutral-700 text-base font-normal leading-tight ${
+                      renderShape === "flex-row" ? "mb-[8px]" : ""
+                    }`}
+                  >
+                    <div className="flex gap-[6px] items-center">
+                      <div
+                        style={{
+                          backgroundColor:
+                            colorsArray[index % colorsArray.length],
+                        }}
+                        className="w-3 h-3 rounded-[50%]"
+                      ></div>
+                      <div className="mr-[10px]">{entry.name}</div>
+                    </div>
+                    <span
+                      className={`font-medium mr-[10px] justify-end items-end ${
+                        sumRatio > 1 && renderPercentValues
+                          ? "text-red-500 font-bold"
+                          : ""
+                      }`}
+                    >
+                      {income !== undefined &&
+                      income !== 0 &&
+                      !renderPercentValues &&
+                      !shouldUseIncome
+                        ? dollarFormatter.format(entry.value)
+                        : ""}
+                      {income && !renderPercentValues
+                        ? dollarFormatter.format(entry.value)
+                        : `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
+                            1
+                          )}%`}
+                      {/* {income === undefined || income === 0
+                        ? `${(Number(entry.value?.toFixed(4)) * 100).toFixed(
+                            1
+                          )}%`
+                        : ""} */}
+                      {(income === 0 || income === undefined) &&
+                      renderPercentValues &&
+                      shouldUseIncome
+                        ? `${((entry.value / sum) * 10000).toFixed(0)}%`
+                        : ""}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ) : null}

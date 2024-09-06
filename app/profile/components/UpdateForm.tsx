@@ -93,13 +93,6 @@ export default function UpdateForm({
                             Phone Number
                         </span>
                     </label>
-                    {/* <input
-                        type="phone"
-                        placeholder={userPhoneNumber ? userPhoneNumber : "Your phone number"}
-                        name="phoneNumber"
-                        className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
-                    /> */}
-
                     <PhoneInput
                         value={userPhoneNumber ? userPhoneNumber : ""}
                         defaultCountry="US"
@@ -107,7 +100,6 @@ export default function UpdateForm({
                         className="input input-bordered join-item w-full h-12 mt-1 rounded-xl"
                         placeholder={userPhoneNumber ? userPhoneNumber : "Your phone number"}
                     />
-
                 </div>
 
                 <div className="flex items-center justify-between w-full">
