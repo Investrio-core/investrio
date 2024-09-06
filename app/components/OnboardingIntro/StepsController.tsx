@@ -135,8 +135,29 @@ export default function StepsController({
     );
   }
 
-  let nextButton =
-    registerFlow && currentStep < numSteps - 1 ? (
+  let nextButton = useButton ? (
+    <button
+      className={`btn btn-primary mt-4 capitalize text-base/[14px]`}
+      style={{
+        borderRadius: "12px",
+        position: "relative",
+        top: "-10px",
+      }}
+      onClick={() => setNext()}
+    >
+      Next
+    </button>
+  ) : (
+    <div
+      className="text-right text-zinc-800 text-lg font-medium leading-7 cursor-pointer"
+      onClick={() => setNext()}
+    >
+      Next
+    </div>
+  );
+
+  if (registerFlow) {
+    nextButton = currentStep < numSteps - 1 ? (
       <button
         className="bg-[#8833ff] font-semibold text-white text-center text-base py-3 rounded-xl transition-all duration-200 ease-in-out w-full mt-6"
         onClick={() => setNext()}
@@ -159,27 +180,8 @@ export default function StepsController({
         </button>
       </div>
     );
-
-  nextButton = useButton ? (
-    <button
-      className={`btn btn-primary mt-4 capitalize text-base/[14px]`}
-      style={{
-        borderRadius: "12px",
-        position: "relative",
-        top: "-10px",
-      }}
-      onClick={() => setNext()}
-    >
-      Next
-    </button>
-  ) : (
-    <div
-      className="text-right text-zinc-800 text-lg font-medium leading-7 cursor-pointer"
-      onClick={() => setNext()}
-    >
-      Next
-    </div>
-  );
+  }
+  
   return (
     <div
       className={classes}
@@ -226,7 +228,7 @@ export default function StepsController({
             height={16}
           />
         ))}
-        {(!registerFlow && currentStep < numSteps - 1) || renderLastNext
+        {!registerFlow && (currentStep < numSteps - 1 || renderLastNext)
           ? nextButton
           : null}
       </div>
