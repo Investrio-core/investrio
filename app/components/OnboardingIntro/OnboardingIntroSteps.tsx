@@ -49,37 +49,14 @@ export default function OnboardingIntroSteps({
 
   return (
     <>
-      {/* <IoMdClose
-        className="mask mask-pentagon group-hover:bg-primary p-4 shadow transition text-slate-500"
-        size={60}
-        style={{ position: "absolute", top: 0, right: 0, cursor: "pointer" }}
-        onClick={() => setShowSteps(false)}
-      /> */}
-
       <div className="flex flex-col justify-center align-center">
         <OnboardingIntroStep {...ONBOARDING_STEPS_DATA[currentStep]} />
-
         <StepsController
           setNext={() => setCurrentStep((prevState) => prevState + 1)}
           currentStep={currentStep}
           numSteps={NUM_STEPS}
           classes={`mt-[60px]`}
         />
-
-        {/* <StepsController
-          setNext={() => setCurrentStep((prevState) => prevState + 1)}
-          setPrev={() =>
-            setCurrentStep((prevState) => {
-              if (prevState === 0) return 0;
-              return prevState - 1;
-            })
-          }
-          setSkip={() => setShowSteps(false)}
-          currentStep={currentStep}
-          numSteps={NUM_STEPS}
-          renderLastNext
-          classes={`mt-[60px]`}
-        /> */}
       </div>
     </>
   );
