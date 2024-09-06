@@ -43,7 +43,6 @@ export default function DataCollection() {
     };
 
     const handleExploreClick = async (): Promise<void> => {
-        console.log(selectedOptions);
         try {
             setIsLoading(true);
             setError("");
