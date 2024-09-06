@@ -81,7 +81,7 @@ model User {
   priority            String[]
   phoneNumber         String?
   loginType           AccountType?
-  isVerified          Boolean?                   @default(false)
+  isVerified          Boolean                   @default(false)
 
   @@map("users")
 }
