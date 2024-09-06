@@ -40,11 +40,14 @@ export default function SignUpPage() {
         email: data.email,
         password: data.password,
         // ## Register callback:
-        callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
+        // callbackUrl: "/dashboard/debts/add",
+        callbackUrl: "/auth/signup/completion",
+        // callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
       });
 
       Mixpanel.getInstance().identify(user.data.id, data.email, data.name);
       Mixpanel.getInstance().track("registration");
+
     } catch (err: AxiosError | any) {
       console.log(err.message);
       setError(err.response.data);
@@ -60,9 +63,17 @@ export default function SignUpPage() {
         alt="Investrio"
         width={225}
         height={53}
-        className={`mx-auto pb-[12px] ${showSteps ? "mt-[0px]" : "mt-[42px]"}`}
+        // className={`mx-auto pb-[12px] ${showSteps ? "mt-[0px]" : "mt-[20px]"}`}
+        className={"mx-auto size-64 mt-[-5rem]"}
       />
-      {showSteps ? (
+
+      <SignupForm
+        isLoading={isLoading}
+        error={error}
+        onSubmit={onSubmit}
+        setShowSteps={setShowSteps}
+      />
+      {/* {showSteps ? (
         <OnboardingIntroSteps
           showSteps={showSteps}
           setShowSteps={setShowSteps}
@@ -74,7 +85,7 @@ export default function SignUpPage() {
           onSubmit={onSubmit}
           setShowSteps={setShowSteps}
         />
-      )}
+      )} */}
     </>
   );
 }

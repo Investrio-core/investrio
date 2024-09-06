@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { StandardButton } from "../ui/buttons";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface Props {
   setNext: Function;
-  setPrev: Function;
+  setPrev?: Function;
   setSkip?: Function;
   currentStep: number;
   numSteps: number;
@@ -14,6 +15,7 @@ interface Props {
   content?: JSX.Element;
   stepsIterator?: number[];
   renderDirection?: "horizontal" | "vertical";
+  registerFlow?: boolean;
 }
 
 function StepsControllerVertical({
@@ -78,7 +80,7 @@ function StepsControllerVertical({
             </div>
           </div>
         ) : null}
-        {currentStep !== 0 && !renderNext ? (
+        {setPrev && currentStep !== 0 && !renderNext ? (
           <div
             // className="btn btn-primary text-left text-zinc-800 text-lg font-medium leading-7 cursor-pointer w-[100%] mt-[45px]"
             className={
@@ -112,10 +114,12 @@ export default function StepsController({
   classes = "",
   renderDirection = "horizontal",
   content,
+  registerFlow = false,
 }: Props) {
+  const router = useRouter();
   const stepsIterator = Array(numSteps).fill(0);
 
-  if ((renderDirection = "vertical")) {
+  if (renderDirection === "vertical") {
     return (
       <StepsControllerVertical
         setNext={setNext}
@@ -131,7 +135,32 @@ export default function StepsController({
     );
   }
 
-  const nextButton = useButton ? (
+  let nextButton =
+    registerFlow && currentStep < numSteps - 1 ? (
+      <button
+        className="bg-[#8833ff] font-semibold text-white text-center text-base py-3 rounded-xl transition-all duration-200 ease-in-out w-full mt-6"
+        onClick={() => setNext()}
+      >
+        Get Started
+      </button>
+    ) : (
+      <div className="flex gap-5">
+        <button
+          className="bg-[#8833ff] font-semibold text-white text-center text-base py-3 rounded-xl transition-all duration-200 ease-in-out w-full mt-6"
+          onClick={() => router.push("/auth/signup")}
+        >
+          Register
+        </button>
+        <button
+          className="bg-[#8833ff] font-semibold text-white text-center text-base py-3 rounded-xl transition-all duration-200 ease-in-out w-full mt-6"
+          onClick={() => setNext()}
+        >
+          Log In
+        </button>
+      </div>
+    );
+
+  nextButton = useButton ? (
     <button
       className={`btn btn-primary mt-4 capitalize text-base/[14px]`}
       style={{
@@ -154,14 +183,18 @@ export default function StepsController({
   return (
     <div
       className={classes}
-      style={{
-        display: "flex",
-        width: "295px",
-        justifyContent: "space-between",
-        alignItems: "center",
-        alignSelf: "center",
-        justifySelf: "center",
-      }}
+      style={
+        !registerFlow
+          ? {
+              display: "flex",
+              width: "295px",
+              justifyContent: "space-between",
+              alignItems: "center",
+              alignSelf: "center",
+              justifySelf: "center",
+            }
+          : {}
+      }
     >
       {currentStep === 0 && setSkip ? (
         <div
@@ -171,7 +204,7 @@ export default function StepsController({
           Skip
         </div>
       ) : null}
-      {currentStep !== 0 ? (
+      {setPrev && currentStep !== 0 ? (
         <div
           className="text-left text-zinc-800 text-lg font-medium leading-7 cursor-pointer"
           onClick={() => setPrev()}
@@ -193,8 +226,12 @@ export default function StepsController({
             height={16}
           />
         ))}
+        {(!registerFlow && currentStep < numSteps - 1) || renderLastNext
+          ? nextButton
+          : null}
       </div>
-      {currentStep < numSteps - 1 || renderLastNext ? nextButton : null}
+      {registerFlow ? nextButton : null}
+      {/* {currentStep < numSteps - 1 || renderLastNext ? nextButton : null} */}
     </div>
   );
 }
