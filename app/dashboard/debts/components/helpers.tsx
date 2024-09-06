@@ -3,8 +3,7 @@ import { formatCurrency } from "@/app/utils/formatters";
 import dayjs from "dayjs";
 
 export function getDebtFreeDate(neverDebtFree?: boolean, results?: Results) {
-  const lastPayment =
-    results?.["payments"]?.[results?.["payments"].length - 1];
+  const lastPayment = results?.["payments"]?.[results?.["payments"].length - 1];
 
   const endDate = lastPayment
     ? dayjs(lastPayment["accounts"][0].paymentDate).format("MMMM YYYY")
@@ -64,21 +63,13 @@ export function getSummaryStatistics(
     avalancheResultsWithExtra &&
     avalancheResultsWithExtra?.totalInterestPaid
   ) {
-    // console.log("-- avalanche pays more interest than snowball");
-    // console.log(
-    //   avalancheResultsWithExtra?.totalInterestPaid >
-    //     snowballResultsWithExtra?.totalInterestPaid
-    // );
-    // console.log(avalancheResultsWithExtra?.totalInterestPaid);
-    // console.log(snowballResultsWithExtra?.totalInterestPaid);
-
     betterMethod =
       avalancheResultsWithExtra?.totalInterestPaid >
       snowballResultsWithExtra?.totalInterestPaid
         ? "Snowball"
         : "Avalanche";
-    
-        selectedMethod =
+
+    selectedMethod =
       avalancheResultsWithExtra?.totalInterestPaid >
       snowballResultsWithExtra?.totalInterestPaid
         ? snowballResultsWithExtra
@@ -86,8 +77,9 @@ export function getSummaryStatistics(
 
     totalInterestPaid = selectedMethod?.totalInterestPaid;
     totalInterestSaved =
-      selectedMethod?.totalInterestPaid -
-      snowballResultsWithExtra?.totalInterestPaid;
+      snowballResultsWithExtra?.totalInterestPaid -
+      selectedMethod?.totalInterestPaid;
+
     minPayment = selectedMethod?.payments?.[0]?.accounts?.reduce(
       (acc, payment) => acc + payment.minPayment,
       0
@@ -113,10 +105,42 @@ export function getSummaryStatistics(
     );
   }
 
+  const lastPaymentWithout =
+    snowballResultsWithoutExtra?.["payments"]?.[
+      snowballResultsWithoutExtra?.["payments"].length - 1
+    ];
+  const endDateWithout = dayjs(
+    lastPaymentWithout?.["accounts"]?.[0]?.paymentDate
+  );
+
   const debtFreeBy = dayjs(endDate);
   const neverBecomesDebtFree = endBalance === undefined || endBalance > 0;
   const month = neverBecomesDebtFree ? "Never" : debtFreeBy.format("MMMM");
   const year = neverBecomesDebtFree ? "" : debtFreeBy.format("YYYY");
+
+  // console.log("-- TIME SAVED STUFF --");
+  const timeSavedYears = endDateWithout.diff(debtFreeBy, "years");
+  // console.log("time saved years");
+  // console.log(timeSavedYears);
+  // console.log("time saved months");
+  // console.log(endDateWithout.diff(debtFreeBy, "months"));
+  // const timeSavedString = `${
+  //   timeSavedYears * -1 > 0 ? `${timeSavedYears * -1} years, ` : ""
+  // }${endDateWithout.diff(debtFreeBy, "months") * -1} months`;
+
+  const timeSavedString = `${endDateWithout.diff(debtFreeBy, "months")} months`;
+  // console.log(timeSavedString);
+
+  // const monthsFaster =
+  //   endDateWithout.diff(debtFreeBy, "years") * -12 +
+  //   endDateWithout.diff(debtFreeBy, "months") * -1;
+
+  const monthsFaster = endDateWithout.diff(debtFreeBy, "months");
+
+  // const timeSavedString = `${
+  //   monthsFaster > 12 ? `${(monthsFaster / 12).toFixed(0)} years, ` : ""
+  // }${monthsFaster > 12 ? monthsFaster % 12 : monthsFaster} months`;
+  // console.log(timeSavedString);
 
   return {
     betterMethod,
@@ -128,5 +152,7 @@ export function getSummaryStatistics(
     endBalance,
     neverBecomesDebtFree,
     debtFreeMonthYear: `${month} ${year}`,
+    timeSavedString,
+    monthsFaster,
   };
 }

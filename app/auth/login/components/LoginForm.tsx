@@ -9,6 +9,7 @@ import { clearSession } from "@/app/utils/session";
 import Mixpanel from "@/services/mixpanel";
 import Link from "next/link";
 import Input from "@/app/components/ui/Input";
+// import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -61,6 +62,7 @@ export default function LoginForm() {
 
       if (response?.ok) {
         router.push("/auth/signup/completion");
+        // router.push(HOME_DASHBOARD_PAGE);
       } else {
         setError("Invalid Credentials");
       }

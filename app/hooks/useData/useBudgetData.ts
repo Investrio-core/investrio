@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useMemo } from "react";
 
-const categories = ["wants", "needs", "savings", "debts"];
+const categories = ["needs", "wants", "savings", "debts"];
 
 export default function useBudgetData(date?: Date | null) {
   const axiosAuth = useAxiosAuth();
@@ -42,15 +42,47 @@ export default function useBudgetData(date?: Date | null) {
     ]
   );
 
+  const calculateSummedCategories = () => {
+    return categories
+      .filter((category) => category !== "debts")
+      .map((category) => {
+        if (data?.data?.[category]) {
+          return {
+            name: category.slice(0, 1).toUpperCase() + category.slice(1),
+            value: data?.data[category].reduce(
+              (p: number, c: { value: number }) => p + (c?.value || 0),
+              0
+            ),
+          };
+        }
+
+        return { name: category, value: 0 };
+      });
+  };
+
+  const summedCategories = useMemo(
+    () => calculateSummedCategories(),
+    [
+      data?.data["wants"],
+      data?.data["needs"],
+      data?.data["savings"],
+      // data?.data["debts"],
+    ]
+  );
+
   const incomeAfterExpenses = (data?.data?.income ?? 0) - sumCategories;
 
-  const hasBudgetData = Object.keys(data?.data ?? {}).length > 0;
+  const hasBudgetData = useMemo(
+    () => data?.data !== undefined && Object.keys(data?.data ?? {}).length > 0,
+    [data?.data]
+  );
 
   return {
     data,
     isLoading,
     refetch,
     sumCategories,
+    summedCategories,
     totalExpenses: sumCategories,
     incomeAfterExpenses,
     income: data?.data?.income,

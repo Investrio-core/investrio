@@ -10,6 +10,11 @@ import { useSession } from "next-auth/react";
 import { BiMenu } from "react-icons/bi";
 import BookConsultationBlock from "./BookConsultation";
 import AnimatedMenuToggle from "./ui/AnimatedMenuToggle";
+import {
+  BUDGET_PAGE,
+  DEBTS_PAGE,
+  HOME_DASHBOARD_PAGE,
+} from "../utils/constants";
 
 const genericHamburgerLine = `h-1 w-6 my-1 rounded-full bg-black transition ease transform duration-300`;
 
@@ -120,28 +125,31 @@ export default function SideMenu() {
               />
             </Link>
             <SideMenuItem
-              href="/dashboard/debts"
+              // href="/dashboard/debts"
+              href={HOME_DASHBOARD_PAGE}
               isActive={isActiveLink("/dashboard")}
               closeMenu={() => setShowMenu(false)}
             >
               <MdOutlineDashboard />
-              <span className="text-lg ml-2">Dashboard</span>
+              <span className="text-lg ml-2">Home</span>
             </SideMenuItem>
             <SideMenuItem
-              href={"/dashboard/debts/add"}
-              isActive={isActiveLink("/dashboard")}
-              closeMenu={() => setShowMenu(false)}
-            >
-              <FaHandHoldingDollar style={{ fontSize: "20px" }} />
-              <span className="text-lg ml-2">Strategy</span>
-            </SideMenuItem>
-            <SideMenuItem
-              href="/dashboard/budget"
+              // href="/dashboard/budget"
+              href={BUDGET_PAGE}
               isActive={isActiveLink("/budget")}
               closeMenu={() => setShowMenu(false)}
             >
               <BudgetIcon width="20" height="20" viewBox="6 6 20 22" />
               <span className="text-lg ml-2">Budget</span>
+            </SideMenuItem>
+            <SideMenuItem
+              // href={"/dashboard/debts/add"}
+              href={DEBTS_PAGE}
+              isActive={isActiveLink("/dashboard")}
+              closeMenu={() => setShowMenu(false)}
+            >
+              <FaHandHoldingDollar style={{ fontSize: "20px" }} />
+              <span className="text-lg ml-2">Debt</span>
             </SideMenuItem>
             {/* <SideMenuItem href="/settings" isActive={isActiveLink("/settings")}>
             <CogIcon width="20" height="20" viewBox="6 5 20 21" />{" "}

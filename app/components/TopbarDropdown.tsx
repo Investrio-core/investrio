@@ -24,10 +24,20 @@ interface Props {
   name: string;
   email: string;
   image?: string;
+  buttonContent?: JSX.Element;
+  className?: string;
+  outerClassName?: string;
 }
 
-export default function TopbarDropdown({ name, email, image }: Props) {
-  const buttonContent = (
+export default function TopbarDropdown({
+  name,
+  email,
+  image,
+  buttonContent,
+  className,
+  outerClassName,
+}: Props) {
+  const _buttonContent = (
     <div className="flex flex-row z-100 relative">
       <div className="flex flex-row gap-2 bg-transparent lg:mr-4">
         <div className="mr-1 flex flex-col justify-start items-start lg:mr-auto">
@@ -47,10 +57,13 @@ export default function TopbarDropdown({ name, email, image }: Props) {
   return (
     <AnimatedDropdownMenu
       menuTitle={""}
-      menuIcon={buttonContent}
+      menuIcon={buttonContent ?? _buttonContent}
       options={OPTIONS}
-      renderImage={true}
-      imageUrl={image}
+      renderImage={false}
+      // imageUrl={image}
+      className={className}
+      outerClassName={outerClassName}
+      renderChevron={false}
     />
   );
 }

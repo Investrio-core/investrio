@@ -12,7 +12,9 @@ const useAxiosAuth = () => {
     const requestIntercept = axiosAuth.interceptors.request.use(
       (config) => {
         if (!config.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${session?.user?.accessToken}`;
+          config.headers[
+            "Authorization"
+          ] = `Bearer ${session?.user?.accessToken}`;
         }
         return config;
       },
@@ -23,16 +25,20 @@ const useAxiosAuth = () => {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error?.response?.status === 401 && !prevRequest?.sent) {
+        if (
+          error?.response?.status === 401 ||
+          error?.response?.status === 400 ||
+          (error?.response?.status === 500 && !prevRequest?.sent)
+        ) {
           prevRequest.sent = true;
           const newAccessToken = await refreshToken();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosAuth(prevRequest);
         }
 
-        if(error?.response?.data?.payWall) {
-          location.replace('/dashboard/debts') 
-        };
+        if (error?.response?.data?.payWall) {
+          location.replace("/dashboard/debts");
+        }
 
         return Promise.reject(error);
       }

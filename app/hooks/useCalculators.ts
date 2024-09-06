@@ -1,4 +1,5 @@
 // import { DebtFormType } from "@/types/debtFormType";
+import { useMemo } from "react";
 import { REPAYMENT_STRATEGIES } from "./calculatorsSnowball";
 import Snowball from "./calculatorsSnowball/Snowball";
 
@@ -73,17 +74,21 @@ function paymentScheduleCalculator(
     initialBalance: number;
     interestRate: number;
     minPayAmount: number;
+    debtType: string;
   }[],
   strategy = REPAYMENT_STRATEGIES.SNOWBALL,
   additionalPayment: number
 ) {
+  // CHANGE THIS WHEN SUPPORTING OTHER DEBT TYPES IN THE CALCULATION:
   const accounts =
-    debts?.map((debt) => ({
-      name: debt.title,
-      balance: debt.initialBalance,
-      interest: debt.interestRate, // * 100,
-      minPayment: debt.minPayAmount,
-    })) ?? [];
+    debts
+      ?.filter((debt) => debt.debtType !== "CreditCard")
+      ?.map((debt) => ({
+        name: debt.title,
+        balance: debt.initialBalance,
+        interest: debt.interestRate, // * 100,
+        minPayment: debt.minPayAmount,
+      })) ?? [];
 
   const snowball = new Snowball(
     accounts,
@@ -93,10 +98,7 @@ function paymentScheduleCalculator(
       : REPAYMENT_STRATEGIES.AVALANCHE
   );
   const snowballPaymentPlan = snowball.createPaymentPlan();
-  // console.log("-- real payment plan --");
-  // console.log(snowballPaymentPlan);
 
-  // console.log("-- calculating snowball payment plan --");
   // const snowballTest = new Snowball(
   //   DUMMY_DEBTS_TEST.map((debt) => ({
   //     name: debt.title,
@@ -115,8 +117,42 @@ function paymentScheduleCalculator(
   return snowballPaymentPlan;
 }
 
-export default function useCalculators() {
+// calculators only support credit card debts at the moment
+export default function useCalculators(debtsData, extraPayment) {
+  const snowballResultsWithoutExtra = useMemo(
+    () =>
+      debtsData !== undefined
+        ? paymentScheduleCalculator(debtsData?.data ?? [], "snowball", 0)
+        : undefined,
+    [debtsData?.data]
+  );
+
+  const snowballResultsWithExtra = useMemo(() => {
+    if (debtsData === undefined) return undefined;
+
+    if (extraPayment === 0) return undefined;
+
+    return paymentScheduleCalculator(
+      debtsData?.data ?? [],
+      "snowball",
+      extraPayment
+    );
+  }, [debtsData?.data, extraPayment]);
+
+  const avalancheResultsWithExtra = useMemo(() => {
+    if (debtsData === undefined) return undefined;
+    if (extraPayment === 0) return undefined;
+    return paymentScheduleCalculator(
+      debtsData?.data ?? [],
+      "avalanche",
+      extraPayment
+    );
+  }, [debtsData?.data, extraPayment]);
+
   return {
     paymentScheduleCalculator,
+    snowballResultsWithoutExtra,
+    snowballResultsWithExtra,
+    avalancheResultsWithExtra,
   };
 }

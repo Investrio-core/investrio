@@ -6,6 +6,7 @@ import { StrategyFormTooltip } from "@/app/components/strategy/add-strategy/Form
 import { ToolTipButton } from "@/app/components/ui/buttons";
 import AddAdditionalPayment from "./AddAdditionalPayment";
 import { GoTrash } from "react-icons/go";
+import { IoMdClose } from "react-icons/io";
 
 interface Props {
   setDebts: Dispatch<SetStateAction<DebtFormType[]>>;
@@ -31,49 +32,24 @@ export default function AddDebt({
   const submitNewDebt = (values: DebtFormType) => {
     createDebt({ newDebt: values });
     // cancel();
-
-    // if (extraPaymentAmount === undefined) {
-    //   setNewDebt(values);
-    //   setShowAdditionalPaymentForm(true);
-    // } else {
-    //   // setDebts((prevState) => [...prevState, values]);
-    //   console.log("creating new debt with", extraPaymentAmount);
-    //   console.log("-- newDebt: --");
-    //   console.log(newDebt);
-    //   // createDebt({ newDebt: newDebt, extraPayAmount: extraPaymentAmount });
-    //   createDebt({ newDebt: values, extraPayAmount: extraPaymentAmount });
-    //   cancel();
-    // }
   };
 
-  // const submitWithAdditionalPayment = () => {
-  //   if (newDebt) {
-  //     // setDebts((prevState: DebtFormType[]) => [...prevState, newDebt]);
-  //     console.log(
-  //       "creating new debt after extrapayment form with",
-  //       extraPaymentAmount
-  //     );
-  //     createDebt({ newDebt, extraPayAmount: extraPaymentAmount });
-  //     cancel();
-  //   }
-  // };
-
   return (
-    <div className="flex flex-col mt-[12px] px-[16px] py-[16px] xl:px-10 bg-indigo-50 rounded-[18px] border border-violet-200 lg:max-w-[500px] lg:mx-[28px]">
+    <div className="relative flex flex-col mt-[12px] px-[16px] py-[16px] xl:px-10 bg-indigo-50 rounded-[18px] border border-violet-200 lg:max-w-[500px] lg:mx-[28px]">
       <StrategyFormTooltip
         Icon={
           <ToolTipButton
             text="Where do I find this info?"
-            classProp="mb-[12px]"
+            // classProp="mb-[12px]"
             iconText="?"
           />
         }
       />
       <div
-        className="flex-row self-end justify-self-end"
+        className="absolute top-[24px] right-[12px]"
         onClick={() => cancel()}
       >
-        <GoTrash className="mr-2 cursor-pointer text-2xl" />
+        <IoMdClose className="mr-2 cursor-pointer text-2xl" />
       </div>
       <AddDebtForm
         debts={debts}

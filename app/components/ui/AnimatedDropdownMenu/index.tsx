@@ -18,6 +18,9 @@ interface Props {
   menuIcon?: React.ReactElement;
   renderImage: boolean;
   imageUrl?: string;
+  className?: string;
+  outerClassName?: string;
+  renderChevron?: boolean;
 }
 
 const AnimatedDropdownMenu = ({
@@ -26,15 +29,26 @@ const AnimatedDropdownMenu = ({
   imageUrl,
   renderImage,
   options,
+  className,
+  outerClassName,
+  renderChevron,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-center bg-white relative z-100">
+    <div
+      className={
+        `${outerClassName} relative flex items-center justify-center` ??
+        "flex items-center justify-center bg-white relative"
+      }
+    >
       <motion.div animate={open ? "open" : "closed"} className="relative">
         <button
           onClick={() => setOpen((pv) => !pv)}
-          className="border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors md:shadow-md"
+          className={
+            className ??
+            "border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors md:shadow-md"
+          }
         >
           {renderImage ? (
             <Image
@@ -51,19 +65,25 @@ const AnimatedDropdownMenu = ({
               {menuTitle}
             </span>
           ) : null}
-          <motion.span variants={iconVariants}>
-            <FiChevronDown className={"text-slate-600"} />
-          </motion.span>
+          {renderChevron ? (
+            <motion.span variants={iconVariants}>
+              <FiChevronDown className={"text-slate-600"} />
+            </motion.span>
+          ) : null}
         </button>
 
         <motion.ul
           initial={wrapperVariants.closed}
           variants={wrapperVariants}
-          style={{ originY: "top", translateX: "-50%" }}
-          className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-48 overflow-hidden z-100"
+          style={{
+            originY: "top",
+            translateX: "-90%",
+            translateY: "5%",
+          }}
+          className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] right-34 w-34"
         >
           {options.map(({ onClick, label, icon }) => (
-            <Option onClick={onClick} text={label} Icon={icon} />
+            <Option key={label} onClick={onClick} text={label} Icon={icon} />
           ))}
         </motion.ul>
       </motion.div>
@@ -80,9 +100,10 @@ interface OptionProps {
 const Option = ({ text, Icon, onClick }: OptionProps) => {
   return (
     <motion.li
+      key={text}
       variants={itemVariants}
       onClick={() => onClick()}
-      className="relative z-100 flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap rounded-md hover:bg-indigo-100 text-slate-700 hover:text-indigo-500 transition-colors cursor-pointer"
+      className="relative flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap rounded-md hover:bg-indigo-100 text-slate-700 hover:text-indigo-500 transition-colors cursor-pointer"
     >
       <motion.span variants={actionIconVariants}>
         <Icon />
@@ -96,6 +117,7 @@ export default AnimatedDropdownMenu;
 
 const wrapperVariants = {
   open: {
+    zIndex: 1000,
     scaleY: 1,
     transition: {
       when: "beforeChildren",
@@ -103,6 +125,7 @@ const wrapperVariants = {
     },
   },
   closed: {
+    zIndex: 0,
     scaleY: 0,
     transition: {
       when: "afterChildren",

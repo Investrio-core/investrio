@@ -92,6 +92,13 @@ enum AccountType {
 
 enum DebitType {
   CreditCard
+  AutoLoan
+  PersonalLoan
+  StudentLoan
+  Mortgage
+  MedicalLoan
+  Taxes
+  Other
 }
 
 enum SubscriptionStatus {
