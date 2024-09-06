@@ -35,7 +35,7 @@ export default function Login() {
       ) : (
         <>
           <div className="text-center text-[#03091d] text-xl font-medium leading-[30px] tracking-wide mt-[-4rem]">
-            Login first to your account
+            Log into your account
           </div>
           <div className="text-center p-[12px] mt-[30px]">
             <LoginForm />
