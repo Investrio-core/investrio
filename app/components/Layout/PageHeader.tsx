@@ -41,17 +41,17 @@ export default function PageHeader({
             {Greeter()}&nbsp;<strong>{name?.split(" ")[0]}</strong>! &nbsp;
           </div>
           <div className="flex flex-row justify-center align-center flex-end justify-self-center gap-[6px]">
-            <div className="flex items-center justify-center gap-[20px]">
+            {/* <div className="flex items-center justify-center gap-[20px]">
               <IoSearch
                 className={iconClasses}
                 onClick={() => setShowSearchBar((prevState) => !prevState)}
               />
-            </div>
+            </div> */}
             <div className="flex items-center justify-center">
               <IoIosNotifications className={iconClasses} />
             </div>
 
-            <div className="flex items-center justify-center relative">
+            <div className="flex items-center justify-center">
               <TopbarDropdown
                 image={image}
                 name={name?.split(" ")[0]}
