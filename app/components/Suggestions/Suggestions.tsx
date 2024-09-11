@@ -7,6 +7,8 @@ const suggestions = [
   "You could have an investment portfolio worth $200,000 dollars in 10 years. Based on your monthly savings, we noticed a potential opportunity.",
 ];
 
+const defaultSuggestion = "🥳 You are all caught up for now";
+
 export type PageType = "dashboard" | "debt" | "budget" | "wealth";
 
 interface Props {
@@ -17,7 +19,6 @@ export default function Suggestions({ context }: Props) {
   const { getSuggestions, suggestions } = useSuggestions(context);
 
   const onCloseClicked = (suggestion: String) => {
-    console.log(suggestion);
     setRenderSuggestions((prevState) =>
       prevState.filter((s) => s !== suggestion)
     );
@@ -27,8 +28,6 @@ export default function Suggestions({ context }: Props) {
 
   useEffect(() => {
     const _suggestions = getSuggestions();
-    console.log("-- got suggestions --");
-    console.log(_suggestions);
     setRenderSuggestions(_suggestions);
   }, [suggestions]);
 
@@ -37,15 +36,24 @@ export default function Suggestions({ context }: Props) {
       className="my-[20px]"
       style={{ position: "relative", height: "fit-content" }}
     >
-      {renderSuggestions?.map((suggestion: string, idx: number) => (
+      {(renderSuggestions?.length > 0 &&
+        renderSuggestions?.map((suggestion: string, idx: number) => (
+          <Suggestion
+            initialSuggestion={renderSuggestions?.[0]}
+            suggestion={suggestion}
+            onClose={onCloseClicked}
+            idx={idx}
+            numSuggestions={renderSuggestions?.length}
+          />
+        ))) || (
         <Suggestion
-          initialSuggestion={renderSuggestions?.[0]}
-          suggestion={suggestion}
-          onClose={onCloseClicked}
-          idx={idx}
-          numSuggestions={renderSuggestions?.length}
+          initialSuggestion={defaultSuggestion}
+          suggestion={defaultSuggestion}
+          // onClose={onCloseClicked}
+          idx={0}
+          numSuggestions={1}
         />
-      )) || null}
+      )}
     </div>
   );
 }
