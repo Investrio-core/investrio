@@ -145,7 +145,8 @@ export const CheckboxTable = ({
           <div className="text-right text-[#2b3674] text-base font-bold leading-tight">
             {formatCurrency(totalBalance)}
           </div>
-          <div className="justify-start items-center gap-1 inline-flex">
+          {/* Removing for now */}
+          {/* <div className="justify-start items-center gap-1 inline-flex">
             <div className="w-5 h-5 relative" />
             <div
               className={`text-center ${
@@ -154,7 +155,7 @@ export const CheckboxTable = ({
             >
               {balanceDecreasing ? `+${percentDown}` : `${percentDown}`}%
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
