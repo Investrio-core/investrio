@@ -42,6 +42,7 @@ import { DEBT_REPAYMENT_STRATEGY_NAME } from "../../budget/components/BudgetTool
 import useBudgetQueries from "@/app/hooks/useBudgetQueries";
 import { toast } from "react-toastify";
 import BudgetProgress from "../../budget/components/BudgetProgress";
+import useDebtData from "@/app/hooks/useData/useDebtData";
 type DebtMobileSteps = "summary" | "add" | "suggestions" | "priorities";
 export const DEBT_SUMMARY = "summary";
 export const ADD_DEBT = "add";
@@ -95,39 +96,41 @@ export default function DebtTool() {
   // };
 
   // model FinancialRecord[] by userID -> debts
-  const {
-    data: debtsData,
-    isLoading: debtsLoading,
-    refetch: refetchDebts,
-    isRefetching: isRefetchingDebts,
-  } = useQuery({
-    queryKey: ["extra-payments"],
-    queryFn: async () => {
-      const debtsData = await axiosAuth.get(
-        `/dashboard/records/${session?.user?.id}`
-      );
+  // const {
+  //   data: debtsData,
+  //   isLoading: debtsLoading,
+  //   refetch: refetchDebts,
+  //   isRefetching: isRefetchingDebts,
+  // } = useQuery({
+  //   queryKey: ["extra-payments"],
+  //   queryFn: async () => {
+  //     const debtsData = await axiosAuth.get(
+  //       `/dashboard/records/${session?.user?.id}`
+  //     );
 
-      // queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
-      // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  //     // queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
+  //     // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
 
-      // normalize debt data as the old interest rate was saved as zero leading decimals, e.g. 0.25...
-      const debts = debtsData?.data.map((debt: FinancialRecordSchema) => {
-        if (String(debt.interestRate)?.[0] === "0") {
-          return { ...debt, interestRate: debt.interestRate * 100 };
-        }
-        return debt;
-      });
+  //     // normalize debt data as the old interest rate was saved as zero leading decimals, e.g. 0.25...
+  //     const debts = debtsData?.data.map((debt: FinancialRecordSchema) => {
+  //       if (String(debt.interestRate)?.[0] === "0") {
+  //         return { ...debt, interestRate: debt.interestRate * 100 };
+  //       }
+  //       return debt;
+  //     });
 
-      return { ...debtsData, data: debts };
-    },
-    staleTime: 148000,
-    // refetchOnMount: status !== "payment-config",
-    // refetchOnWindowFocus: status !== "payment-config",
-    // enabled: !!session?.user.id || status !== "payment-config",
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
-    // },
-  });
+  //     return { ...debtsData, data: debts };
+  //   },
+  //   staleTime: 148000,
+  //   // refetchOnMount: status !== "payment-config",
+  //   // refetchOnWindowFocus: status !== "payment-config",
+  //   // enabled: !!session?.user.id || status !== "payment-config",
+  //   // onSuccess: () => {
+  //   //   queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
+  //   // },
+  // });
+
+  const { data: debtsData, hasDebtData } = useDebtData();
 
   const {
     data: budgetInfo,
@@ -159,9 +162,6 @@ export default function DebtTool() {
       (debt: { name: string }) => debt.name !== DEBT_REPAYMENT_STRATEGY_NAME
     );
 
-    // console.log("old debts");
-    // console.log(debts);
-
     const newDebts = [
       {
         name: DEBT_REPAYMENT_STRATEGY_NAME,
@@ -171,10 +171,7 @@ export default function DebtTool() {
       ...debts,
     ];
 
-    // console.log(newDebts);
-
-    const updateResult = await updateBudgetCategory({ debts: newDebts });
-    // console.log(updateResult);
+    await updateBudgetCategory({ debts: newDebts });
     toast.success("Repayment Strategy updated");
   };
 
@@ -194,7 +191,7 @@ export default function DebtTool() {
   );
 
   useEffect(() => {
-    if (Array.isArray(debtsData?.data)) {
+    if (hasDebtData) {
       let totalDebt = 0;
       setSubTab("PLANNER_STEP");
 
@@ -387,7 +384,7 @@ export default function DebtTool() {
               <div className="h-5 text-center text-black text-sm font-medium text-nowrap">
                 💸 Debt Free Date
               </div>
-              <div className="w-12 h-5 text-center text-[#40405c] text-sm font-normal mr-[4px]">
+              <div className="w-12 h-5 text-center text-[#40405c] text-sm font-normal mr-[4px] text-nowrap">
                 {formattedString}
               </div>
             </div>
