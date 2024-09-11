@@ -32,6 +32,7 @@ type InputProps = {
   setFormHasError?: (value: boolean) => void;
   error?: string;
   value: any;
+  inputStyles?: object;
 };
 
 const inputClass = (inline?: boolean, error?: boolean): string =>
@@ -53,6 +54,7 @@ const Input: React.FC<InputProps> = (props) => {
     minNumberValue,
     error: validationError,
     value: any,
+    inputStyles = {},
   } = props;
 
   const [error, setError] = useState<string | null>(null);
@@ -168,6 +170,7 @@ const Input: React.FC<InputProps> = (props) => {
         onFocus={cleanNumber}
         onBlur={onBlur as any}
         value={editing ? props.value : formatCurrency(props.value)}
+        style={...inputStyles}
         // value={props.value}
       />
 
