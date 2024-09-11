@@ -84,63 +84,63 @@ export default function BudgetProgress({
     </div>
   );
 
-  return (
-    <div className="h-10 w-[100%] relative mt-[38px] mb-[0px] bg-white rounded-[18px] border border-2 border-violet-200">
-      <div className="font-md text-violet-500 font-bold mx-[4px] relative top-[-30px] left-[3%]">
-        {hasBudgetData
-          ? "Monthly Disposable Income"
-          : "Set a budget to plan better"}
-      </div>
-      <LinearProgress
-        sx={{
-          borderRadius: "15%",
-          marginTop: "3px",
-          maxWidth: "89%",
-          position: "relative",
-          top: "-24px",
-          left: "6%",
-          backgroundColor: "darkred",
-          "& .MuiLinearProgress-bar": {
-            backgroundColor: hasBudgetData ? "darkgreen" : "darkgrey",
-          },
-        }}
-        variant="determinate"
-        value={(1 - totalExpenses / income) * 100}
-      />
-      <div
-        style={{
-          position: "absolute",
-          color: "darkgreen",
-          top: "8px",
-          left: "13%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        Income
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          color: "black",
-          top: "8px",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        {/* {((totalExpenses / income) * 100).toFixed(2)}% */}
-        {formatCurrency(available)}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          color: "darkred",
-          top: "8px",
-          left: "87%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        Expenses
-      </div>
-    </div>
-  );
+  // return (
+  //   <div className="h-10 w-[100%] relative mt-[38px] mb-[0px] bg-white rounded-[18px] border border-2 border-violet-200">
+  //     <div className="font-md text-violet-500 font-bold mx-[4px] relative top-[-30px] left-[3%]">
+  //       {hasBudgetData
+  //         ? "Monthly Disposable Income"
+  //         : "Set a budget to plan better"}
+  //     </div>
+  //     <LinearProgress
+  //       sx={{
+  //         borderRadius: "15%",
+  //         marginTop: "3px",
+  //         maxWidth: "89%",
+  //         position: "relative",
+  //         top: "-24px",
+  //         left: "6%",
+  //         backgroundColor: "darkred",
+  //         "& .MuiLinearProgress-bar": {
+  //           backgroundColor: hasBudgetData ? "darkgreen" : "darkgrey",
+  //         },
+  //       }}
+  //       variant="determinate"
+  //       value={(1 - totalExpenses / income) * 100}
+  //     />
+  //     <div
+  //       style={{
+  //         position: "absolute",
+  //         color: "darkgreen",
+  //         top: "8px",
+  //         left: "13%",
+  //         transform: "translateX(-50%)",
+  //       }}
+  //     >
+  //       Income
+  //     </div>
+  //     <div
+  //       style={{
+  //         position: "absolute",
+  //         color: "black",
+  //         top: "8px",
+  //         left: "50%",
+  //         transform: "translateX(-50%)",
+  //       }}
+  //     >
+  //       {/* {((totalExpenses / income) * 100).toFixed(2)}% */}
+  //       {formatCurrency(available)}
+  //     </div>
+  //     <div
+  //       style={{
+  //         position: "absolute",
+  //         color: "darkred",
+  //         top: "8px",
+  //         left: "87%",
+  //         transform: "translateX(-50%)",
+  //       }}
+  //     >
+  //       Expenses
+  //     </div>
+  //   </div>
+  // );
 }

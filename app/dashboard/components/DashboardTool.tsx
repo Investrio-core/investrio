@@ -51,6 +51,7 @@ import { DEBTS_PAGE, BUDGET_PAGE } from "@/app/utils/constants";
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 import Suggestions from "@/app/components/Suggestions/Suggestions";
+import Calender from "@/public/icons/total-saved.svg";
 
 const LockedWidget = ({ sectionName }: { sectionName: string }) => (
   <div className="flex items-center justify-center w-[100%] min-h-[150px] flex-col gap[-12px] relative">
@@ -181,15 +182,23 @@ export default function DashboardTool() {
         </div>
 
         <div
-          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer  bg-[#d2daff] shadow-xl overflow-hidden"
+          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer bg-[white] shadow-xl overflow-hidden"
           style={{
             borderRadius: "18px",
             border: "1px solid #D2DAFF",
-            background: "#EEF1FF",
+            // background: "#EEF1FF",
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
           }}
-          onClick={() => push(BUDGET_PAGE)}
+          // onClick={() => push(BUDGET_PAGE)}
         >
+          <div className="mb-[0px] px-8 flex justify-start items-center gap-[8px]">
+            <div className="w-9 h-5 inline-flex relative self-center justify-self-center mr-[4px]">
+              <Calender />
+            </div>
+            <div className="text-[#2b3674] font-medium leading-loose self-center justify-self-center mt-[20px]">
+              Lifestyle
+            </div>
+          </div>
           {hasBudgetData ? (
             <PieBreakdownBlock
               income={budgetInfo?.data?.income}
@@ -201,7 +210,7 @@ export default function DashboardTool() {
               scale={1.1}
               paddingY={"1"}
               height={190}
-              title={"Lifestyle"}
+              // title={"Lifestyle"}
             />
           ) : (
             <LockedWidget sectionName="Lifestyle Planner" />
@@ -215,7 +224,7 @@ export default function DashboardTool() {
             background: "#EEF1FF",
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
           }}
-          onClick={() => push(DEBTS_PAGE)}
+          // onClick={() => push(DEBTS_PAGE)}
         >
           {hasDebtData ? (
             <CheckboxTable

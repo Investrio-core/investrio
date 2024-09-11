@@ -291,6 +291,7 @@ export default function BudgetTool() {
     sumCategories,
     summedCategories,
     incomeAfterExpenses,
+    hasBudgetData,
   } = useBudgetData(date);
 
   const { data: debtsData } = useDebtData();
@@ -350,8 +351,9 @@ export default function BudgetTool() {
   useEffect(() => {
     if (
       !firstLoadCompleted &&
-      budgetInfo?.data !== undefined &&
-      Object.keys(budgetInfo?.data)?.length > 0
+      hasBudgetData
+      // budgetInfo?.data !== undefined &&
+      // Object.keys(budgetInfo?.data)?.length > 0
     ) {
       // setStep(BUDGET_STEP);
       setSubTab(BUDGET_STEP);

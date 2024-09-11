@@ -36,58 +36,73 @@ const AnimatedDropdownMenu = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <div
-      className={
-        `${outerClassName} relative flex items-center justify-center` ??
-        "flex items-center justify-center bg-white relative"
-      }
-    >
-      <motion.div animate={open ? "open" : "closed"} className="relative">
-        <button
-          onClick={() => setOpen((pv) => !pv)}
-          className={
-            className ??
-            "border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors md:shadow-md"
-          }
-        >
-          {renderImage ? (
-            <Image
-              className="rounded-[50%]"
-              src={imageUrl || "/logo.svg"}
-              alt={"menu button open image"}
-              width={30}
-              height={30}
-            />
-          ) : null}
-          {menuIcon ?? null}
-          {menuTitle ? (
-            <span className="font-medium text-sm text-white font-bold">
-              {menuTitle}
-            </span>
-          ) : null}
-          {renderChevron ? (
-            <motion.span variants={iconVariants}>
-              <FiChevronDown className={"text-slate-600"} />
-            </motion.span>
-          ) : null}
-        </button>
-
-        <motion.ul
-          initial={wrapperVariants.closed}
-          variants={wrapperVariants}
+    <>
+      {open ? (
+        <div
           style={{
-            originY: "top",
-            translateX: "-90%",
-            translateY: "5%",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            height: "100vh",
+            width: "100vw",
+            backgroundColor: "transparent",
           }}
-          className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] right-34 w-34"
-        >
-          {options.map(({ onClick, label, icon }) => (
-            <Option key={label} onClick={onClick} text={label} Icon={icon} />
-          ))}
-        </motion.ul>
-      </motion.div>
-    </div>
+          onClick={() => setOpen(false)}
+        ></div>
+      ) : null}
+      <div
+        className={
+          `${outerClassName} relative flex items-center justify-center` ??
+          "flex items-center justify-center bg-white relative"
+        }
+      >
+        <motion.div animate={open ? "open" : "closed"} className="relative">
+          <button
+            onClick={() => setOpen((pv) => !pv)}
+            className={
+              className ??
+              "border-b-[1px] border-r-[1px] border border-grey-200 max-w-fit relative flex items-center gap-2 px-3 py-2 rounded-md text-indigo-50 bg-violet-50 hover:bg-violet:500 transition-colors md:shadow-md"
+            }
+          >
+            {renderImage ? (
+              <Image
+                className="rounded-[50%]"
+                src={imageUrl || "/logo.svg"}
+                alt={"menu button open image"}
+                width={30}
+                height={30}
+              />
+            ) : null}
+            {menuIcon ?? null}
+            {menuTitle ? (
+              <span className="font-medium text-sm text-white font-bold">
+                {menuTitle}
+              </span>
+            ) : null}
+            {renderChevron ? (
+              <motion.span variants={iconVariants}>
+                <FiChevronDown className={"text-slate-600"} />
+              </motion.span>
+            ) : null}
+          </button>
+
+          <motion.ul
+            initial={wrapperVariants.closed}
+            variants={wrapperVariants}
+            style={{
+              originY: "top",
+              translateX: "-90%",
+              translateY: "5%",
+            }}
+            className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] right-34 w-34"
+          >
+            {options.map(({ onClick, label, icon }) => (
+              <Option key={label} onClick={onClick} text={label} Icon={icon} />
+            ))}
+          </motion.ul>
+        </motion.div>
+      </div>
+    </>
   );
 };
 

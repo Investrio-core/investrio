@@ -30,3 +30,7 @@ body {
 .title {
   @apply text-3xl font-bold;
 }
+
+#month-popper {
+  z-index: 1000 !important;
+}

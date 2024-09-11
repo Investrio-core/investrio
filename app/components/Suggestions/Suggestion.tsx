@@ -10,7 +10,7 @@ export default function Suggestion({
 }: {
   initialSuggestion: string;
   suggestion: string;
-  onClose: Function;
+  onClose?: Function;
   idx: number;
   numSuggestions: number;
 }) {
@@ -32,17 +32,19 @@ export default function Suggestion({
         marginBottom: numSuggestions * 7,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "15px",
-          right: "15px",
-          cursor: "pointer",
-        }}
-        onClick={() => onClose(suggestion)}
-      >
-        <IoMdClose style={{ fontSize: "1rem" }} />
-      </div>
+      {onClose !== undefined ? (
+        <div
+          style={{
+            position: "absolute",
+            top: "15px",
+            right: "15px",
+            cursor: "pointer",
+          }}
+          onClick={() => onClose(suggestion)}
+        >
+          <IoMdClose style={{ fontSize: "1rem" }} />
+        </div>
+      ) : null}
       <div
         style={{
           display: "flex",
