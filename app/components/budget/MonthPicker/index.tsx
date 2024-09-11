@@ -37,14 +37,16 @@ const CustomDatePickerInput = forwardRef<Ref, CustomDatePickerInputProps>(
 const MonthPicker = ({ date, setDate }: MonthPickerProps) => {
   return (
     <DatePicker
+      portalId="month-popper"
       // @ts-ignore
       customInput={<CustomDatePickerInput />}
-      popperClassName="!left-[-75px]"
+      popperClassName="!left-[-75px] z-100"
       onChange={(date) => setDate(date)}
       calendarClassName="datepicker z-25"
       showMonthYearPicker
       selected={date}
       dateFormat={"MMMM"} //, yyyy"}
+      popperPlacement="bottom-end"
     />
   );
 };
