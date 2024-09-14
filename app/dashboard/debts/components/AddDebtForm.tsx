@@ -153,7 +153,7 @@ export default function DebtsForm({
             <Input
               label="Minimum Payment"
               labelStyles="text-slate-400 text-sm font-semibold uppercase tracking-tight"
-              containerStyles="max-w-[48%] max-[375px]:max-w-[100%]"
+              // containerStyles="max-w-[48%] max-[375px]:max-w-[100%]"
               style={{ color: "#8E8ECC" }}
               name="minPayment"
               type="currency"
