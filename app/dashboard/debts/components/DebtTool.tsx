@@ -68,7 +68,7 @@ export default function DebtTool() {
   const { data: session } = useSession();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   const [totalDebtBalance, setTotalDebtBalance] = useState(0);
-  const [firstLoad, setFirstLoad] = useState(true);
+  const [firstLoadCompleted, setFirstLoadCompleted] = useState(true);
   const [extraPaymentAmount, setExtraPaymentAmount] = useState<
     number | undefined
   >();
@@ -241,6 +241,18 @@ export default function DebtTool() {
   // const DEBT_STEP = DEBT_MOBILE_STEPS.findIndex(
   //   (step: string) => step === ADD_DEBT
   // );
+  useEffect(() => {
+    // if (
+    //   (!hasDebtData  &&
+    //   !firstLoadCompleted)
+    // ) {
+    //   setSubTab(INCOME_STEP);
+    // }
+    if (!firstLoadCompleted) {
+      setSubTab(PLANNER_STEP);
+      setFirstLoadCompleted(true);
+    }
+  }, [hasBudgetData]);
 
   // TODO:
   const {

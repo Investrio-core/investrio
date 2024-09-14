@@ -331,9 +331,9 @@ export default function BudgetTool() {
       !firstLoadCompleted
     ) {
       setSubTab(INCOME_STEP);
-      setFirstLoadCompleted(true);
-    } else {
+    } else if (!firstLoadCompleted) {
       setSubTab(BUDGET_STEP);
+      setFirstLoadCompleted(true);
     }
   }, [hasBudgetData]);
 
@@ -491,23 +491,19 @@ export default function BudgetTool() {
                   </div>
                 ) : undefined
               }
-              setNext={
-                () => {
-                  const currentIndex = BUDGET_STEPS.findIndex(
-                    (el) => el === step
-                  );
-                  if (currentIndex >= BUDGET_STEPS.length - 1) {
-                    return;
-                  }
-                  const nextStep = BUDGET_STEPS[
-                    currentIndex + 1
-                  ] as BudgetMobileSteps;
-                  setSubTab(nextStep);
+              setNext={() => {
+                const currentIndex = BUDGET_STEPS.findIndex(
+                  (el) => el === step
+                );
+                if (currentIndex >= BUDGET_STEPS.length - 1) {
+                  return;
                 }
-              }
-              setPrev={
-                () => setPrev()
-              }
+                const nextStep = BUDGET_STEPS[
+                  currentIndex + 1
+                ] as BudgetMobileSteps;
+                setSubTab(nextStep);
+              }}
+              setPrev={() => setPrev()}
               // setSkip={() => setShowSteps(false)}
               currentStep={BUDGET_MOBILE_STEPS.findIndex((el) => el === step)}
               numSteps={BUDGET_MOBILE_STEPS.length}
