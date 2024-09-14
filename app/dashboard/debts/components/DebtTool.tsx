@@ -48,6 +48,7 @@ export const DEBT_SUMMARY = "summary";
 export const ADD_DEBT = "add";
 export const SUGGESTIONS = "suggestions";
 export const PRIORITIES = "priorities";
+export const PLANNER_STEP = "PLANNER_STEP";
 export const DEBT_MOBILE_STEPS: DebtMobileSteps[] = [
   DEBT_SUMMARY,
   ADD_DEBT,
@@ -64,7 +65,6 @@ export interface DebtItem {
 export default function DebtTool() {
   const [date, setDate] = useState(new Date());
   const queryClient = useQueryClient();
-  const [step, setStep] = useState(0);
   const { data: session } = useSession();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
   const [totalDebtBalance, setTotalDebtBalance] = useState(0);
@@ -130,7 +130,7 @@ export default function DebtTool() {
   //   // },
   // });
 
-  const { data: debtsData, hasDebtData } = useDebtData();
+  const { data: debtsData, hasDebtData, debtsLoading } = useDebtData();
 
   const {
     data: budgetInfo,
@@ -218,12 +218,29 @@ export default function DebtTool() {
   }, [debtsData?.data]);
 
   useEffect(() => {
-    setStep(DEBT_MOBILE_STEPS.findIndex((step: string) => step === subTab));
-  }, [subTab]);
+    if (hasDebtData) {
+      setSubTab("PLANNER_STEP");
+    }
+  }, []);
 
-  const DEBT_STEP = DEBT_MOBILE_STEPS.findIndex(
-    (step: string) => step === ADD_DEBT
-  );
+  // useEffect(() => {
+  //   if (!hasBudgetData || budgetInfo?.data?.income === undefined) {
+  //     setSubTab(PLANNER_STEP);
+  //   }
+  // }, [hasBudgetData]);
+
+  // useEffect(() => {
+  //   const currentIndex = DEBT_MOBILE_STEPS.findIndex(
+  //     (step: string) => step === subTab
+  //   );
+  //   console.log("-- finding index because subtab changed --");
+  //   console.log(currentIndex);
+  //   // setStep(DEBT_MOBILE_STEPS.findIndex((step: string) => step === subTab));
+  // }, [subTab]);
+
+  // const DEBT_STEP = DEBT_MOBILE_STEPS.findIndex(
+  //   (step: string) => step === ADD_DEBT
+  // );
 
   // TODO:
   const {
@@ -233,12 +250,11 @@ export default function DebtTool() {
     avalancheResultsWithExtra,
   } = useCalculators(debtsData, extraPayment);
 
-  // console.log("-- AVALANCHE --");
-  // console.log(avalancheResultsWithExtra);
-  // console.log("-- SNOWBALL --");
-  // console.log(snowballResultsWithExtra);
+  console.log("-- calc results --");
+  console.log(snowballResultsWithoutExtra);
+  console.log(snowballResultsWithExtra);
 
-  if (debtsData?.data === undefined) {
+  if (debtsLoading) {
     return <Loading />;
   }
 
@@ -325,7 +341,7 @@ export default function DebtTool() {
 
   return (
     <div
-      className={`lg:px-[28px] lg:py-[26px] ${backgroundColor} max-w-[100vw] md:max-w-[100vw] flex flex-col`}
+      className={`lg:px-[28px] lg:py-[26px] lg:max-w-[65vw] lg:ml-[5vw] ${backgroundColor} max-w-[100vw] md:max-w-[100vw] flex flex-col`}
     >
       {/* Mobile version */}
       <div className="flex flex-col">
@@ -337,10 +353,9 @@ export default function DebtTool() {
             <ButtonWithIcon
               // icon={<AiOutlinePlusCircle className="text-2xl" />}
               classProp="font-semibold"
-              disabled={step === DEBT_STEP}
+              disabled={subTab === ADD_DEBT}
               onClick={() => {
-                setStep(DEBT_STEP);
-                setSubTab(DEBT_MOBILE_STEPS[DEBT_STEP]);
+                setSubTab(ADD_DEBT);
               }}
               text="Add Debt"
             />
@@ -435,7 +450,7 @@ export default function DebtTool() {
           </>
         ) : null}
 
-        {DEBT_MOBILE_STEPS[step] === DEBT_SUMMARY || subTab === DEBT_SUMMARY ? (
+        {subTab === DEBT_SUMMARY ? (
           <>
             <DebtSummary
               debts={debts}
@@ -444,7 +459,7 @@ export default function DebtTool() {
             />
           </>
         ) : null}
-        {DEBT_MOBILE_STEPS[step] === ADD_DEBT || subTab === ADD_DEBT ? (
+        {subTab === ADD_DEBT ? (
           <>
             <AddDebt
               debts={debts}
@@ -457,13 +472,13 @@ export default function DebtTool() {
                   setSubTab("PLANNER_STEP");
                 } else {
                   setSubTab(DEBT_SUMMARY);
-                  setStep(0);
+                  // setStep(0);
                 }
               }}
             />
           </>
         ) : null}
-        {DEBT_MOBILE_STEPS[step] === SUGGESTIONS || subTab === SUGGESTIONS ? (
+        {subTab === SUGGESTIONS ? (
           <>
             {extraPaymentInput}
             <DashboardInfo
@@ -473,7 +488,7 @@ export default function DebtTool() {
             />
           </>
         ) : null}
-        {DEBT_MOBILE_STEPS[step] === PRIORITIES || subTab === PRIORITIES ? (
+        {subTab === PRIORITIES ? (
           <>
             {extraPaymentInput}
             <DebtsComparison

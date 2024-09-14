@@ -50,14 +50,14 @@ export const Card = ({
     // <div className="relative max-w-fit-content lg:max-w-fit-content max-h-fit-content flex justify-between items-center gap-0 lg:gap-4 rounded-xl bg-white w-full ">
     <div>
       <div className="py-0 my-0 rounded-[18px] border border-[#b1b2ff]/80 py-[4px] px-[12px]">
-        <div className="flex flex-col lg:flex-row justify-center items-center min-w-fit-content py-0 my-0 lg:mb-4">
+        <div className="flex flex-col lg:flex-row justify-center items-center min-w-fit-content py-0 my-0 lg:mb-1">
           <div>{renderCorrectIcon()}</div>
           <span className="text-gray-500 font-normal text-xs lg:text-normal text-base leading-6 ml-2 whitespace-nowrap lg:whitespace-normal text-center">
             {label}
           </span>
         </div>
         <div className="flex justify-center lg:justify-start items-center max-w-32 py-0 my-0 text-center">
-          <h1 className="font-bold text-black text-xs lg:text-4xl lg:leading-10">
+          <h1 className="font-bold text-black text-xs lg:text-2xl text-center ml-[auto] lg:leading-10">
             {typeof value === "number"
               ? value?.toLocaleString("en-US", {
                   style: "currency",
@@ -69,7 +69,7 @@ export const Card = ({
         {date && (
           <div>
             <div className="flex justify-center lg:justify-start items-center">
-              <h1 className="font-bold text-black text-xs lg:text-4xl lg:leading-10">
+              <h1 className="font-bold text-black text-xs lg:text-2xl text-center ml-[auto] lg:leading-10">
                 {date.month}
               </h1>
               <span className="font-bold text-gray-600 text-xs lg:text-lg lg:leading-7 ml-[4px] lg:ml-3">

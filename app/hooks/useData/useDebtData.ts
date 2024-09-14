@@ -59,5 +59,5 @@ export default function useDebtData() {
     return true;
   }, [debtsData?.data]);
 
-  return { data: debtsData, hasDebtData };
+  return { data: debtsData, hasDebtData, debtsLoading };
 }

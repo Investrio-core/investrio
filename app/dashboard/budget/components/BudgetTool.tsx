@@ -1,53 +1,44 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import useBudgetQueries from "@/app/hooks/useBudgetQueries";
 import useBudgetData from "@/app/hooks/useData/useBudgetData";
 import useDebtData from "@/app/hooks/useData/useDebtData";
-import MonthPicker from "@/app/components/budget/MonthPicker";
-import IncomeBlock from "@/app/components/budget/IncomeBlock";
 import Income from "@/app/components/budget/IncomeBlock/Income";
 import { backgroundColor } from "@/app/utils/constants";
 import { StyledTab, StyledTabs } from "./StyledTabs";
 
 import CategoryBlock from "@/app/components/budget/CategoryBlock";
 import CopyButton from "@/app/components/budget/CopyButton";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loading } from "@/app/components/ui/Loading";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
-import CustomPieChart, {
-  ScaledPieChart,
-} from "@/app/components/ui/charts/CustomPieChart";
 import PieBreakdownBlock from "./PieBreakdownBlock";
 import PageHeader from "@/app/components/Layout/PageHeader";
 import StepsController from "@/app/components/OnboardingIntro/StepsController";
 import { useTabContext } from "@/app/context/TabContext/context";
-import useCalculators from "@/app/hooks/useCalculators";
 import { FinancialRecordSchema } from "@/types/debtFormType";
-import {
-  BUDGET_STEPS,
-  BREAKDOWN_STEP,
-  INCOME_STEP,
-  BUDGET_STEP,
-} from "@/app/components/Layout/MobileNavigator";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+// import {
+//   BUDGET_STEPS,
+//   BREAKDOWN_STEP,
+//   INCOME_STEP,
+//   BUDGET_STEP,
+// } from "@/app/components/Layout/MobileNavigator";
+
 const categories = ["wants", "needs", "savings", "debts"];
 
-let loaded = false;
-
 type BudgetMobileSteps = "income" | "suggestedBreakdown" | "budget";
+
+export const INCOME_STEP = "income";
+export const BREAKDOWN_STEP = "suggestedBreakdown";
+export const BUDGET_STEP = "budget";
 
 const BUDGET_MOBILE_STEPS: BudgetMobileSteps[] = [
   INCOME_STEP,
   BREAKDOWN_STEP,
   BUDGET_STEP,
 ];
+const BUDGET_STEPS = BUDGET_MOBILE_STEPS;
 
 export const DEBT_REPAYMENT_STRATEGY_NAME = "Repayment Strategy";
 const EDIT_STEP = "EDIT_STEP";
@@ -316,30 +307,6 @@ export default function BudgetTool() {
     budgetInfo?.data?.id
   );
 
-  // useEffect(() => {
-  //   addDebtsToBudget(
-  //     debtsData?.data,
-  //     update,
-  //     budgetInfo?.data?.["debts"],
-  //     invalidateBudgetQuery
-  //   );
-  // }, [debtsData, budgetInfo?.data?.["debts"]]);
-
-  // const {
-  //   data: latestBudgetInfo,
-  //   isLoading: latestBudgetInfoLoading,
-  //   refetch: refetchLatest,
-  // } = useQuery({
-  //   queryKey: ["budget-tool-latest"], // , year, month
-  //   queryFn: async () => {
-  //     const allData = await axiosAuth.get(`/budget/get-latest`);
-  //     return allData;
-  //   },
-  //   refetchOnMount: true,
-  //   refetchOnWindowFocus: true,
-  //   enabled: !!date,
-  // });
-
   useEffect(() => {
     refetch();
   }, [date]);
@@ -349,18 +316,26 @@ export default function BudgetTool() {
   }, [budgetInfo?.data, year, month]);
 
   useEffect(() => {
-    if (
-      !firstLoadCompleted &&
-      hasBudgetData
-      // budgetInfo?.data !== undefined &&
-      // Object.keys(budgetInfo?.data)?.length > 0
-    ) {
-      // setStep(BUDGET_STEP);
-      setSubTab(BUDGET_STEP);
-      setFirstLoadCompleted(true);
+    // if (!firstLoadCompleted && hasBudgetData) {
+    //   setFirstLoadCompleted(true);
+    //   setLatestIncome(budgetInfo?.data?.income);
+    // }
+    if (budgetInfo?.data?.income) {
       setLatestIncome(budgetInfo?.data?.income);
     }
   }, [budgetInfo?.data]);
+
+  useEffect(() => {
+    if (
+      (!hasBudgetData || budgetInfo?.data?.income === undefined) &&
+      !firstLoadCompleted
+    ) {
+      setSubTab(INCOME_STEP);
+      setFirstLoadCompleted(true);
+    } else {
+      setSubTab(BUDGET_STEP);
+    }
+  }, [hasBudgetData]);
 
   useEffect(() => {
     if (mixpanelCalled.current) return;
@@ -369,31 +344,7 @@ export default function BudgetTool() {
     mixpanelCalled.current = true;
   }, []);
 
-  // const calculateSumCategories = () => {
-  //   return categories.map((category) => {
-  //     if (budgetInfo?.data[category]) {
-  //       return budgetInfo?.data[category].reduce(
-  //         (p: number, c: { value: number }) => p + c.value,
-  //         0
-  //       );
-  //     }
-
-  //     return 0;
-  //   });
-  // };
-
-  // const sumCategories = useMemo(
-  //   () => calculateSumCategories().reduce((p: number, c: number) => p + c, 0),
-  //   [
-  //     budgetInfo?.data["wants"],
-  //     budgetInfo?.data["needs"],
-  //     budgetInfo?.data["savings"],
-  //     budgetInfo?.data["debts"],
-  //   ]
-  // );
-
-  // if (budgetInfoLoading || isLoading) {
-  if (budgetInfo?.data === undefined) {
+  if (budgetInfoLoading) {
     return <Loading />;
   }
 
@@ -553,28 +504,9 @@ export default function BudgetTool() {
                   ] as BudgetMobileSteps;
                   setSubTab(nextStep);
                 }
-                // setStep((prevState) => {
-                //   const currentIndex = BUDGET_MOBILE_STEPS.findIndex(
-                //     (el) => el === prevState
-                //   );
-                //   if (currentIndex >= BUDGET_MOBILE_STEPS.length - 1)
-                //     return prevState;
-                //   return BUDGET_MOBILE_STEPS[
-                //     currentIndex + 1
-                //   ] as BudgetMobileSteps;
-                // })
               }
               setPrev={
                 () => setPrev()
-                // setStep((prevState) => {
-                //   const currentIndex = BUDGET_MOBILE_STEPS.findIndex(
-                //     (el) => el === prevState
-                //   );
-                //   if (currentIndex === 0) return prevState;
-                //   return BUDGET_MOBILE_STEPS[
-                //     currentIndex - 1
-                //   ] as BudgetMobileSteps;
-                // })
               }
               // setSkip={() => setShowSteps(false)}
               currentStep={BUDGET_MOBILE_STEPS.findIndex((el) => el === step)}
