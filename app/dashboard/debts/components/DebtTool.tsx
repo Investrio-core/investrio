@@ -218,9 +218,7 @@ export default function DebtTool() {
   }, [debtsData?.data]);
 
   useEffect(() => {
-    if (hasDebtData) {
-      setSubTab("PLANNER_STEP");
-    }
+    setSubTab("PLANNER_STEP");
   }, []);
 
   // useEffect(() => {
@@ -248,11 +246,15 @@ export default function DebtTool() {
     // ) {
     //   setSubTab(INCOME_STEP);
     // }
-    if (!firstLoadCompleted) {
+    if (hasBudgetData && !firstLoadCompleted) {
       setSubTab(PLANNER_STEP);
       setFirstLoadCompleted(true);
     }
   }, [hasBudgetData]);
+
+  useEffect(() => {
+    setSubTab(PLANNER_STEP);
+  }, []);
 
   // TODO:
   const {
@@ -405,7 +407,7 @@ export default function DebtTool() {
         {/* {budgetProgress} */}
 
         {/* {headerSummary} */}
-        {subTab === "PLANNER_STEP" ? (
+        {subTab === "PLANNER_STEP" || subTab === undefined ? (
           <>
             <div className="h-[41px] mx-[16px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
               <div className="h-5 text-center text-black text-sm font-medium text-nowrap">
