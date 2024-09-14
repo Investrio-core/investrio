@@ -331,11 +331,15 @@ export default function BudgetTool() {
       !firstLoadCompleted
     ) {
       setSubTab(INCOME_STEP);
-    } else if (!firstLoadCompleted) {
+    } else if (!firstLoadCompleted && hasBudgetData) {
       setSubTab(BUDGET_STEP);
       setFirstLoadCompleted(true);
     }
-  }, [hasBudgetData]);
+  }, [hasBudgetData, budgetInfo?.data]);
+
+  useEffect(() => {
+    setSubTab(BUDGET_STEP);
+  }, []);
 
   useEffect(() => {
     if (mixpanelCalled.current) return;
