@@ -13,6 +13,7 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { GiExpense } from "react-icons/gi";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import BudgetIcon from "@/public/icons/budget.svg";
+import InvestmentSvg from "@/public/icons/wealth-icon.svg";
 import { MdOutlineDashboard } from "react-icons/md";
 import {
   BUDGET_PAGE,
@@ -20,6 +21,21 @@ import {
   HOME_DASHBOARD_PAGE,
   WEALTH_PAGE,
 } from "@/app/utils/constants";
+// import { PLANNER_STEP } from "@/app/dashboard/debts/components/DebtTool";
+
+//debt
+export const DEBT_SUMMARY = "summary";
+export const ADD_DEBT = "add";
+export const SUGGESTIONS = "suggestions";
+export const PRIORITIES = "priorities";
+export const PLANNER_STEP = "PLANNER_STEP";
+export const DEBT_STEPS = [DEBT_SUMMARY, ADD_DEBT, SUGGESTIONS, PRIORITIES];
+
+//budget
+export const INCOME_STEP = "income";
+export const BREAKDOWN_STEP = "suggestedBreakdown";
+export const BUDGET_STEP = "budget";
+export const BUDGET_STEPS = [INCOME_STEP, BREAKDOWN_STEP, BUDGET_STEP];
 
 const HomeSvg = ({ fill = "none" }: { fill?: string }) => (
   <svg
@@ -122,44 +138,44 @@ const ProfileSvg = ({ fill = "none" }: { fill?: string }) => (
   </svg>
 );
 
-const InvestmentSvg = ({ fill = "none" }: { fill?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="25"
-    height="24"
-    viewBox="0 0 25 24"
-    fill={fill}
-  >
-    <path
-      d="M4.375 19.5V12.75H9.625"
-      stroke="#9CA4AB"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M21.625 19.5H2.875"
-      stroke="#9CA4AB"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M9.625 19.5V8.25H14.875"
-      stroke="#9CA4AB"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M20.125 3.75H14.875V19.5H20.125V3.75Z"
-      stroke="#9CA4AB"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-);
+// const InvestmentSvg = ({ fill = "none" }: { fill?: string }) => (
+//   <svg
+//     xmlns="http://www.w3.org/2000/svg"
+//     width="25"
+//     height="24"
+//     viewBox="0 0 25 24"
+//     fill={fill}
+//   >
+//     <path
+//       d="M4.375 19.5V12.75H9.625"
+//       stroke="#9CA4AB"
+//       stroke-width="1.5"
+//       stroke-linecap="round"
+//       stroke-linejoin="round"
+//     />
+//     <path
+//       d="M21.625 19.5H2.875"
+//       stroke="#9CA4AB"
+//       stroke-width="1.5"
+//       stroke-linecap="round"
+//       stroke-linejoin="round"
+//     />
+//     <path
+//       d="M9.625 19.5V8.25H14.875"
+//       stroke="#9CA4AB"
+//       stroke-width="1.5"
+//       stroke-linecap="round"
+//       stroke-linejoin="round"
+//     />
+//     <path
+//       d="M20.125 3.75H14.875V19.5H20.125V3.75Z"
+//       stroke="#9CA4AB"
+//       stroke-width="1.5"
+//       stroke-linecap="round"
+//       stroke-linejoin="round"
+//     />
+//   </svg>
+// );
 
 const itemVariants = {
   open: {
@@ -195,19 +211,6 @@ const wrapperVariants = {
   },
 };
 
-//debt
-export const DEBT_SUMMARY = "summary";
-export const ADD_DEBT = "add";
-export const SUGGESTIONS = "suggestions";
-export const PRIORITIES = "priorities";
-export const DEBT_STEPS = [DEBT_SUMMARY, ADD_DEBT, SUGGESTIONS, PRIORITIES];
-
-//budget
-export const INCOME_STEP = "income";
-export const BREAKDOWN_STEP = "suggestedBreakdown";
-export const BUDGET_STEP = "budget";
-export const BUDGET_STEPS = [INCOME_STEP, BREAKDOWN_STEP, BUDGET_STEP];
-
 const tabs = [
   {
     name: "Dashboard",
@@ -217,6 +220,7 @@ const tabs = [
   {
     name: "Budget",
     route: BUDGET_PAGE,
+    defaultTab: BUDGET_STEP,
     Icon: () => <BudgetIcon className="relative left-[-4px] top-[-6px]" />, // BudgetSvg
     subTabs: [
       {
@@ -240,6 +244,7 @@ const tabs = [
   {
     name: "Debt",
     route: DEBTS_PAGE,
+    defaultTab: PLANNER_STEP,
     Icon: () => (
       <FaHandHoldingDollar className="relative left-[4px] top-[2px]" />
     ), //DebtSvg,
@@ -301,7 +306,7 @@ export default function MobileNavigator() {
   });
   const tabMatches = selectedTab?.["route"] === asPath;
 
-  const BaseTabs = tabs.map(({ name, Icon, route, subTabs }) => {
+  const BaseTabs = tabs.map(({ name, Icon, route, subTabs, defaultTab }) => {
     return (
       <div
         className={`${
@@ -315,7 +320,7 @@ export default function MobileNavigator() {
           variants={innerTabsVariants}
           className={`flex-col items-center inline-flex`}
           onClick={() => {
-            setTabs(name, subTabs?.[0]?.subTab ?? "");
+            setTabs(name, defaultTab ?? "");
             setTabSelected(true);
             if (route) push(route);
           }}
