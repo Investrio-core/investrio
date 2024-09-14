@@ -35,7 +35,7 @@ export default function AddDebt({
   };
 
   return (
-    <div className="relative flex flex-col mt-[12px] px-[16px] py-[16px] xl:px-10 bg-indigo-50 rounded-[18px] border border-violet-200 lg:max-w-[500px] lg:mx-[28px]">
+    <div className="mx-[12px] relative flex flex-col mt-[12px] px-[16px] py-[16px] xl:px-10 bg-white rounded-[18px] border border-violet-200 lg:max-w-[500px] lg:mx-[28px]">
       <StrategyFormTooltip
         Icon={
           <ToolTipButton
