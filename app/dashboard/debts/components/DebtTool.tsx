@@ -7,48 +7,35 @@ import { Loading } from "@/app/components/ui/Loading";
 import mixpanel from "mixpanel-browser";
 import Mixpanel from "@/services/mixpanel";
 import PageHeader from "@/app/components/Layout/PageHeader";
-
 import { ButtonWithIcon } from "@/app/components/ui/buttons";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-
-// import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useSession } from "next-auth/react";
-// import { useQuery } from "@tanstack/react-query";
-
 import { DashboardInfo } from "@/app/dashboard/debts/components/DebtsRepayment";
 import DebtsComparison from "./DebtsComparison";
-// import { Loading } from "@/app/components/ui/Loading";
-
 import DebtSummary from "./DebtSummary";
 import AddDebt from "./AddDebt";
 import { DebtFormType, FinancialRecordSchema } from "@/types/debtFormType";
 import { FinancialRecord } from "@/types/financial";
-import { PaymentConfiguration } from "@/app/components/strategy/payment-configuration";
 import { useTabContext } from "@/app/context/TabContext/context";
 import { getDebtFreeInfo, SummarySection } from "./SummarySections";
 import useCalculators from "@/app/hooks/useCalculators";
 import MultiInputBlock from "@/app/components/ui/MultiInputBlock";
-import { formatCurrency } from "@/app/utils/formatters";
-import dayjs from "dayjs";
-import debounce from "@mui/material/utils/debounce";
-import ExtraPayment from "@/public/icons/extra-payment.svg";
-import { Results } from "@/app/hooks/calculatorsSnowball";
 import { getSummaryStatistics } from "./helpers";
 import useBudgetData from "@/app/hooks/useData/useBudgetData";
-import LinearProgress from "@mui/material/LinearProgress";
-import Typography from "@mui/material/Typography";
 import { StyledTab, StyledTabs } from "../../budget/components/StyledTabs";
 import { DEBT_REPAYMENT_STRATEGY_NAME } from "../../budget/components/BudgetTool";
 import useBudgetQueries from "@/app/hooks/useBudgetQueries";
 import { toast } from "react-toastify";
 import BudgetProgress from "../../budget/components/BudgetProgress";
 import useDebtData from "@/app/hooks/useData/useDebtData";
+
 type DebtMobileSteps = "summary" | "add" | "suggestions" | "priorities";
+
 export const DEBT_SUMMARY = "summary";
 export const ADD_DEBT = "add";
 export const SUGGESTIONS = "suggestions";
 export const PRIORITIES = "priorities";
 export const PLANNER_STEP = "PLANNER_STEP";
+export const EDIT_STEP = "EDIT_STEP";
 export const DEBT_MOBILE_STEPS: DebtMobileSteps[] = [
   DEBT_SUMMARY,
   ADD_DEBT,
@@ -64,6 +51,7 @@ export interface DebtItem {
 
 export default function DebtTool() {
   const [date, setDate] = useState(new Date());
+  const [step, setStep] = useState<string>(PLANNER_STEP);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [debts, setDebts] = useState<DebtFormType[]>([]);
@@ -74,10 +62,8 @@ export default function DebtTool() {
   >();
   const [tabIndex, setTab] = useState(0);
   const { setTabs, setSubTab, subTab, tab, state } = useTabContext();
-  const [showAddDebt, setShowAddDebt] = useState(false);
   const [extraPayment, setExtraPayment] = useState(0);
   const [percentDown, _setPercentDown] = useState(0);
-  const axiosAuth = useAxiosAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -96,41 +82,12 @@ export default function DebtTool() {
   // };
 
   // model FinancialRecord[] by userID -> debts
-  // const {
-  //   data: debtsData,
-  //   isLoading: debtsLoading,
-  //   refetch: refetchDebts,
-  //   isRefetching: isRefetchingDebts,
-  // } = useQuery({
-  //   queryKey: ["extra-payments"],
-  //   queryFn: async () => {
-  //     const debtsData = await axiosAuth.get(
-  //       `/dashboard/records/${session?.user?.id}`
-  //     );
-
-  //     // queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
-  //     // queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-
-  //     // normalize debt data as the old interest rate was saved as zero leading decimals, e.g. 0.25...
-  //     const debts = debtsData?.data.map((debt: FinancialRecordSchema) => {
-  //       if (String(debt.interestRate)?.[0] === "0") {
-  //         return { ...debt, interestRate: debt.interestRate * 100 };
-  //       }
-  //       return debt;
-  //     });
-
-  //     return { ...debtsData, data: debts };
-  //   },
-  //   staleTime: 148000,
-  //   // refetchOnMount: status !== "payment-config",
-  //   // refetchOnWindowFocus: status !== "payment-config",
-  //   // enabled: !!session?.user.id || status !== "payment-config",
-  //   // onSuccess: () => {
-  //   //   queryClient.invalidateQueries({ queryKey: ["no-extra-payments"] });
-  //   // },
-  // });
-
-  const { data: debtsData, hasDebtData, debtsLoading } = useDebtData();
+  const {
+    data: debtsData,
+    hasDebtData,
+    debtsLoading,
+    debtsFetched,
+  } = useDebtData();
 
   const {
     data: budgetInfo,
@@ -175,10 +132,6 @@ export default function DebtTool() {
     toast.success("Repayment Strategy updated");
   };
 
-  // console.log("-- in debt tool with extra payment --");
-  // console.log(budgetInfo);
-  // console.log(__extraPayment);
-
   const budgetProgress = (
     <BudgetProgress
       hasBudgetData={hasBudgetData}
@@ -193,7 +146,8 @@ export default function DebtTool() {
   useEffect(() => {
     if (hasDebtData) {
       let totalDebt = 0;
-      setSubTab("PLANNER_STEP");
+      setSubTab(PLANNER_STEP);
+      setStep(PLANNER_STEP);
 
       setDebts(
         debtsData?.data?.map((r: FinancialRecord) => {
@@ -215,48 +169,19 @@ export default function DebtTool() {
 
       setTotalDebtBalance(totalDebt);
     }
-  }, [debtsData?.data]);
+  }, [debtsData?.data, hasDebtData]);
 
   useEffect(() => {
-    setSubTab("PLANNER_STEP");
-  }, []);
-
-  // useEffect(() => {
-  //   if (!hasBudgetData || budgetInfo?.data?.income === undefined) {
-  //     setSubTab(PLANNER_STEP);
-  //   }
-  // }, [hasBudgetData]);
-
-  // useEffect(() => {
-  //   const currentIndex = DEBT_MOBILE_STEPS.findIndex(
-  //     (step: string) => step === subTab
-  //   );
-  //   console.log("-- finding index because subtab changed --");
-  //   console.log(currentIndex);
-  //   // setStep(DEBT_MOBILE_STEPS.findIndex((step: string) => step === subTab));
-  // }, [subTab]);
-
-  // const DEBT_STEP = DEBT_MOBILE_STEPS.findIndex(
-  //   (step: string) => step === ADD_DEBT
-  // );
-  useEffect(() => {
-    // if (
-    //   (!hasDebtData  &&
-    //   !firstLoadCompleted)
-    // ) {
-    //   setSubTab(INCOME_STEP);
-    // }
-    if (hasBudgetData && !firstLoadCompleted) {
+    if (debtsFetched && !hasDebtData) {
+      setSubTab(ADD_DEBT);
+      setStep(ADD_DEBT);
+    } else if (debtsFetched && !firstLoadCompleted && hasBudgetData) {
       setSubTab(PLANNER_STEP);
+      setStep(PLANNER_STEP);
       setFirstLoadCompleted(true);
     }
-  }, [hasBudgetData]);
+  }, [debtsFetched, hasDebtData, debtsData?.data]);
 
-  useEffect(() => {
-    setSubTab(PLANNER_STEP);
-  }, []);
-
-  // TODO:
   const {
     paymentScheduleCalculator,
     snowballResultsWithoutExtra,
@@ -370,6 +295,7 @@ export default function DebtTool() {
               disabled={subTab === ADD_DEBT}
               onClick={() => {
                 setSubTab(ADD_DEBT);
+                setStep(ADD_DEBT);
               }}
               text="Add Debt"
             />
@@ -391,10 +317,12 @@ export default function DebtTool() {
           onChange={(e, v) => {
             setTab(v);
             if (v === 0) {
-              setSubTab("PLANNER_STEP");
+              setSubTab(PLANNER_STEP);
+              setStep(PLANNER_STEP);
             }
             if (v === 1) {
-              setSubTab("EDIT_STEP");
+              setSubTab(EDIT_STEP);
+              setStep(EDIT_STEP);
             }
           }}
         >
@@ -407,7 +335,7 @@ export default function DebtTool() {
         {/* {budgetProgress} */}
 
         {/* {headerSummary} */}
-        {subTab === "PLANNER_STEP" || subTab === undefined ? (
+        {step === PLANNER_STEP || subTab === undefined ? (
           <>
             <div className="h-[41px] mx-[16px] px-[11px] mt-[11px] flex justify-between items-center bg-white rounded-[18px] border border-[#b1b2ff]/80">
               <div className="h-5 text-center text-black text-sm font-medium text-nowrap">
@@ -444,7 +372,7 @@ export default function DebtTool() {
           </>
         ) : null}
 
-        {subTab === "EDIT_STEP" ? (
+        {step === EDIT_STEP ? (
           <>
             <div className="px-[16px]">{budgetProgress}</div>
             <div className="rounded-[18px] border border-[#d2daff] px-[16px] mx-[18px] mt-[12px] mb-[24px]">
@@ -464,7 +392,7 @@ export default function DebtTool() {
           </>
         ) : null}
 
-        {subTab === DEBT_SUMMARY ? (
+        {step === DEBT_SUMMARY ? (
           <>
             <DebtSummary
               debts={debts}
@@ -473,7 +401,7 @@ export default function DebtTool() {
             />
           </>
         ) : null}
-        {subTab === ADD_DEBT ? (
+        {step === ADD_DEBT ? (
           <>
             <AddDebt
               debts={debts}
@@ -483,16 +411,17 @@ export default function DebtTool() {
               setExtraPaymentAmount={setExtraPaymentAmount}
               cancel={() => {
                 if (Array.isArray(debtsData?.data)) {
-                  setSubTab("PLANNER_STEP");
+                  setSubTab(PLANNER_STEP);
+                  setStep(PLANNER_STEP);
                 } else {
                   setSubTab(DEBT_SUMMARY);
-                  // setStep(0);
+                  setStep(PLANNER_STEP);
                 }
               }}
             />
           </>
         ) : null}
-        {subTab === SUGGESTIONS ? (
+        {step === SUGGESTIONS ? (
           <>
             {extraPaymentInput}
             <DashboardInfo
@@ -502,7 +431,7 @@ export default function DebtTool() {
             />
           </>
         ) : null}
-        {subTab === PRIORITIES ? (
+        {step === PRIORITIES ? (
           <>
             {extraPaymentInput}
             <DebtsComparison

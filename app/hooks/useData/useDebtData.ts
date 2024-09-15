@@ -13,6 +13,7 @@ export default function useDebtData() {
   const {
     data: debtsData,
     isLoading: debtsLoading,
+    isFetched: debtsFetched,
     refetch: refetchDebts,
     isRefetching: isRefetchingDebts,
   } = useQuery({
@@ -59,5 +60,5 @@ export default function useDebtData() {
     return true;
   }, [debtsData?.data]);
 
-  return { data: debtsData, hasDebtData, debtsLoading };
+  return { data: debtsData, hasDebtData, debtsLoading, debtsFetched };
 }

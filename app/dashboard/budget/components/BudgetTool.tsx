@@ -413,9 +413,11 @@ export default function BudgetTool() {
             onChange={(e, v) => {
               if (v === 0) {
                 setSubTab(BUDGET_STEP);
+                setStep(BUDGET_STEP);
               }
               if (v === 1) {
                 setSubTab("EDIT_STEP");
+                setStep("EDIT_STEP");
               }
             }}
           >
