@@ -27,11 +27,18 @@ import { FinancialRecordSchema } from "@/types/debtFormType";
 
 const categories = ["wants", "needs", "savings", "debts"];
 
-type BudgetMobileSteps = "income" | "suggestedBreakdown" | "budget";
+type BudgetMobileSteps =
+  | "income"
+  | "suggestedBreakdown"
+  | "budget"
+  | "PLANNER_STEP"
+  | "EDIT_STEP";
 
 export const INCOME_STEP = "income";
 export const BREAKDOWN_STEP = "suggestedBreakdown";
 export const BUDGET_STEP = "budget";
+export const PLANNER_STEP = "PLANNER_STEP";
+export const EDIT_STEP = "EDIT_STEP";
 
 const BUDGET_MOBILE_STEPS: BudgetMobileSteps[] = [
   INCOME_STEP,
@@ -41,7 +48,6 @@ const BUDGET_MOBILE_STEPS: BudgetMobileSteps[] = [
 const BUDGET_STEPS = BUDGET_MOBILE_STEPS;
 
 export const DEBT_REPAYMENT_STRATEGY_NAME = "Repayment Strategy";
-const EDIT_STEP = "EDIT_STEP";
 
 export interface BudgetItem {
   id?: string;
@@ -255,7 +261,7 @@ export async function duplicateBudgetForLaterMonth(
 
 export default function BudgetTool() {
   const [date, setDate] = useState<Date | null | undefined>(new Date());
-  // const [step, setStep] = useState<BudgetMobileSteps>(INCOME_STEP);
+  const [step, setStep] = useState<BudgetMobileSteps>(PLANNER_STEP);
   const [isLoading, setIsLoading] = useState(false);
   const [firstLoadCompleted, setFirstLoadCompleted] = useState(false);
   const axiosAuth = useAxiosAuth();
@@ -263,7 +269,7 @@ export default function BudgetTool() {
   const queryClient = useQueryClient();
   const [latestIncome, setLatestIncome] = useState(0);
 
-  const { setTabs, setSubTab, subTab: step, tab, state } = useTabContext();
+  const { setTabs, setSubTab, subTab, tab, state } = useTabContext();
 
   const year = date?.getFullYear();
   const month = date?.getMonth();
@@ -278,6 +284,7 @@ export default function BudgetTool() {
   const {
     data: budgetInfo,
     isLoading: budgetInfoLoading,
+    isFetched,
     refetch,
     sumCategories,
     summedCategories,
@@ -327,24 +334,25 @@ export default function BudgetTool() {
 
   useEffect(() => {
     if (
-      (!hasBudgetData || budgetInfo?.data?.income === undefined) &&
-      !firstLoadCompleted
+      isFetched &&
+      (!hasBudgetData || budgetInfo?.data?.income === undefined)
     ) {
       setSubTab(INCOME_STEP);
-    } else if (!firstLoadCompleted && hasBudgetData) {
+      setStep(INCOME_STEP);
+    } else if (isFetched && !firstLoadCompleted && hasBudgetData) {
       setSubTab(BUDGET_STEP);
+      setStep(BUDGET_STEP);
       setFirstLoadCompleted(true);
     }
-  }, [hasBudgetData, budgetInfo?.data]);
+  }, [isFetched, hasBudgetData, budgetInfo?.data]);
 
-  useEffect(() => {
-    setSubTab(BUDGET_STEP);
-  }, []);
+  // useEffect(() => {
+  //   setSubTab(BUDGET_STEP);
+  // }, []);
 
   useEffect(() => {
     if (mixpanelCalled.current) return;
     Mixpanel.getInstance().track("view_budget");
-
     mixpanelCalled.current = true;
   }, []);
 
@@ -359,6 +367,7 @@ export default function BudgetTool() {
     }
     const nextStep = BUDGET_MOBILE_STEPS[currentIndex - 1] as BudgetMobileSteps;
     setSubTab(nextStep);
+    setStep(nextStep);
   };
 
   // combineDebtAndBudgetData = (debtsData, budgetData, sumCategories, summedCategories, incomeAfterExpenses)
@@ -506,6 +515,7 @@ export default function BudgetTool() {
                   currentIndex + 1
                 ] as BudgetMobileSteps;
                 setSubTab(nextStep);
+                setStep(nextStep);
               }}
               setPrev={() => setPrev()}
               // setSkip={() => setShowSteps(false)}
