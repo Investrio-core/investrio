@@ -7,7 +7,7 @@ import EditCategoryItemModal from "../EditCategoryItemModal";
 import DeleteCategoryItemModal from "../DeleteCategoryItemModal";
 import { toast } from "react-toastify";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { expenseEmojiMapping } from "./emoji-mapper";
+import { expenseEmojiMapping, emojiNames } from "./emoji-mapper";
 import RenderEmoji from "@/app/components/ui/RenderEmoji";
 import {
   BudgetItem,
@@ -29,6 +29,7 @@ interface CategoryBlockItemProps {
   percent: number;
   income: number;
   onSubmit: (data: Record<Locale, { name: string; value: number }[]>) => void;
+  alternativeLabel: string;
 }
 
 interface DebtFormCategoryItem {}
@@ -40,6 +41,7 @@ const CategoryBlockItem = ({
   percent,
   income,
   onSubmit,
+  alternativeLabel,
 }: CategoryBlockItemProps) => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
@@ -224,10 +226,21 @@ const CategoryBlockItem = ({
     toast.success("Expense deleted");
   };
 
+  const getEmojiFromWord = (word: string) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const emoji = expenseEmojiMapping[word];
+    if (emoji) return emoji;
+    emojiNames.forEach((name) => {
+      if (word.includes(name)) {
+      }
+    });
+  };
+
   return (
     <div className="flex text-base font-medium flex-col rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px]">
       <div className="text-slate-950 text-[28px] font-medium capitalize px-[12px] py-4">
-        {name}
+        {alternativeLabel ?? name}
       </div>
 
       {/* <div className="w-[100%] h-[0px] border border-zinc-200"></div> */}
@@ -300,7 +313,7 @@ const CategoryBlockItem = ({
                   item.type
                     ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
-                      expenseEmojiMapping[item.type]
+                      getEmojiFromWord(expenseEmojiMapping[item.type])
                     : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
                       expenseEmojiMapping[item.name?.toLowerCase()]

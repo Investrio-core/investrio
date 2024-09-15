@@ -354,3 +354,5 @@ export const expenseEmojiMapping = {
   // "side income": "0x1F4B0",     // 💰
   // "secondary income": "0x1F4B0" // 💰
 };
+
+export const emojiNames = Object.keys(expenseEmojiMapping);

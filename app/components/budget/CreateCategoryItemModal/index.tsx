@@ -39,6 +39,8 @@ const getPlaceholderFromCategory = (category: CategoryType) => {
       return "Savings Account, Shares, Investment Property, etc.";
     case "wants":
       return "Vacation, Jewelry, Luxury items, etc.";
+    case "assets":
+      return "Property, Bank Accounts"
   }
 };
 
