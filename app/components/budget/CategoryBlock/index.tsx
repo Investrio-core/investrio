@@ -2,7 +2,7 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import CategoryBlockItem from "../CategoryBlockItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export type CategoryType = "needs" | "savings" | "debts" | "wants";
+export type CategoryType = "needs" | "savings" | "debts" | "wants" | "assets";
 
 interface CategoryBlockProps {
   renderAfterInput?: JSX.Element;
@@ -19,9 +19,11 @@ interface CategoryBlockProps {
     month: number | undefined;
   };
   setLoading: (value: boolean) => void;
+  useCategories?: { name: string; percent: number }[];
+  useLabels?: string[];
 }
 
-const categories = [
+const defaultCategories = [
   { name: "needs", percent: 50 },
   { name: "wants", percent: 30 },
   { name: "savings", percent: 10 },
@@ -33,6 +35,8 @@ const CategoryBlock = ({
   date,
   setLoading,
   renderAfterInput,
+  useCategories,
+  useLabels,
 }: CategoryBlockProps) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -46,7 +50,6 @@ const CategoryBlock = ({
     mutationFn: async (category: any) => {
       setLoading(true);
 
-      
       const data = await axiosAuth.post(`/budget/create`, {
         ...category,
         year,
@@ -113,6 +116,8 @@ const CategoryBlock = ({
     setLoading(false);
   };
 
+  const categories = useCategories ?? defaultCategories;
+
   return (
     <div className="w-[100vw] lg:w-[100%] lg:w-full bg-white mt-[12px] rounded-[12px] border lg:p-[24px] mb-[20px]">
       {renderAfterInput ? (
@@ -120,9 +125,11 @@ const CategoryBlock = ({
           {renderAfterInput}
         </div>
       ) : null}
-      {categories.map((category) => {
-        const name = category.name as "needs" | "savings" | "debts" | "wants";
+      {categories.map((category, idx) => {
+        const name = (category.name as "needs" | "savings" | "debts" | "wants");
         const items = budgetInfo[name];
+        const alternativeLabel = useLabels ? useLabels?.[idx] : undefined;
+
         return (
           <CategoryBlockItem
             onSubmit={onSubmit}
@@ -132,6 +139,7 @@ const CategoryBlock = ({
             income={income}
             percent={category.percent}
             items={items}
+            alternativeLabel={alternativeLabel}
           />
         );
       })}
