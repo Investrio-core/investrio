@@ -9,7 +9,7 @@ export default function useBudgetData(date?: Date | null) {
   const year = date?.getFullYear() ?? new Date().getFullYear();
   const month = date?.getMonth() ?? new Date().getMonth();
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isFetched, refetch,  } = useQuery({
     queryKey: ["budget-tool", year, month],
     queryFn: async () => {
       return await axiosAuth.get(`/budget/${year}/${month}`);
@@ -18,6 +18,8 @@ export default function useBudgetData(date?: Date | null) {
     refetchOnWindowFocus: true,
     enabled: !!(year && month), // !!date,
   });
+
+  // const getBudgetData()
 
   const calculateSumCategories = () => {
     return categories.map((category) => {
@@ -81,6 +83,7 @@ export default function useBudgetData(date?: Date | null) {
     data,
     isLoading,
     refetch,
+    isFetched,
     sumCategories,
     summedCategories,
     totalExpenses: sumCategories,
