@@ -40,7 +40,7 @@ const getPlaceholderFromCategory = (category: CategoryType) => {
     case "wants":
       return "Vacation, Jewelry, Luxury items, etc.";
     case "assets":
-      return "Property, Bank Accounts"
+      return "Property, Bank Accounts";
   }
 };
 
@@ -99,7 +99,6 @@ const CreateCategoryItemModal = ({
       setCurrentName(name);
     }
   }, [value, name, open]);
-
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -165,28 +164,30 @@ const CreateCategoryItemModal = ({
                     onChange={handleChange}
                   />
 
-                  <Select
-                    label={`Is this a recurring ${category.slice(0, -1)}?`}
-                    name="recurringExpense"
-                    options={[
-                      {
-                        label: "Yes",
-                        value: "true",
-                      },
-                      {
-                        label: "No",
-                        value: "false",
-                      },
-                    ]}
-                    inline
-                    required
-                    value={recurringExpense}
-                    onChange={(e) => {
-                      if (e?.target?.value !== undefined) {
-                        setRecurringExpense(e?.target?.value);
-                      }
-                    }}
-                  />
+                  {category !== "assets" ? (
+                    <Select
+                      label={`Is this a recurring ${category.slice(0, -1)}?`}
+                      name="recurringExpense"
+                      options={[
+                        {
+                          label: "Yes",
+                          value: "true",
+                        },
+                        {
+                          label: "No",
+                          value: "false",
+                        },
+                      ]}
+                      inline
+                      required
+                      value={recurringExpense}
+                      onChange={(e) => {
+                        if (e?.target?.value !== undefined) {
+                          setRecurringExpense(e?.target?.value);
+                        }
+                      }}
+                    />
+                  ) : null}
 
                   {category === "debts" ? <DebtFormFields /> : null}
 
