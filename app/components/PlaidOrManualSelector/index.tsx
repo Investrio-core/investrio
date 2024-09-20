@@ -9,11 +9,6 @@ interface Props {
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
   const { open, ready, token } = usePlaidLink();
 
-  console.log("-- using plaid link --");
-  console.log(open);
-  console.log(ready);
-  console.log(token);
-
   return (
     <div
       className="px-[25px] mx-[17px] mb-[27px] mt-[36px]"
