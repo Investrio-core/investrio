@@ -93,12 +93,13 @@ const CategoryBlockItem = ({
     return formatCurrency(recommend);
   };
 
-  const totalItemsValue = items.reduce((p, c) => {
-    if (c[useValueKey]) {
-      return p + c[useValueKey];
-    }
-    return p;
-  }, 0);
+  const totalItemsValue =
+    items?.reduce((p, c) => {
+      if (c[useValueKey]) {
+        return p + c[useValueKey];
+      }
+      return p;
+    }, 0) ?? 0;
 
   const calculateActualPercentage = () => {
     if (useCategories !== undefined) {
