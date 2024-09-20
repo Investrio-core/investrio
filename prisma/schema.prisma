@@ -119,6 +119,7 @@ model BudgetMonth {
   wants     Json
   savings   Json
   debts     Json
+  assets    Json?
   month     Float
   year      Float
   userId    String
