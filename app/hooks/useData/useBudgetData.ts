@@ -9,7 +9,7 @@ export default function useBudgetData(date?: Date | null) {
   const year = date?.getFullYear() ?? new Date().getFullYear();
   const month = date?.getMonth() ?? new Date().getMonth();
 
-  const { data, isLoading, isFetched, refetch,  } = useQuery({
+  const { data, isLoading, isFetched, refetch } = useQuery({
     queryKey: ["budget-tool", year, month],
     queryFn: async () => {
       return await axiosAuth.get(`/budget/${year}/${month}`);
@@ -41,6 +41,7 @@ export default function useBudgetData(date?: Date | null) {
       data?.data["needs"],
       data?.data["savings"],
       data?.data["debts"],
+      // data?.data["assets"],
     ]
   );
 
@@ -68,6 +69,7 @@ export default function useBudgetData(date?: Date | null) {
       data?.data["wants"],
       data?.data["needs"],
       data?.data["savings"],
+      // data?.data["assets"],
       // data?.data["debts"],
     ]
   );

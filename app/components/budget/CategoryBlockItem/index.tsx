@@ -15,7 +15,7 @@ import {
 } from "@/app/dashboard/budget/components/BudgetTool";
 import { FiRepeat } from "react-icons/fi";
 import Image from "next/image";
-import { CategoryType } from "../CategoryBlock";
+import { CategoryType, CategoryTypeItem } from "../CategoryBlock";
 import useDebtQueries from "@/app/hooks/useDebtQueries";
 import { DebtFormType } from "@/types/debtFormType";
 import Mixpanel from "@/services/mixpanel";
@@ -28,8 +28,13 @@ interface CategoryBlockItemProps {
   items: BudgetItem[];
   percent: number;
   income: number;
-  onSubmit: (data: Record<Locale, { name: string; value: number }[]>) => void;
-  alternativeLabel: string;
+  onSubmit: (category: CategoryTypeItem) => void; //(data: Record<Locale, { name: string; value: number }[]>) => void;
+  alternativeLabel?: string;
+  showRecommended?: boolean;
+  useValueKey: CategoryType | "value";
+  useNameKey?: string;
+  useCategories?: { name: CategoryType; percent: number }[];
+  // useCategories?: { [category: string]: CategoryType; percent: number }[];
 }
 
 interface DebtFormCategoryItem {}
@@ -42,6 +47,10 @@ const CategoryBlockItem = ({
   income,
   onSubmit,
   alternativeLabel,
+  showRecommended,
+  useValueKey = "value",
+  useNameKey = undefined,
+  useCategories,
 }: CategoryBlockItemProps) => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
@@ -53,6 +62,9 @@ const CategoryBlockItem = ({
     value: 0,
     recurringExpense: undefined,
   });
+
+  console.log("-- receivign items in category item block ");
+  console.log(items);
 
   const { createDebt, updateDebt, deleteRecords } = useDebtQueries();
 
@@ -81,14 +93,25 @@ const CategoryBlockItem = ({
     return formatCurrency(recommend);
   };
 
-  const totalItemsValue = items.reduce((p, c) => p + c.value, 0);
+  const totalItemsValue = items.reduce((p, c) => {
+    if (c[useValueKey]) {
+      return p + c[useValueKey];
+    }
+    return p;
+  }, 0);
 
   const calculateActualPercentage = () => {
+    if (useCategories !== undefined) {
+      const categoryEntry = useCategories.find(
+        (category) => category.name === name
+      );
+      return `${categoryEntry?.percent ?? 0}%`;
+    }
     if (!income) {
       return "0%";
     }
-    const percentage = (totalItemsValue / income) * 100;
 
+    const percentage = (totalItemsValue / income) * 100;
     return `${toFixed(percentage, 2)}%`;
   };
 
@@ -172,6 +195,8 @@ const CategoryBlockItem = ({
     name: string;
     recurringExpense?: string;
   }) => {
+    console.log("clicked item");
+    console.log(item);
     setSelectedItem(item);
     handleChangeEditCategoryModalOpen();
   };
@@ -278,18 +303,19 @@ const CategoryBlockItem = ({
           {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
         </div>
       </div>
-      <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
-        <div className="w-3/6 lg:w-4/6 text-[#9ca4ab] text-md font-semibold uppercase tracking-tight">
-          RECOMMENDED
-        </div>
-        <div className="w-1/6 mr-[9%] lg:w-1/6 text-left text-[#9ca4ab] font-semibold text-md">
-          {percent}%
-        </div>
-        <div className="w-2/6 lg:w-1/6 lg:text-right text-[#03091d] font-medium text-md">
-          {calculateRecommended()}
-        </div>
+      {showRecommended ? (
+        <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
+          <div className="w-3/6 lg:w-4/6 text-[#9ca4ab] text-md font-semibold uppercase tracking-tight">
+            RECOMMENDED
+          </div>
+          <div className="w-1/6 mr-[9%] lg:w-1/6 text-left text-[#9ca4ab] font-semibold text-md">
+            {percent}%
+          </div>
+          <div className="w-2/6 lg:w-1/6 lg:text-right text-[#03091d] font-medium text-md">
+            {calculateRecommended()}
+          </div>
 
-        {/* <div className="lg:w-1/6 text-right flex flex-col justify-center">
+          {/* <div className="lg:w-1/6 text-right flex flex-col justify-center">
           <div className="text-lg">
             {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
           </div>
@@ -297,7 +323,8 @@ const CategoryBlockItem = ({
             {calculateActualPercentage()}
           </div>
         </div> */}
-      </div>
+        </div>
+      ) : null}
       <div className="w-[100%] h-[0px] border border-zinc-200"></div>
 
       <div ref={parent}>
@@ -321,8 +348,9 @@ const CategoryBlockItem = ({
                 label={item.name}
                 fallback={expenseEmojiMapping["default"]}
                 className={"mr-[8px]"}
+                type={item?.type}
               />
-              {item.name}
+              {useNameKey ? item[useNameKey] : item.name}
               {/* 0x1F502 */}
               {item?.recurringExpense === "true" ? (
                 // <FiRepeat className="text-green-700 pl-[6px]" />
@@ -330,9 +358,10 @@ const CategoryBlockItem = ({
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   symbol={"0x1F501"}
-                  label={item.name}
+                  label={useNameKey ? item["useNameKey"] : item.name}
                   fallback={expenseEmojiMapping["default"]}
                   className={"ml-[6px]"}
+                  type={item?.type}
                 />
               ) : (
                 // <div
@@ -360,7 +389,7 @@ const CategoryBlockItem = ({
               )}
             </div>
             <div className="w-1/3 lg:w-1/6 font-medium text-right flex flex-col justify-center">
-              <div>{formatCurrency(item.value)}</div>
+              <div>{formatCurrency(item[useValueKey])}</div>
             </div>
           </div>
         ))}

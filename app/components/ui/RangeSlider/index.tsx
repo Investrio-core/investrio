@@ -14,7 +14,7 @@ interface Props {
 const CustomSlider = styled(Slider)(({ theme }) => ({
   color: "#100D40", // "#3a8589",
   height: 12,
-  padding: "13px 0",
+  // padding: "13px 0",
   "& .MuiSlider-thumb": {
     height: 27,
     width: 27,

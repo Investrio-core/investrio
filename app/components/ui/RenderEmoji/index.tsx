@@ -7,20 +7,44 @@ interface EmojiProps {
   label: string;
   symbol?: string;
   fallback?: string;
+  type?: string;
 }
 
 const RenderEmoji = memo(
-  ({ className, label, symbol, fallback }: EmojiProps) => {
+  ({ className, label, symbol, fallback, type }: EmojiProps) => {
     if (symbol === undefined && fallback === undefined) return null;
+    if (type === "CreditCard" && symbol !== "0x1F501") {
+      return (
+        <span
+          className={className}
+          role="img"
+          aria-label={label}
+          style={{ position: "relative", left: "3px" }}
+        >
+          <Image
+            className="rounded-[50%] mr-[8px]"
+            src={"/icons/credit-card.png"}
+            alt={"Investrio Logo"}
+            width={20}
+            height={20}
+          />
+        </span>
+      );
+    }
     if (label === DEBT_REPAYMENT_STRATEGY_NAME && symbol !== "0x1F501") {
       return (
-        <span className={className} role="img" aria-label={label}>
+        <span
+          className={className}
+          role="img"
+          aria-label={label}
+          style={{ position: "relative", left: "3px" }}
+        >
           <Image
             className="rounded-[50%] mr-[8px]"
             src={"/logo.svg"}
             alt={"Investrio Logo"}
-            width={24}
-            height={20.72}
+            width={20}
+            height={20}
           />
         </span>
       );

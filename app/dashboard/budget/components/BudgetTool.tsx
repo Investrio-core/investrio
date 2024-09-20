@@ -47,7 +47,7 @@ const BUDGET_MOBILE_STEPS: BudgetMobileSteps[] = [
 ];
 const BUDGET_STEPS = BUDGET_MOBILE_STEPS;
 
-export const DEBT_REPAYMENT_STRATEGY_NAME = "Repayment Strategy";
+export const DEBT_REPAYMENT_STRATEGY_NAME = "Debt Strategy";
 
 export interface BudgetItem {
   id?: string;
@@ -178,6 +178,14 @@ export const combineDebtAndBudgetData = (
     },
     0
   );
+  const outstandingBalance: number = reshapedDebts?.reduce((acc, next) => {
+    return acc + (next.initialBalance || 0);
+  }, 0);
+
+  const totalAssets = budgetData?.assets?.length
+    ? budgetData?.assets?.reduce((acc, next) => acc + (next.value || 0), 0)
+    : 0;
+
   const _sumCategories = monthlyMinimumDebtRepayments + sumCategories;
   const _summedCategories = [
     ...summedCategories,
@@ -203,6 +211,8 @@ export const combineDebtAndBudgetData = (
     _summedCategories,
     availableAfterIncome,
     _incomeAfterExpenses,
+    totalDebt: outstandingBalance,
+    totalAssets,
   };
 };
 

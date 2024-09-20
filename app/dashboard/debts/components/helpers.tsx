@@ -2,6 +2,12 @@ import { Results } from "@/app/hooks/calculatorsSnowball";
 import { formatCurrency } from "@/app/utils/formatters";
 import dayjs from "dayjs";
 
+export function getMonthStringFromDate(date: Date | null | undefined) {
+  if (!date) return "";
+  const options = { month: "short" };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}
+
 export function getDebtFreeDate(neverDebtFree?: boolean, results?: Results) {
   const lastPayment = results?.["payments"]?.[results?.["payments"].length - 1];
 

@@ -4,7 +4,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type CategoryType = "needs" | "savings" | "debts" | "wants" | "assets";
 
-interface CategoryBlockProps {
+export interface CategoryTypeItem {
+  category: {
+    [key in CategoryType]: {
+      name: string;
+      value: number;
+      recurringExpense?: string;
+    }[];
+  };
+}
+
+export interface CategoryBlockProps {
   renderAfterInput?: JSX.Element;
   budgetInfo: {
     needs: { value: number; name: string }[];
@@ -19,8 +29,10 @@ interface CategoryBlockProps {
     month: number | undefined;
   };
   setLoading: (value: boolean) => void;
-  useCategories?: { name: string; percent: number }[];
+  useCategories?: { name: CategoryType; percent: number }[];
   useLabels?: string[];
+  showRecommended?: boolean;
+  useValueKey?: { [key: string]: CategoryType };
 }
 
 const defaultCategories = [
@@ -37,6 +49,8 @@ const CategoryBlock = ({
   renderAfterInput,
   useCategories,
   useLabels,
+  showRecommended = true,
+  useValueKey = undefined,
 }: CategoryBlockProps) => {
   const axiosAuth = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -85,12 +99,13 @@ const CategoryBlock = ({
       });
 
       setLoading(true);
+
       const data = await axiosAuth.put(
         `/budget/update-category/${budgetInfo?.id}`,
         { ...category }
       );
-      setLoading(false);
 
+      setLoading(false);
       return data;
     },
     onSuccess: () => {
@@ -98,13 +113,7 @@ const CategoryBlock = ({
     },
   });
 
-  const onSubmit = async (category: {
-    [key in "needs" | "savings" | "debts" | "wants"]: {
-      name: string;
-      value: number;
-      recurringExpense?: string;
-    }[];
-  }) => {
+  const onSubmit = async (category: CategoryTypeItem) => {
     setLoading(true);
     if (budgetInfo?.id) {
       await update(category);
@@ -126,9 +135,14 @@ const CategoryBlock = ({
         </div>
       ) : null}
       {categories.map((category, idx) => {
-        const name = (category.name as "needs" | "savings" | "debts" | "wants");
+        const name = category.name as "needs" | "savings" | "debts" | "wants";
         const items = budgetInfo[name];
         const alternativeLabel = useLabels ? useLabels?.[idx] : undefined;
+        const _useValueKey =
+          useValueKey !== undefined &&
+          useValueKey[name as CategoryType] !== undefined
+            ? (useValueKey[name] as CategoryType)
+            : "value";
 
         return (
           <CategoryBlockItem
@@ -140,6 +154,9 @@ const CategoryBlock = ({
             percent={category.percent}
             items={items}
             alternativeLabel={alternativeLabel}
+            showRecommended={showRecommended}
+            useValueKey={_useValueKey}
+            useCategories={useCategories}
           />
         );
       })}
