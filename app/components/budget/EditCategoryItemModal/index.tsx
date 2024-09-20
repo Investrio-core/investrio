@@ -174,29 +174,31 @@ const EditCategoryItemModal = ({
                     onChange={handleChange}
                   />
 
-                  <Select
-                    label={`Is this a recurring ${category.slice(0, -1)}?`}
-                    name="recurringExpense"
-                    options={[
-                      {
-                        label: "Yes",
-                        value: "true",
-                      },
-                      {
-                        label: "No",
-                        value: "false",
-                      },
-                    ]}
-                    inline
-                    required
-                    value={currentRecurringExpense ?? undefined}
-                    // placeholder={"Yes / No"}
-                    onChange={(e) => {
-                      if (e?.target?.value !== undefined) {
-                        setRecurringExpense(e?.target?.value);
-                      }
-                    }}
-                  />
+                  {category !== "assets" ? (
+                    <Select
+                      label={`Is this a recurring ${category.slice(0, -1)}?`}
+                      name="recurringExpense"
+                      options={[
+                        {
+                          label: "Yes",
+                          value: "true",
+                        },
+                        {
+                          label: "No",
+                          value: "false",
+                        },
+                      ]}
+                      inline
+                      required
+                      value={currentRecurringExpense ?? undefined}
+                      // placeholder={"Yes / No"}
+                      onChange={(e) => {
+                        if (e?.target?.value !== undefined) {
+                          setRecurringExpense(e?.target?.value);
+                        }
+                      }}
+                    />
+                  ) : null}
 
                   {category === "debts" &&
                   name !== DEBT_REPAYMENT_STRATEGY_NAME ? (
