@@ -142,6 +142,7 @@ export const DebtsComparison = ({
                             stroke="rgba(129, 123, 130, 0.5)"
                             fillOpacity={1}
                             fill="url(#colorWithoutBalance)"
+                            
                           />
                         }
                       />
