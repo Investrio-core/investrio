@@ -208,7 +208,7 @@ const CategoryBlockItem = ({
       await updateDebt({ updatedDebt: formattedDebt });
       Mixpanel.getInstance().track("edited_debt_using_budget_tool");
     } else {
-      const index = items.map((i) => i.name).indexOf(data.oldName);
+      const index = items?.map((i) => i.name).indexOf(data.oldName);
       if (index !== -1) {
         const newCategory: BudgetItem[] = [...items];
         newCategory[index] = {
@@ -298,7 +298,7 @@ const CategoryBlockItem = ({
       <div className="w-[100%] h-[0px] border border-zinc-200"></div>
 
       <div ref={parent}>
-        {items.map((item, idx) => (
+        {items?.map((item, idx) => (
           <div
             key={`${item.name + idx}`}
             onClick={() => onItemClick(item)}
