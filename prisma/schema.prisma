@@ -81,8 +81,26 @@ model User {
   priority            String[]
   phoneNumber         String?
   loginType           AccountType?
+  isVerified          Boolean                   @default(false)
 
   @@map("users")
+}
+
+model verificationToken {
+  id        String           @id @default(cuid())
+  type      VerificationType
+  token     String
+  email     String
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+  used      Boolean          @default(false)
+}
+
+enum VerificationType {
+  signup
+  passwordReset
+  updateProfile
+  passwordUpdateAPI
 }
 
 enum AccountType {

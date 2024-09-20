@@ -18,49 +18,46 @@ export default function SignupForm({
   onSubmit,
   isLoading,
   error,
-  setShowSteps,
+  setShowSteps
 }: Props) {
   return (
     <>
-      <RxInfoCircled
-        cursor="pointer"
-        fontSize="28px"
-        className="text-violet-600 font-bold absolute top-4 right-4"
-        onClick={() => setShowSteps(true)}
-      />
-      <div className="text-center mb-[16px]">
-        <h1 className="mb-2 text-base/[22px] font-xl font-semibold tracking-widest">
+      <div className="text-center mb-[40px] mt-[-4rem]">
+        <h1 className="mb-2 font-medium tracking-wider [font-family:'Poppins',Helvetica] text-xl relative">
           Complete Your Profile
         </h1>
-        <p className="text-slate-400 text-base/[14px] px-8 leading-normal">
+        <p className="text-[#858699] font-thin [font-family:'Poppins',Helvetica] text-base w-9/12 mx-auto tracking-[0]">
           For the purpose of industry regulation, your details are required.
         </p>
       </div>
 
-      <SigninButton callToAction={"Register with Google"} />
-      <div className="divider text-xs">OR</div>
-
       <Form onSubmit={onSubmit}>
-        <Input
-          label="Your Full Name*"
-          name="name"
-          required
-          placeholder="Enter your full name"
-        />
-        <Input
-          label="Email address"
-          name="email"
-          required
-          placeholder="Enter your email address"
-          type="email"
-        />
-        <Input
-          label="Create password"
-          name="password"
-          required
-          placeholder="Enter your password"
-          type="password"
-        />
+        <div className="mb-5">
+          <Input
+            label="Your Full Name*"
+            name="name"
+            required
+            placeholder="Name"
+          />
+        </div>
+        <div className="mb-5">
+          <Input
+            label="E-mail address"
+            name="email"
+            required
+            placeholder="E-mail"
+            type="email"
+          />
+        </div>
+        <div className="mb-5">
+          <Input
+            label="Create password"
+            name="password"
+            required
+            placeholder="Password"
+            type="password"
+          />
+        </div>
 
         {error && <p className="text-left text-sm text-red-500">{error}</p>}
 
@@ -75,27 +72,28 @@ export default function SignupForm({
           </label>
         </div> */}
 
-        <div className="w-fit mt-4">
+        <div className="w-fit mt-4 mb-5">
           {/* text-base/[12px] leading-normal */}
-          <p className="label-text">
-            By creating an account you accept Investrio's&nbsp;
+          <p className="text-slate-400 label-text tracking-[0] leading-relaxed [font-family:'Poppins',Helvetica] w-11/12 font-thin text-base">
+            By creating an account you accept Investrio&nbsp;
+            <br />
             <Link
               href={"/auth/signup"}
-              className="font-bold text-violet-600"
+              className="underline text-[#8833ff]"
               style={{ whiteSpace: "pre" }}
             >
               E-Communication Policy
             </Link>
             ,{" "}
-            <Link href={"/auth/signup"} className="font-bold text-violet-600">
+            <Link href={"/auth/signup"} className="underline text-[#8833ff]">
               Terms and Conditions
             </Link>
             ,{" "}
-            <Link href={"/auth/signup"} className="font-bold text-violet-600">
+            <Link href={"/auth/signup"} className="underline text-[#8833ff]">
               Privacy Policy
             </Link>{" "}
             and{" "}
-            <Link href={"/auth/signup"} className="font-bold text-violet-600">
+            <Link href={"/auth/signup"} className="underline text-[#8833ff]">
               Privacy Disclosure
             </Link>
             .
@@ -103,25 +101,22 @@ export default function SignupForm({
         </div>
 
         <button
-          className="btn btn-primary mt-4 w-full capitalize text-base/[16px]"
+          className="btn btn-primary mt-4 w-full capitalize text-base/[16px] text-white bottom-0"
           type="submit"
           disabled={isLoading}
           style={{
             borderRadius: "12px",
           }}
         >
-          {isLoading ? "Loading..." : "Register Account"}
+          {isLoading ? "Loading..." : "Login"}
         </button>
       </Form>
-      <p className="mt-5 text-center text-base">
+      {/* <p className="mt-5 text-center text-base">
         Already have an account?{" "}
         <Link href={"/auth/login"} className="font-bold text-violet-600">
           Sign in
         </Link>
-      </p>
-      <div className="mt-[32px] text-[#6C7278] text-base text-center pb-2 mb-2">
-        © 2024 Investrio. All rights reserved.
-      </div>
+      </p> */}
     </>
   );
 }

@@ -1,16 +1,15 @@
 "use client";
 
-import { RxAvatar } from "react-icons/rx";
-import { AiOutlineLock } from "react-icons/ai";
 import { useRouter, useSearchParams } from "next/navigation";
 import SigninButton from "@/app/components/ui/buttons/GoogleSignInButton";
 import Form from "@/app/components/ui/Form";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { clearSession, saveSession } from "@/app/utils/session";
+import { clearSession } from "@/app/utils/session";
 import Mixpanel from "@/services/mixpanel";
 import Link from "next/link";
-import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
+import Input from "@/app/components/ui/Input";
+// import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const LoginErrorsMapper = {
   OAuthCallback: {
@@ -33,7 +32,7 @@ export default function LoginForm() {
     if (params.get("error")) {
       setError(
         LoginErrorsMapper[params.get("error")!]?.message ||
-          "Something went wrong!"
+        "Something went wrong!"
       );
     }
   }, [params]);
@@ -62,7 +61,8 @@ export default function LoginForm() {
       });
 
       if (response?.ok) {
-        router.push(HOME_DASHBOARD_PAGE);
+        router.push("/auth/signup/completion");
+        // router.push(HOME_DASHBOARD_PAGE);
       } else {
         setError("Invalid Credentials");
       }
@@ -73,63 +73,60 @@ export default function LoginForm() {
     }
   }
 
+  function forgetPasswordHandler() {
+    sessionStorage.setItem('userData', JSON.stringify({ type: "passwordReset" }))
+    router.push('/auth/verification');
+  }
+
   return (
     <>
       <SigninButton />
-      <div className="divider">OR</div>
+      <div className="divider mt-8 text-sm">Or</div>
       <Form onSubmit={onSubmit}>
-        <div className="flex flex-col gap-5">
-          <div className="form-control">
-            <div className="join">
-              <div className="btn join-item hover:cursor-default">
-                <RxAvatar />
-              </div>
-              <input
-                type="email"
-                required
-                placeholder="Email"
-                name="email"
-                className="input input-bordered join-item w-full"
-              />
-            </div>
+        <div className="flex flex-col gap-5 mt-7">
+          <div className="mb-2">
+            <Input
+              label="Email"
+              name="email"
+              required
+              placeholder="E-mail"
+              type="email"
+              labelStyles={"text-xs"}
+            />
           </div>
-          <div className="form-control">
-            <div className="join ">
-              <button className="btn join-item hover:cursor-default">
-                <AiOutlineLock />
-              </button>
-              <input
-                type="password"
-                required
-                placeholder="Password"
-                name="password"
-                className="input input-bordered join-item w-full"
-              />
-            </div>
-            {/* <p className="mt-[8px] text-base text-right">
-              <Link
-                href={"/auth/reset-password"}
-                className="font-bold text-violet-600"
-              >
-                Forgot Password?
-              </Link>
-            </p> */}
+          <div className="mb-[-1rem]">
+            <Input
+              label="Password"
+              name="password"
+              required
+              placeholder="Password"
+              type="password"
+              labelStyles={"text-xs"}
+            />
+          </div>
+
+          <div className="mt-[5px] text-base text-right">
+            <button
+              // href={"/auth/reset-password"}
+              onClick={forgetPasswordHandler}
+              className="font-light text-violet-600"
+            >
+              Forgot Password
+            </button>
           </div>
 
           {error && <p className="text-left text-sm text-red-500">{error}</p>}
 
-          <div className="form-control">
-            <button
-              type="submit"
-              className="btn btn-primary capitalize text-base/[16px] text-white"
-              disabled={isLoading}
-              style={{
-                borderRadius: "12px",
-              }}
-            >
-              {isLoading ? "Loading..." : "Login"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="btn btn-primary capitalize text-base/[16px] text-white mt-6"
+            disabled={isLoading}
+            style={{
+              borderRadius: "12px",
+            }}
+          >
+            {isLoading ? "Loading..." : "Login"}
+          </button>
         </div>
       </Form>
     </>
