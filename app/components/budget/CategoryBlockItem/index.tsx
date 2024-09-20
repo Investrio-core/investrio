@@ -177,7 +177,7 @@ const CategoryBlockItem = ({
       await createDebt({ newDebt: reshapedDebt });
       Mixpanel.getInstance().track("added_debt_using_budget_tool");
     } else {
-      const newCategory = [...items, data];
+      const newCategory = items ? [...items, data] : [data];
       const dataToUpdate = { [name]: newCategory } as Record<
         Locale,
         { name: string; value: number; recurringExpense?: string }[]
