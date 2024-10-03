@@ -181,7 +181,7 @@ const CategoryBlockItem = ({
       await createDebt({ newDebt: reshapedDebt });
       Mixpanel.getInstance().track("added_debt_using_budget_tool");
     } else {
-      const newCategory = [...items, data];
+      const newCategory = items ? [...items, data] : [data];
       const dataToUpdate = { [name]: newCategory } as Record<
         Locale,
         { name: string; value: number; recurringExpense?: string }[]
@@ -214,7 +214,7 @@ const CategoryBlockItem = ({
       await updateDebt({ updatedDebt: formattedDebt });
       Mixpanel.getInstance().track("edited_debt_using_budget_tool");
     } else {
-      const index = items.map((i) => i.name).indexOf(data.oldName);
+      const index = items?.map((i) => i.name).indexOf(data.oldName);
       if (index !== -1) {
         const newCategory: BudgetItem[] = [...items];
         newCategory[index] = {
@@ -258,7 +258,10 @@ const CategoryBlockItem = ({
     const emoji = expenseEmojiMapping[word];
     if (emoji) return emoji;
     emojiNames.forEach((name) => {
-      if (word.includes(name)) {
+      if (word?.includes && word?.includes(name)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return expenseEmojiMapping[name];
       }
     });
   };
@@ -329,11 +332,11 @@ const CategoryBlockItem = ({
       <div className="w-[100%] h-[0px] border border-zinc-200"></div>
 
       <div ref={parent}>
-        {items.map((item, idx) => (
+        {items?.map((item, idx) => (
           <div
             key={`${item.name + idx}`}
             onClick={() => onItemClick(item)}
-            className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50"
+            className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50 min-h-fit h-fit"
           >
             <div className="w-2/3 lg:w-5/6 font-normal text-lg flex items-center">
               <RenderEmoji
