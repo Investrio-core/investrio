@@ -6,6 +6,7 @@ import {
   PlaidLinkOnEvent,
   PlaidLinkOnExit,
   PlaidLinkOptions,
+  PlaidLinkOnSuccessMetadata,
 } from "react-plaid-link";
 import { useSession } from "next-auth/react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
@@ -13,6 +14,9 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 const PlaidLink = (itemId?: string) => {
   const axiosAuth = useAxiosAuth();
   const [token, setToken] = useState<string | null>(null);
+  const [linkSuccessful, setLinkSuccessful] = useState(false);
+  const [linkCreating, setLinkCreating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const session = useSession();
   const userId = session.data?.user?.id; // .email
 
@@ -26,6 +30,7 @@ const PlaidLink = (itemId?: string) => {
     //     }),
     //   });
     console.log("making request");
+    setLinkSuccessful(false);
     const response = await axiosAuth.post(`/plaid/generateToken`, {
       userId,
       // itemId: itemId ?? null,
@@ -46,22 +51,29 @@ const PlaidLink = (itemId?: string) => {
   }, []);
 
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
-    async (publicToken, metadata) => {
+    async (publicToken, metadata: PlaidLinkOnSuccessMetadata) => {
       // send public_token to your server
       // https://plaid.com/docs/api/tokens/#token-exchange-flow
+      console.log("-- successfully got public token --");
       console.log(publicToken, metadata);
-
+      setLinkCreating(true);
       // TODO: use the bank/connections name to store it with the private token to distinguish between accounts...
       // NOTE: NEVER return the private token to the client
-      const response = await fetch("/api/plaid/exchangePublicToken", {
-        method: "POST",
-        body: JSON.stringify({
-          userId,
-          publicToken,
-        }),
-      });
-
-      console.log("-- exchanged token successful --");
+      const response = (await axiosAuth.post("/plaid/exchangePublicToken", {
+        userId,
+        publicToken,
+        institutionName: metadata.institution?.name,
+        institutionID: metadata.institution?.institution_id,
+        accounts: metadata.accounts,
+        // account: metadata?.account,
+      })) as { success?: string; error?: string };
+      setLinkCreating(false);
+      if (response?.success) {
+        setLinkSuccessful(true);
+        console.log("-- exchanged token successful --");
+      } else {
+        setErrorMessage("Something went wrong linking your account");
+      }
       console.log(response);
     },
     []
@@ -92,7 +104,7 @@ const PlaidLink = (itemId?: string) => {
     // exit
   } = usePlaidLink(config);
 
-  return { open, ready, token };
+  return { open, ready, token, linkSuccessful, linkCreating };
 };
 
 export default PlaidLink;
