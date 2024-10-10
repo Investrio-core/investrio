@@ -1,8 +1,10 @@
 import AnimatedDropdownMenu, { OptionType } from "./ui/AnimatedDropdownMenu";
-import { FiLogOut } from "react-icons/fi";
-import { FiCalendar } from "react-icons/fi";
+import { FiFilePlus, FiCalendar, FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
+import { Building, FolderSync, Landmark } from "lucide-react";
 import { IconType } from "react-icons";
+import usePlaidLinks from "../hooks/plaid/usePlaidLinks";
+import { useRouter } from "next/navigation";
 interface Props {}
 //React.ComponentType
 
@@ -37,6 +39,37 @@ export default function TopbarDropdown({
   className,
   outerClassName,
 }: Props) {
+  const { plaidLinks } = usePlaidLinks();
+  const { push } = useRouter();
+
+  let options = OPTIONS;
+  if (plaidLinks?.data?.success) {
+    const extraOptionsData = plaidLinks?.data?.success?.map((account) => {
+      return {
+        label: account.institutionName,
+        icon: Landmark,
+      };
+    });
+    const addAnother = {
+      label: "Add Another Account",
+      icon: FiFilePlus,
+      addDividerAfter: true,
+    };
+    options = [
+      { label: "Plaid Connected Accounts", icon: FolderSync },
+      ...extraOptionsData,
+      addAnother,
+      ...OPTIONS,
+    ];
+  } else {
+    const addAnother = {
+      label: "Plaid Connect Account",
+      icon: FiFilePlus,
+      addDividerAfter: true,
+    };
+    options = [addAnother, ...OPTIONS];
+  }
+
   const _buttonContent = (
     <div className="flex flex-row z-100 relative">
       <div className="flex flex-row gap-2 bg-transparent lg:mr-4">
@@ -58,7 +91,7 @@ export default function TopbarDropdown({
     <AnimatedDropdownMenu
       menuTitle={""}
       menuIcon={buttonContent ?? _buttonContent}
-      options={OPTIONS}
+      options={options}
       renderImage={false}
       // imageUrl={image}
       className={className}
