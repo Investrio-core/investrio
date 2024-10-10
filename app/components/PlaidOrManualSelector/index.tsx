@@ -1,5 +1,10 @@
 import { LightButton, SimpleButton } from "../ui/buttons";
 import usePlaidLink from "@/app/hooks/plaid/usePlaidLink";
+import usePlaidLinks from "@/app/hooks/plaid/usePlaidLinks";
+import usePlaidItem from "@/app/hooks/plaid/usePlaidItem";
+import RenderPlaidLinksTable, {
+  ConnectedAccounts,
+} from "./RenderPlaidLinksTable";
 
 interface Props {
   title: string;
@@ -7,7 +12,16 @@ interface Props {
   setShow: Function;
 }
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
-  const { open, ready, token } = usePlaidLink();
+  const { open, ready, token, linkCreating, linkSuccessful } = usePlaidLink();
+  const { plaidLinks } = usePlaidLinks();
+  const {
+    getAccounts,
+    accounts,
+    getTransactions,
+    transactions,
+    getDebts,
+    debts,
+  } = usePlaidItem();
 
   return (
     <div
@@ -59,11 +73,130 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
                 color: "#8833FF",
               }}
             >
-              Plaid
+              {ready ? "Plaid" : "Loading Plaid"}
             </div>
           </button>
+
+          <TestComponent
+            linkSuccessful={linkSuccessful}
+            getAccounts={getAccounts}
+            getDebts={getDebts}
+            getTransactions={getTransactions}
+          />
+
+          {plaidLinks?.data?.success ? (
+            <div className="mx-[-55px]">
+              <RenderPlaidLinksTable
+                connectedAccounts={
+                  plaidLinks?.data?.success as ConnectedAccounts[]
+                }
+              />
+            </div>
+          ) : null}
         </div>
       </div>
+    </div>
+  );
+};
+
+const TestComponent = ({
+  linkSuccessful,
+  getAccounts,
+  getDebts,
+  getTransactions,
+}: {
+  linkSuccessful: boolean;
+  getAccounts: Function;
+  getDebts: Function;
+  getTransactions: Function;
+}) => {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <br />
+      {true ? (
+        <button
+          style={{
+            width: "100%",
+            paddingLeft: 24,
+            paddingRight: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+            borderRadius: 8,
+            border: "1px #8833FF solid",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 14,
+            marginBottom: "8px",
+            display: "inline-flex",
+          }}
+          onClick={() => getAccounts()}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              color: "#8833FF",
+            }}
+          >
+            Get Accounts
+          </div>
+        </button>
+      ) : null}
+      {true ? (
+        <button
+          style={{
+            width: "100%",
+            paddingLeft: 24,
+            paddingRight: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+            borderRadius: 8,
+            border: "1px #8833FF solid",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 14,
+            marginBottom: "8px",
+            display: "inline-flex",
+          }}
+          onClick={() => getDebts()}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              color: "#8833FF",
+            }}
+          >
+            Get Debts
+          </div>
+        </button>
+      ) : null}
+      {true ? (
+        <button
+          style={{
+            width: "100%",
+            paddingLeft: 24,
+            paddingRight: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+            borderRadius: 8,
+            border: "1px #8833FF solid",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 14,
+            marginBottom: "8px",
+            display: "inline-flex",
+          }}
+          onClick={() => getTransactions()}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              color: "#8833FF",
+            }}
+          >
+            Get Transactions
+          </div>
+        </button>
+      ) : null}
     </div>
   );
 };
