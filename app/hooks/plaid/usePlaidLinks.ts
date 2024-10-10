@@ -17,7 +17,9 @@ export default function usePlaidLinks(date?: Date | null) {
       console.log(plaidLinks);
       return plaidLinks;
     },
-    // refetchOnMount: true,
+    staleTime: 45 * (60 * 1000), // 45 mins
+    refetchOnWindowFocus: false, // default: true
+    refetchOnMount: false,
     // refetchOnWindowFocus: true,
     // enabled: !!(year && month), // !!date,
   });
