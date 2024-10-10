@@ -9,8 +9,9 @@ import { motion } from "framer-motion";
 import { Dispatch, SetStateAction, useState } from "react";
 import { IconType } from "react-icons";
 import Image from "next/image";
+import Divider from "@mui/material/Divider";
 
-export type OptionType = { label: string; icon: IconType; onClick: Function }[];
+export type OptionType = { label: string; icon: IconType; onClick?: Function, addDividerAfter?: boolean }[];
 
 interface Props {
   options: { label: string; icon: IconType; onClick: Function }[];
@@ -96,8 +97,11 @@ const AnimatedDropdownMenu = ({
             }}
             className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] right-34 w-34"
           >
-            {options.map(({ onClick, label, icon }) => (
+            {options.map(({ onClick, label, icon, addDividerAfter }) => (
+              <>
               <Option key={label} onClick={onClick} text={label} Icon={icon} />
+              {addDividerAfter ? <Divider/> : null}
+              </>
             ))}
           </motion.ul>
         </motion.div>
