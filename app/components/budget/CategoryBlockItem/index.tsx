@@ -356,7 +356,7 @@ const CategoryBlockItem = ({
               />
               {useNameKey ? item[useNameKey] : item.name}
               {/* 0x1F502 */}
-              {item?.recurringExpense === "true" ? (
+              {category !== "assets" && item?.recurringExpense === "true" ? (
                 // <FiRepeat className="text-green-700 pl-[6px]" />
                 <RenderEmoji
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -367,22 +367,8 @@ const CategoryBlockItem = ({
                   className={"ml-[6px]"}
                   type={item?.type}
                 />
-              ) : (
-                // <div
-                //   className="min-w-[12px] min-h-[12px] ml-[12px] bg-blue-200 rounded-full flex
-                //  justify-center items-center"
-                // >
-                //   <p className="text-base/[10px] px-[20px] py-[8px]">1</p>
-                // </div>
-                // <RenderEmoji
-                //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //   // @ts-ignore
-                //   // symbol={"0x1F502"}
-                //   symbol={"0x1F947"}
-                //   label={item.name}
-                //   fallback={expenseEmojiMapping["default"]}
-                //   className={"ml-[6px]"}
-                // />
+              ) : null}
+              {category !== "assets" && item?.recurringExpense === "false" ? (
                 <Image
                   src="/icons/repeat-once.svg"
                   alt="Once"
@@ -390,7 +376,7 @@ const CategoryBlockItem = ({
                   height={34}
                   className="ml-[6px]"
                 />
-              )}
+              ) : null}
             </div>
             <div className="w-1/3 lg:w-1/6 font-medium text-right flex flex-col justify-center">
               <div>{formatCurrency(item[useValueKey])}</div>
