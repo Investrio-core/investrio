@@ -163,8 +163,8 @@ model PlaidLink {
   accessToken        String
   institutionName    String
   institutionID      String
-  status             String
-  transactionsCursor String
+  status             String?
+  transactionsCursor String?
   accounts           PlaidAccount[]
 }
 
@@ -193,10 +193,10 @@ model PlaidAccount {
   id                     String             @id @default(cuid())
   plaidAccountId         String             @unique
   name                   String
-  mask                   String
+  // mask                   String?
   officialName           String?
-  currentBalance         Float //Decimal?  @db.Decimal(28, 10)
-  availableBalance       Float //Decimal?  @db.Decimal(28, 10)
+  currentBalance         Float? //Decimal?  @db.Decimal(28, 10)
+  availableBalance       Float? //Decimal?  @db.Decimal(28, 10)
   isoCurrencyCode        String?
   unofficialCurrencyCode String?
   type                   String
@@ -206,7 +206,8 @@ model PlaidAccount {
   itemId                 String             @unique
   item                   PlaidLink          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   transactions           PlaidTransaction[]
-  accountCategory        AccountCategory
+  transactionsCursor     String?
+  accountCategory        AccountCategory?
 
   @@map("accounts_table")
 }
