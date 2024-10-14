@@ -336,7 +336,7 @@ export default function MobileNavigator() {
     );
   });
   return (
-    <div className="bg-white w-[100vw] fixed bottom-[-1px] z-[9999] shadow-lg px-9 pt-1 pb-[0px] rounded-tl-[40px] rounded-tr-[40px] border border-zinc-200 justify-between items-start inline-flex">
+    <div className="bg-white w-[100vw] fixed bottom-[-1px] z-[1000] shadow-lg px-9 pt-1 pb-[0px] rounded-tl-[40px] rounded-tr-[40px] border border-zinc-200 justify-between items-start inline-flex">
       {BaseTabs}
     </div>
   );
