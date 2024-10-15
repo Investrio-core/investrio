@@ -207,7 +207,8 @@ model PlaidAccount {
   item                   PlaidLink          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   transactions           PlaidTransaction[]
   accountCategory        AccountCategory?
-  transactionsCursor     String?
+  bank                   String?
+  bankId                 String?
 
   @@map("accounts_table")
 }
@@ -215,15 +216,17 @@ model PlaidAccount {
 model PlaidTransaction {
   id                     Int              @id @default(autoincrement())
   plaidTransactionId     String           @unique
-  plaidCategoryId        String?
   category               String?
   subcategory            String?
-  type                   String
+  type                   String?
+  subtype                String?
   name                   String
   amount                 Float //@db.Decimal(28, 10)
   isoCurrencyCode        String?
   unofficialCurrencyCode String?
   date                   DateTime         @db.Date
+  year                   Int
+  month                  Int
   pending                Boolean
   accountOwner           String?
   createdAt              DateTime         @default(now()) @db.Timestamptz(6)
@@ -231,8 +234,9 @@ model PlaidTransaction {
   accountId              String           @unique
   account                PlaidAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountCategory        AccountCategory?
-  logoUrl                String
-  categoryUrl            String
+  logoUrl                String?
+  categoryUrl            String?
+  website                String?
 
   @@map("transactions")
 }
