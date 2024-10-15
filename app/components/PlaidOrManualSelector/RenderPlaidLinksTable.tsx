@@ -46,6 +46,9 @@ import {
   CheckCircle,
   ChevronUp,
   ChevronDown,
+  User,
+  Shuffle,
+  HelpCircle,
 } from "lucide-react";
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -126,7 +129,7 @@ const typeIcons = (key: string, color = "black") => {
 };
 
 // Icon map for account subtypes
-const subtypeIcons = {
+export const subtypeIcons = {
   "401a": <Briefcase size={16} className="min-h-[16px] min-w-[16px]" />,
   "401k": <Briefcase size={16} className="min-h-[16px] min-w-[16px]" />,
   "403B": <Briefcase size={16} className="min-h-[16px] min-w-[16px]" />,
@@ -270,15 +273,32 @@ const typeColors = {
   other: { bg: "#f5f5f5", text: "#212121" },
 };
 
+const categoryIcons = {
+  Business: <Briefcase size={16} />,
+  Personal: <User size={16} />,
+  Mixed: <Shuffle size={16} />,
+  UNCLASSIFIED: <HelpCircle size={16} />,
+};
+
+const categoryColors = {
+  Business: { bg: "#e8f5e9", text: "#1b5e20" },
+  Personal: { bg: "#e3f2fd", text: "#0d47a1" },
+  Mixed: { bg: "#fff3e0", text: "#e65100" },
+  UNCLASSIFIED: { bg: "#f5f5f5", text: "#757575" },
+};
+
+export interface Account {
+  id: string;
+  name: string;
+  type: string;
+  subtype: string;
+  imported: boolean;
+  accountCategory?: string;
+}
+
 export interface ConnectedAccounts {
   institutionName: string;
-  accounts: {
-    id: string;
-    name: string;
-    type: string;
-    subtype: string;
-    imported: boolean;
-  }[];
+  accounts: Account[];
 }
 
 interface Props {
@@ -289,6 +309,7 @@ interface Props {
       name: string;
       type: string;
       subtype: string;
+      accountCategory?: string;
       imported: boolean;
     }[];
   }[];
@@ -364,6 +385,7 @@ export default function Component({ connectedAccounts }: Props) {
                       <TableCell>Account Name</TableCell>
                       <TableCell>Type</TableCell>
                       <TableCell>Subtype</TableCell>
+                      <TableCell>Category</TableCell>
                       <TableCell align="right">Import</TableCell>
                     </TableRow>
                   </TableHead>
@@ -395,7 +417,10 @@ export default function Component({ connectedAccounts }: Props) {
                             label={account.type.toUpperCase()}
                             size="small"
                             sx={{
-                              backgroundColor: typeColors[account.type].bg,
+                              backgroundColor:
+                                typeColors[
+                                  account.type as keyof typeof typeColors
+                                ].bg,
                               color:
                                 typeColors[
                                   account.type as keyof typeof typeColors
@@ -419,6 +444,36 @@ export default function Component({ connectedAccounts }: Props) {
                             label={account.subtype.toUpperCase()}
                             size="small"
                             variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <StyledChip
+                            icon={
+                              categoryIcons[
+                                account.accountCategory as keyof typeof categoryIcons
+                              ]
+                            }
+                            label={account.accountCategory ?? "UNCLASSIFIED"}
+                            size="small"
+                            sx={{
+                              backgroundColor:
+                                categoryColors[
+                                  (account?.accountCategory ??
+                                    "UNCLASSIFIED") as keyof typeof categoryIcons
+                                ].bg,
+                              color:
+                                categoryColors[
+                                  (account?.accountCategory ??
+                                    "UNCLASSIFIED") as keyof typeof categoryIcons
+                                ].text,
+                              "& .MuiChip-icon": {
+                                color:
+                                  categoryColors[
+                                    (account?.accountCategory ??
+                                      "UNCLASSIFIED") as keyof typeof categoryIcons
+                                  ].text,
+                              },
+                            }}
                           />
                         </TableCell>
                         <TableCell align="right">
