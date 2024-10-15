@@ -63,7 +63,7 @@ const usePlaidItem = (itemId?: string) => {
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getTransactions" as KeyQuery,
     });
-    console.log("got accounts");
+    console.log("got transactions");
     console.log(response);
     console.log(response?.data);
     setTransactions(response?.data);
@@ -83,7 +83,7 @@ const usePlaidItem = (itemId?: string) => {
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getDebts" as KeyQuery,
     });
-    console.log("got accounts");
+    console.log("got debts");
     console.log(response);
     console.log(response?.data);
     setDebts(response?.data);
