@@ -193,7 +193,7 @@ model PlaidAccount {
   id                     String             @id @default(cuid())
   plaidAccountId         String             @unique
   name                   String
-  // mask                   String?
+  mask                   String?
   officialName           String?
   currentBalance         Float? //Decimal?  @db.Decimal(28, 10)
   availableBalance       Float? //Decimal?  @db.Decimal(28, 10)
@@ -203,34 +203,36 @@ model PlaidAccount {
   subtype                String
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
-  itemId                 String             @unique
+  itemId                 String
   item                   PlaidLink          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   transactions           PlaidTransaction[]
-  transactionsCursor     String?
   accountCategory        AccountCategory?
+  transactionsCursor     String?
 
   @@map("accounts_table")
 }
 
 model PlaidTransaction {
-  id                     Int             @id @default(autoincrement())
-  plaidTransactionId     String          @unique
+  id                     Int              @id @default(autoincrement())
+  plaidTransactionId     String           @unique
   plaidCategoryId        String?
   category               String?
   subcategory            String?
   type                   String
   name                   String
-  amount                 Decimal         @db.Decimal(28, 10)
+  amount                 Float //@db.Decimal(28, 10)
   isoCurrencyCode        String?
   unofficialCurrencyCode String?
-  date                   DateTime        @db.Date
+  date                   DateTime         @db.Date
   pending                Boolean
   accountOwner           String?
-  createdAt              DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt              DateTime        @updatedAt @db.Timestamptz(6)
-  accountId              String          @unique
-  account                PlaidAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountCategory        AccountCategory
+  createdAt              DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt              DateTime         @updatedAt @db.Timestamptz(6)
+  accountId              String           @unique
+  account                PlaidAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountCategory        AccountCategory?
+  logoUrl                String
+  categoryUrl            String
 
   @@map("transactions")
 }
