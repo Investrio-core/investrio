@@ -11,7 +11,7 @@ import {
 import { useSession } from "next-auth/react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 
-const PlaidLink = (itemId?: string) => {
+const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
   const axiosAuth = useAxiosAuth();
   const [token, setToken] = useState<string | null>(null);
   const [linkSuccessful, setLinkSuccessful] = useState(false);
@@ -68,6 +68,7 @@ const PlaidLink = (itemId?: string) => {
         // account: metadata?.account,
       })) as { success?: string; error?: string };
       setLinkCreating(false);
+      refetchLinks && refetchLinks();
       if (response?.success) {
         setLinkSuccessful(true);
         console.log("-- exchanged token successful --");
