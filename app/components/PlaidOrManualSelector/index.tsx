@@ -1,19 +1,131 @@
 import { LightButton, SimpleButton } from "../ui/buttons";
 import usePlaidLink from "@/app/hooks/plaid/usePlaidLink";
-import usePlaidLinks from "@/app/hooks/plaid/usePlaidLinks";
+import usePlaidLinks, {
+  AccountCategory,
+} from "@/app/hooks/plaid/usePlaidLinks";
 import usePlaidItem from "@/app/hooks/plaid/usePlaidItem";
 import RenderPlaidLinksTable, {
   ConnectedAccounts,
+  Account,
 } from "./RenderPlaidLinksTable";
+import ItemSwiper from "../ItemSwiper/ItemSwiper";
+import SwipeableAccounts from "./SwipeableAccounts";
+import PlaidItemLoading from "./PlaidItemLoading";
+// import { PlaidAccount } from "@prisma/client";
+
+function getOrdinal(day: number) {
+  if (day > 3 && day < 21) return day + "th";
+  switch (day % 10) {
+    case 1:
+      return day + "st";
+    case 2:
+      return day + "nd";
+    case 3:
+      return day + "rd";
+    default:
+      return day + "th";
+  }
+}
+
+function formatDate(date: Date) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  // Helper function to add ordinal suffix to day
+
+  const formattedDay = getOrdinal(day);
+
+  return `${month} ${formattedDay}, ${year}`;
+}
+
+interface Item {
+  id: string;
+  itemId: string;
+  name: string;
+  type: string;
+  tags: string[];
+  amount: string;
+  logo: string;
+  category: string;
+  date: string;
+  note: string;
+  recurring: string;
+  accountCategory?: string;
+  createdAt?: string;
+}
+
+const convertAccountToSwipeable = (
+  institutionName: string,
+  account: Account,
+  date: Date
+) => {
+  return {
+    id: account.id,
+    itemId: account.itemId,
+    name: `${account.name}`,
+    type: account.type,
+    tags: [account.subtype],
+    amount: "N / A",
+    logo: `${institutionName?.slice(0, 1)}`,
+    category: account.subtype,
+    date: formatDate(date),
+    note: "",
+    recurring: "",
+  };
+};
 
 interface Props {
   title: string;
   blurb: string;
   setShow: Function;
 }
+
+const selectCategory = (category: "left" | "right" | "MIXED") => {
+  if (category === "left") {
+    return "Business";
+  } else if (category === "right") {
+    return "Personal";
+  } else {
+    return "Mixed";
+  }
+};
+
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
-  const { open, ready, token, linkCreating, linkSuccessful } = usePlaidLink();
-  const { plaidLinks } = usePlaidLinks();
+  const { plaidLinks, refetch: refetchLinks, updateAccount } = usePlaidLinks();
+  const { open, ready, token, linkCreating, linkSuccessful } = usePlaidLink(
+    undefined,
+    refetchLinks
+  );
+
+  const handleSwipeAccount = (
+    selectedCategory: "left" | "right" | "MIXED",
+    account: Item
+  ) => {
+    console.log("SWIPED ACCOUNT", account);
+    console.log(selectedCategory);
+    updateAccount({
+      id: account.id,
+      itemId: account.itemId,
+      accountCategory: selectCategory(selectedCategory),
+    });
+  };
+
   const {
     getAccounts,
     accounts,
@@ -22,6 +134,8 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     getDebts,
     debts,
   } = usePlaidItem();
+
+  const date = new Date();
 
   return (
     <div
@@ -77,6 +191,10 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             </div>
           </button>
 
+          <div className="mx-[-56px] rounded-[100px]">
+            <PlaidItemLoading />
+          </div>
+
           <TestComponent
             linkSuccessful={linkSuccessful}
             getAccounts={getAccounts}
@@ -92,6 +210,31 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
                 }
               />
             </div>
+          ) : null}
+
+          {/* {plaidLinks?.data?.success ? (
+            <ItemSwiper<Item>
+              extraCategory={{ label: "Mixed Account", value: "MIXED" }}
+              label={`${plaidLinks?.data?.success?.[0]?.institutionName} Accounts`}
+              itemsToClassify={plaidLinks?.data?.success?.[0]?.accounts
+                ?.filter((acc: Item) => acc.accountCategory === null)
+                ?.map((acc: Item) =>
+                  convertAccountToSwipeable(
+                    plaidLinks?.data?.success?.[0]?.institutionName,
+                    acc,
+                    acc?.createdAt ? new Date(acc.createdAt) : new Date()
+                    // date
+                  )
+                )}
+              persistHandleSwipe={handleSwipeAccount}
+            />
+          ) : null} */}
+
+          {plaidLinks?.data?.success ? (
+            <SwipeableAccounts
+              institutionName={plaidLinks?.data?.success?.[0]?.institutionName}
+              accounts={plaidLinks?.data?.success?.[0]?.accounts}
+            />
           ) : null}
         </div>
       </div>
