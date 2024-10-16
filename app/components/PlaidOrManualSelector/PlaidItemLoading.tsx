@@ -33,7 +33,7 @@ export default function PlaidItemLoading({
   loadStepInProgress,
   loadingData,
 }: Props) {
-  const [currentState, setCurrentState] = useState(0);
+  const [currentState, setCurrentState] = useState(1);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,19 +43,19 @@ export default function PlaidItemLoading({
     return () => clearTimeout(timer);
   }, [currentState]);
 
-  useEffect(() => {
-    if (linkCreating) {
-      setCurrentState(0);
-    } else if (linkSuccessful && loadingData) {
-      if (loadStepInProgress === "accounts") {
-        setCurrentState(1);
-      } else if (loadStepInProgress === "debts") {
-        setCurrentState(2);
-      } else if (loadStepInProgress === "transactions") {
-        setCurrentState(3);
-      }
-    }
-  }, [linkCreating, linkSuccessful, loadStepInProgress, loadingData]);
+  //   useEffect(() => {
+  //     if (linkCreating) {
+  //       setCurrentState(0);
+  //     } else if (linkSuccessful && loadingData) {
+  //       if (loadStepInProgress === "accounts") {
+  //         setCurrentState(1);
+  //       } else if (loadStepInProgress === "debts") {
+  //         setCurrentState(2);
+  //       } else if (loadStepInProgress === "transactions") {
+  //         setCurrentState(3);
+  //       }
+  //     }
+  //   }, [linkCreating, linkSuccessful, loadStepInProgress, loadingData]);
 
   //  background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
   return (
