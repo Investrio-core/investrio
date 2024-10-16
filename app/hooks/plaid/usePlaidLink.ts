@@ -14,6 +14,7 @@ import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
   const axiosAuth = useAxiosAuth();
   const [token, setToken] = useState<string | null>(null);
+  const [newLinkItemId, setNewLinkItemId] = useState<string | undefined>();
   const [linkSuccessful, setLinkSuccessful] = useState(false);
   const [linkCreating, setLinkCreating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -52,10 +53,8 @@ const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
 
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     async (publicToken, metadata: PlaidLinkOnSuccessMetadata) => {
-      // send public_token to your server
+      // send public_token to server to perform the token exchange step
       // https://plaid.com/docs/api/tokens/#token-exchange-flow
-      console.log("-- successfully got public token --");
-      console.log(publicToken, metadata);
       setLinkCreating(true);
       // TODO: use the bank/connections name to store it with the private token to distinguish between accounts...
       // NOTE: NEVER return the private token to the client
@@ -66,11 +65,13 @@ const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
         institutionID: metadata.institution?.institution_id,
         accounts: metadata.accounts,
         // account: metadata?.account,
-      })) as { success?: string; error?: string };
+      })) as { success?: string; error?: string; itemId?: string };
+
       setLinkCreating(false);
       refetchLinks && refetchLinks();
-      if (response?.success) {
+      if (response?.success && response?.itemId) {
         setLinkSuccessful(true);
+        setNewLinkItemId(response?.itemId);
         console.log("-- exchanged token successful --");
       } else {
         setErrorMessage("Something went wrong linking your account");
@@ -105,7 +106,7 @@ const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
     // exit
   } = usePlaidLink(config);
 
-  return { open, ready, token, linkSuccessful, linkCreating };
+  return { open, ready, token, linkSuccessful, linkCreating, newLinkItemId };
 };
 
 export default PlaidLink;
