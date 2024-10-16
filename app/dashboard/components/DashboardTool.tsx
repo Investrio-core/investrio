@@ -164,7 +164,7 @@ export default function DashboardTool() {
           }}
         >
           <AccountSetupProgress
-            budgetCompleted={hasBudgetData}
+            budgetCompleted={hasBudgetData && budgetInfo?.data?.income}
             debtCompleted={hasDebtData}
           />
         </div>
@@ -182,7 +182,7 @@ export default function DashboardTool() {
         </div>
 
         <div
-          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer bg-[white] shadow-xl overflow-hidden"
+          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer shadow-xl overflow-hidden bg-[#d2daff] bg-[white]"
           style={{
             borderRadius: "18px",
             border: "1px solid #D2DAFF",
@@ -191,15 +191,15 @@ export default function DashboardTool() {
           }}
           // onClick={() => push(BUDGET_PAGE)}
         >
-          <div className="mb-[0px] px-8 flex justify-start items-center gap-[8px]">
+          {/* <div className="mb-[0px] px-8 flex justify-start items-center gap-[8px]">
             <div className="w-9 h-5 inline-flex relative self-center justify-self-center mr-[4px]">
               <Calender />
             </div>
             <div className="text-[#2b3674] font-medium leading-loose self-center justify-self-center mt-[20px]">
               Lifestyle
             </div>
-          </div>
-          {hasBudgetData ? (
+          </div> */}
+          {hasBudgetData && budgetInfo?.data?.income ? (
             <PieBreakdownBlock
               income={budgetInfo?.data?.income}
               border={false}
@@ -217,11 +217,11 @@ export default function DashboardTool() {
           )}
         </div>
         <div
-          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer  bg-[#d2daff] shadow-xl overflow-hidden"
+          className="rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px] cursor-pointer shadow-xl overflow-hidden bg-[#d2daff] bg-[white]"
           style={{
             borderRadius: "18px",
             border: "1px solid #D2DAFF",
-            background: "#EEF1FF",
+            // background: "#EEF1FF",
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
           }}
           // onClick={() => push(DEBTS_PAGE)}
