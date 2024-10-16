@@ -102,12 +102,6 @@ export default function ItemSwiper<T>({
     account: T,
     customCategory?: string
   ) => {
-    console.log(
-      `${label} categorized as ${
-        direction === "left" ? "Personal" : "Business"
-      }`
-    );
-
     persistHandleSwipe &&
       persistHandleSwipe(direction, account, customCategory);
 
@@ -164,6 +158,7 @@ export default function ItemSwiper<T>({
   };
 
   const noItems = items?.length === 0 || items?.[0] === undefined;
+
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#7F3DFF] via-[#9966FF] to-[#7F3DFF] text-white p-4 sm:p-6 flex flex-col">
     <div
@@ -228,6 +223,9 @@ export default function ItemSwiper<T>({
         <AnimatePresence mode="popLayout">
           {items.length > 0 ? (
             items.map((item, index) => {
+              // console.log("item");
+              // console.log(item);
+
               const isCurrentItem = index === 0;
               const { x, rotate, opacity } = getMotionValues(index);
               return (
@@ -238,7 +236,7 @@ export default function ItemSwiper<T>({
                   }] w-full bg-white rounded-3xl shadow-lg cursor-pointer`}
                   style={{
                     zIndex: items.length - index,
-                    opacity: isCurrentItem ? 1 : 1 - index * 0.35,
+                    opacity: isCurrentItem ? 1 : 1 - index * 0.4,
                     rotate: isCurrentItem
                       ? rotate
                       : index % 2 === 0
@@ -280,7 +278,7 @@ export default function ItemSwiper<T>({
                   <motion.div
                     className="w-full h-full w-fit h-fit rounded-3xl"
                     initial={false}
-                    animate={{ rotateY: flipped ? 180 : 0 }}
+                    animate={{ rotateY: flipped && isCurrentItem ? 180 : 0 }}
                     transition={{ duration: 0.6 }}
                     style={{ transformStyle: "preserve-3d" }}
                   >
@@ -288,7 +286,7 @@ export default function ItemSwiper<T>({
                     <motion.div
                       className="absolute w-full h-full w-fit h-fit backface-hidden"
                       style={{
-                        opacity: flipped ? 0 : 1,
+                        opacity: flipped && isCurrentItem ? 0 : 1,
                         transition: "opacity 0.3s",
                       }}
                     >
@@ -318,7 +316,7 @@ export default function ItemSwiper<T>({
                       className="absolute w-full h-full min-h-full w-fit h-fit backface-hidden bg-white"
                       style={{
                         transform: "rotateY(180deg)",
-                        opacity: flipped ? 1 : 0,
+                        opacity: flipped && isCurrentItem ? 1 : 0,
                         transition: "opacity 0.3s",
                       }}
                     >
@@ -429,7 +427,7 @@ export default function ItemSwiper<T>({
           </button>
         ) : null}
         <button
-          className={`h-12 px-4 py-3 bg-[#b9b0e6]${
+          className={`border-[#352068] border-[2px] h-12 px-4 py-3 bg-[#b9b0e6] ${
             noItems ? "/25" : ""
           } rounded-[100px] justify-start items-center gap-3 inline-flex`}
           onClick={() => handleSwipe("right", items?.[0])}
