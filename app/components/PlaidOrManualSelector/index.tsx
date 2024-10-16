@@ -10,6 +10,9 @@ import RenderPlaidLinksTable, {
 } from "./RenderPlaidLinksTable";
 import SwipeableAccounts from "./SwipeableAccounts";
 import PlaidItemLoading from "./PlaidItemLoading";
+import PlaidOrManualForm from "./PlaidOrManualForm";
+
+const TEST_ID = "cm2bb9mlp00009qw7iltorp6w";
 
 interface Item {
   id: string;
@@ -45,23 +48,8 @@ const selectCategory = (category: "left" | "right" | "MIXED") => {
 
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
   const { plaidLinks, refetch: refetchLinks, updateAccount } = usePlaidLinks();
-  const { open, ready, token, linkCreating, linkSuccessful } = usePlaidLink(
-    undefined,
-    refetchLinks
-  );
-
-  const handleSwipeAccount = (
-    selectedCategory: "left" | "right" | "MIXED",
-    account: Item
-  ) => {
-    console.log("SWIPED ACCOUNT", account);
-    console.log(selectedCategory);
-    updateAccount({
-      id: account.id,
-      itemId: account.itemId,
-      accountCategory: selectCategory(selectedCategory),
-    });
-  };
+  const { open, ready, token, linkCreating, linkSuccessful, newLinkItemId } =
+    usePlaidLink(undefined, refetchLinks);
 
   const {
     getAccounts,
@@ -70,9 +58,16 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     transactions,
     getDebts,
     debts,
+    loadAllDataFromLinkId,
+    loadStepInProgress,
+    loadingData,
   } = usePlaidItem();
 
-  const date = new Date();
+  // console.log("Plaid Links");
+  // console.log(plaidLinks);
+
+  console.log("Plaid Links Data Success");
+  console.log(plaidLinks?.data?.success);
 
   return (
     <div
@@ -83,7 +78,16 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
         background: "#FFF",
       }}
     >
-      <div className="text-[#100d40] text-2xl font-semibold leading-[33.60px] mt-[46px] mb-[11px] text-center">
+      {/* STEP 1: Form (Choose Manual or Plaid) */}
+      <PlaidOrManualForm
+        title={title}
+        blurb={blurb}
+        open={open}
+        setShow={setShow}
+        ready={ready}
+        key={0}
+      />
+      {/* <div className="text-[#100d40] text-2xl font-semibold leading-[33.60px] mt-[46px] mb-[11px] text-center">
         {title}
       </div>
       <div className="text-[#747682] text-base font-normal mb-[41px] text-center">
@@ -100,7 +104,6 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             className="mb-[8px]"
             loading={false}
           />
-          {/* <LightButton text="Plaid" onClick={() => console.log("clicked")} /> */}
           <button
             style={{
               width: "100%",
@@ -126,10 +129,16 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             >
               {ready ? "Plaid" : "Loading Plaid"}
             </div>
-          </button>
-
+          </button> */}
+      <div className="px-[31px]">
+        <div>
           <div className="mx-[-56px] rounded-[100px]">
-            <PlaidItemLoading />
+            <PlaidItemLoading
+              linkCreating={linkCreating}
+              linkSuccessful={linkSuccessful}
+              loadStepInProgress={loadStepInProgress}
+              loadingData={loadingData}
+            />
           </div>
 
           <TestComponent
@@ -191,7 +200,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getAccounts()}
+          onClick={() => getAccounts(TEST_ID)}
         >
           <div
             style={{
@@ -219,7 +228,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getDebts()}
+          onClick={() => getDebts(TEST_ID)}
         >
           <div
             style={{
@@ -247,7 +256,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getTransactions()}
+          onClick={() => getTransactions(TEST_ID)}
         >
           <div
             style={{
