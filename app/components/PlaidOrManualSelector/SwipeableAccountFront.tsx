@@ -185,8 +185,6 @@ interface AccountProps {
   currency: string;
   plaidAccountId: string;
   tags?: string[];
-  //   currentBalance?: number;
-  //   availableBalance?: number;
 }
 
 export default function SwipeableAccountFront({
@@ -198,15 +196,7 @@ export default function SwipeableAccountFront({
   currency,
   plaidAccountId,
   tags,
-}: //   availableBalance,
-//   currentBalance,
-AccountProps) {
-  console.log(balance);
-  //   console.log("available");
-  //   console.log(availableBalance);
-  //   console.log("current");
-  //   console.log(currentBalance);
-
+}: AccountProps) {
   const formatBalance = (amount: number, curr: string) => {
     return new Intl.NumberFormat("en-US", {
       style: "decimal",
@@ -233,7 +223,12 @@ AccountProps) {
         <AccountNumber variant="body2">
           •••• {plaidAccountId?.slice(-4)}
         </AccountNumber>
-        <StyledChip label={type.toUpperCase()} size="small" />
+        <div className="flex gap-[8px]">
+          <StyledChip label={type.toUpperCase()} size="small" />
+          {subtype ? (
+            <StyledChip label={subtype.toUpperCase()} size="small" />
+          ) : null}
+        </div>
       </CardContent>
     </StyledCard>
   );
