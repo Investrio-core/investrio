@@ -167,7 +167,7 @@ export default function ItemSwiper<T>({
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#7F3DFF] via-[#9966FF] to-[#7F3DFF] text-white p-4 sm:p-6 flex flex-col">
     <div
-      className="relative flex flex-col"
+      className="relative flex flex-col py-4"
       // className={`relative ${
       //   maxHeight
       //     ? `min-h-[${maxHeight}] max-h-[${maxHeight}]`
@@ -238,7 +238,7 @@ export default function ItemSwiper<T>({
                   }] w-full bg-white rounded-3xl shadow-lg cursor-pointer`}
                   style={{
                     zIndex: items.length - index,
-                    opacity: isCurrentItem ? 1 : 1 - index * 0.2,
+                    opacity: isCurrentItem ? 1 : 1 - index * 0.35,
                     rotate: isCurrentItem
                       ? rotate
                       : index % 2 === 0
@@ -315,7 +315,7 @@ export default function ItemSwiper<T>({
 
                     {/* Back of the card */}
                     <motion.div
-                      className="absolute w-full h-full w-fit h-fit backface-hidden"
+                      className="absolute w-full h-full min-h-full w-fit h-fit backface-hidden bg-white"
                       style={{
                         transform: "rotateY(180deg)",
                         opacity: flipped ? 1 : 0,
@@ -325,7 +325,7 @@ export default function ItemSwiper<T>({
                       {RenderToBack ? (
                         <RenderToBack {...item} />
                       ) : (
-                        <div className="p-4 mx-[16px]">
+                        <div className="p-4 mx-[16px] bg-white">
                           <div className="flex items-center mb-2">
                             <div className="bg-[#7F3DFF] w-8 h-8 rounded-xl flex items-center justify-center mr-3">
                               <span className="text-base font-bold text-white">
@@ -352,9 +352,11 @@ export default function ItemSwiper<T>({
                               </span>
                             ))}
                           </div>
-                          <p className="text-gray-700 text-xs mb-2">
-                            Note: {item.note}
-                          </p>
+                          {item?.note ? (
+                            <p className="text-gray-700 text-xs mb-2">
+                              Note: {item?.note}
+                            </p>
+                          ) : null}
                         </div>
                       )}
                     </motion.div>
@@ -381,7 +383,7 @@ export default function ItemSwiper<T>({
 
       <div className="flex justify-center gap-[24px] z-399 relative max-w-[100%]">
         <button
-          className={`h-12 px-4 py-3 bg-[#b9b0e6]${
+          className={`border-[#8833ff] border-[1px] shadow-lg h-12 px-4 py-3 bg-[#b9b0e6] bg-black/[0.66] ${
             noItems ? "/25" : ""
           } rounded-[100px] justify-start items-center gap-3 inline-flex`}
           onClick={() => handleSwipe("left", items?.[0])}
@@ -412,7 +414,7 @@ export default function ItemSwiper<T>({
         ) : null}
         {extraCategory && !noItems ? (
           <button
-            className={`absolute top-[-52px] h-12 px-4 py-3 bg-[#b9b0e6]${
+            className={`absolute top-[-60px] h-12 px-4 py-3 bg-[#b9b0e6] ${
               noItems ? "" : ""
             } rounded-[100px] justify-start items-center gap-3 inline-flex`}
             onClick={() =>
@@ -432,6 +434,9 @@ export default function ItemSwiper<T>({
           } rounded-[100px] justify-start items-center gap-3 inline-flex`}
           onClick={() => handleSwipe("right", items?.[0])}
           disabled={noItems}
+          style={{
+            background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+          }}
         >
           <span className="text-white text-sm font-bold font-['Sora']">
             Personal
