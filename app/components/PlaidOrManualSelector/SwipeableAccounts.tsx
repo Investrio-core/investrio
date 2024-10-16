@@ -74,6 +74,7 @@ const convertAccountToSwipeable = (
     plaidAccountId: account.plaidAccountId,
     name: `${account.name}`,
     type: account.type,
+    subtype: account.subtype,
     tags: [account.subtype].filter((el) => el !== undefined),
     balance: amount ?? "N / A",
     logo: `${institutionName?.slice(0, 1)}`,
@@ -100,16 +101,11 @@ interface Props {
 }
 
 function SwipeableAccounts({ institutionName, accounts }: Props) {
-  console.log("swipeable accounts");
-  console.log(accounts);
-
   const { updateAccount } = usePlaidLinks();
   const handleSwipeAccount = (
     selectedCategory: "left" | "right" | "MIXED",
     account: Item
   ) => {
-    console.log("SWIPED ACCOUNT", account);
-    console.log(selectedCategory);
     updateAccount({
       id: account.id,
       itemId: account.itemId,
@@ -133,7 +129,7 @@ function SwipeableAccounts({ institutionName, accounts }: Props) {
       persistHandleSwipe={handleSwipeAccount}
       RenderToFront={SwipeableAccountFront}
       //   cardHeight={"390px"}
-      maxHeight={"520px"}
+      maxHeight={"545px"}
     />
   );
 }
