@@ -298,6 +298,7 @@ export interface Account {
 
 export interface ConnectedAccounts {
   institutionName: string;
+  linkId: string;
   accounts: Account[];
 }
 
@@ -329,6 +330,14 @@ export default function Component({ connectedAccounts }: Props) {
 
   return (
     <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 8px" }}>
+      <Typography
+        fontSize={"1.5rem"}
+        textAlign={"center"}
+        fontWeight={"bold"}
+        color={"#8833ff"}
+      >
+        Connected Accounts
+      </Typography>
       {connectedAccounts.map((institution) => (
         <StyledCard key={institution.institutionName}>
           <StyledCardHeader
