@@ -49,6 +49,8 @@ interface Item {
   type: string;
   tags: string[];
   amount: string;
+  currentBalance?: number;
+  availableBalance?: number;
   logo: string;
   category: string;
   date: string;
@@ -64,6 +66,8 @@ const convertAccountToSwipeable = (
   account: Item,
   date: Date
 ) => {
+  const amount = account?.availableBalance ?? account?.currentBalance;
+
   return {
     id: account.id,
     itemId: account.itemId,
@@ -71,7 +75,7 @@ const convertAccountToSwipeable = (
     name: `${account.name}`,
     type: account.type,
     tags: [account.subtype].filter((el) => el !== undefined),
-    amount: "N / A",
+    balance: amount ?? "N / A",
     logo: `${institutionName?.slice(0, 1)}`,
     category: account.subtype,
     date: formatDate(date),
@@ -96,6 +100,9 @@ interface Props {
 }
 
 function SwipeableAccounts({ institutionName, accounts }: Props) {
+  console.log("swipeable accounts");
+  console.log(accounts);
+
   const { updateAccount } = usePlaidLinks();
   const handleSwipeAccount = (
     selectedCategory: "left" | "right" | "MIXED",
