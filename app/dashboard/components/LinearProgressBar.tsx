@@ -30,7 +30,9 @@ export default function LinearProgressBar({
   totalSteps?: number;
 }) {
   const progressValue =
-    stepsCompleted && totalSteps ? (stepsCompleted / totalSteps) * 100 : value;
+    stepsCompleted !== undefined && totalSteps
+      ? (stepsCompleted / totalSteps) * 100
+      : value;
 
   return (
     <BorderLinearProgress
