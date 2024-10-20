@@ -7,6 +7,7 @@ interface Props {
   setShow: Function;
   open: Function;
   ready: boolean;
+  showManualOption: boolean;
 }
 
 export default function PlaidOrManualForm({
@@ -15,6 +16,7 @@ export default function PlaidOrManualForm({
   setShow,
   open,
   ready,
+  showManualOption,
 }: Props) {
   return (
     <>
@@ -29,12 +31,14 @@ export default function PlaidOrManualForm({
           Enter your data:
         </div>
         <div className="mb-[80px]">
-          <SimpleButton
-            text="Manual"
-            onClick={() => setShow(false)}
-            className="mb-[8px]"
-            loading={false}
-          />
+          {showManualOption ? (
+            <SimpleButton
+              text="Manual"
+              onClick={() => setShow(false)}
+              className="mb-[8px]"
+              loading={false}
+            />
+          ) : null}
 
           <button
             style={{
