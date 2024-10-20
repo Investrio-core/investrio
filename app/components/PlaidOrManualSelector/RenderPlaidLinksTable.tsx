@@ -105,13 +105,13 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 // Bank logos table (mock data)
 const bankLogos = {
   "Bank of America": "/images/banks/Bank of America.jpg",
-  "Wells Fargo": "https://example.com/wellsfargo-logo.png",
   Chase: "/images/banks/Chase.jpg",
-  Citibank: "https://example.com/citi-logo.png",
-  HSBC: "https://example.com/hsbc-logo.png",
-  Barclays: "https://example.com/barclays-logo.png",
-  "Deutsche Bank": "https://example.com/deutschebank-logo.png",
-  "BNP Paribas": "https://example.com/bnpparibas-logo.png",
+  // "Wells Fargo": "https://example.com/wellsfargo-logo.png",
+  // Citibank: "https://example.com/citi-logo.png",
+  // HSBC: "https://example.com/hsbc-logo.png",
+  // Barclays: "https://example.com/barclays-logo.png",
+  // "Deutsche Bank": "https://example.com/deutschebank-logo.png",
+  // "BNP Paribas": "https://example.com/bnpparibas-logo.png",
   // Add more banks as needed
 };
 
@@ -316,6 +316,16 @@ interface Props {
   }[];
 }
 
+const StyledContainer = styled(Box)(({ theme }) => ({
+  position: "relative",
+  maxWidth: 800,
+  margin: "0 auto",
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+}));
+
 export default function Component({ connectedAccounts }: Props) {
   const [expandedBanks, setExpandedBanks] = useState<{
     [key: string]: boolean;
@@ -330,183 +340,208 @@ export default function Component({ connectedAccounts }: Props) {
 
   return (
     <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 8px" }}>
-      <Typography
-        fontSize={"1.5rem"}
-        textAlign={"center"}
-        fontWeight={"bold"}
-        color={"#8833ff"}
-      >
-        Connected Accounts
-      </Typography>
-      {connectedAccounts.map((institution) => (
-        <StyledCard key={institution.institutionName}>
-          <StyledCardHeader
-            avatar={
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "white",
-                }}
-              >
-                <Image
-                  src={
-                    bankLogos[
-                      institution.institutionName as keyof typeof bankLogos
-                    ] || "/placeholder.svg"
-                  }
-                  alt={`${institution.institutionName} logo`}
-                  width={32}
-                  height={32}
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-            }
-            action={
-              <IconButton
-                onClick={() => handleExpandClick(institution.institutionName)}
-                sx={{ color: "white" }}
-              >
-                {expandedBanks[institution.institutionName] ? (
-                  <ChevronUp size={24} />
-                ) : (
-                  <ChevronDown size={24} />
-                )}
-              </IconButton>
-            }
-            title={
-              <Typography variant="h6">
-                {institution.institutionName}
-              </Typography>
-            }
-          />
-          <Collapse in={expandedBanks[institution.institutionName]}>
-            <CardContent sx={{ padding: 0 }}>
-              <StyledTableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Account Name</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Subtype</TableCell>
-                      <TableCell>Category</TableCell>
-                      <TableCell align="right">Import</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {institution.accounts.map((account) => (
-                      <TableRow key={account.id}>
-                        <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            {subtypeIcons[
-                              account.subtype as keyof typeof subtypeIcons
-                            ] || <Inbox size={16} />}
-                            <span>{account.name}</span>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <StyledChip
-                            icon={typeIcons(
-                              account.type,
-                              typeColors[
-                                account.type as keyof typeof typeColors
-                              ].text
-                            )}
-                            label={account.type.toUpperCase()}
-                            size="small"
-                            sx={{
-                              backgroundColor:
+      <StyledContainer>
+        <Typography
+          variant="h5"
+          component="h1"
+          gutterBottom
+          sx={{
+            color: "#8833ff",
+            fontWeight: 700,
+            position: "relative",
+            top: "10px",
+            left: "25px",
+            width: "100%",
+            marginBottom: "2rem",
+          }}
+        >
+          Connected Accounts
+        </Typography>
+        {connectedAccounts.map((institution) => (
+          <StyledCard key={institution.institutionName}>
+            <StyledCardHeader
+              avatar={
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "white",
+                  }}
+                >
+                  {bankLogos[
+                    institution.institutionName as keyof typeof bankLogos
+                  ] ? (
+                    <Image
+                      src={
+                        bankLogos[
+                          institution.institutionName as keyof typeof bankLogos
+                        ] || "/placeholder.svg"
+                      }
+                      alt={`${institution.institutionName} logo`}
+                      width={32}
+                      height={32}
+                      style={{ objectFit: "contain" }}
+                    />
+                  ) : (
+                    <p className="text-black font-bold text-lg">
+                      {institution.institutionName
+                        .split(" ")
+                        .map((name) => name?.slice(0, 1) ?? "")
+                        .join("")}
+                    </p>
+                  )}
+                </Box>
+              }
+              action={
+                <IconButton
+                  onClick={() => handleExpandClick(institution.institutionName)}
+                  sx={{ color: "white" }}
+                >
+                  {expandedBanks[institution.institutionName] ? (
+                    <ChevronUp size={24} />
+                  ) : (
+                    <ChevronDown size={24} />
+                  )}
+                </IconButton>
+              }
+              title={
+                <Typography variant="h6">
+                  {institution.institutionName}
+                </Typography>
+              }
+            />
+            <Collapse in={expandedBanks[institution.institutionName]}>
+              <CardContent sx={{ padding: 0 }}>
+                <StyledTableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Account Name</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell>Subtype</TableCell>
+                        <TableCell>Category</TableCell>
+                        <TableCell align="right">Import</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {institution.accounts.map((account) => (
+                        <TableRow key={account.id}>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              {subtypeIcons[
+                                account.subtype as keyof typeof subtypeIcons
+                              ] || <Inbox size={16} />}
+                              <span>{account.name}</span>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <StyledChip
+                              icon={typeIcons(
+                                account.type,
                                 typeColors[
                                   account.type as keyof typeof typeColors
-                                ].bg,
-                              color:
-                                typeColors[
-                                  account.type as keyof typeof typeColors
-                                ].text,
-                              "& .MuiChip-icon": {
+                                ].text
+                              )}
+                              label={account.type.toUpperCase()}
+                              size="small"
+                              sx={{
+                                backgroundColor:
+                                  typeColors[
+                                    account.type as keyof typeof typeColors
+                                  ].bg,
                                 color:
                                   typeColors[
                                     account.type as keyof typeof typeColors
                                   ].text,
-                              },
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <StyledChip
-                            icon={
-                              subtypeIcons[
-                                account.subtype as keyof typeof subtypeIcons
-                              ]
-                            }
-                            label={account.subtype.toUpperCase()}
-                            size="small"
-                            variant="outlined"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <StyledChip
-                            icon={
-                              categoryIcons[
-                                account.accountCategory as keyof typeof categoryIcons
-                              ]
-                            }
-                            label={account.accountCategory ?? "UNCLASSIFIED"}
-                            size="small"
-                            sx={{
-                              backgroundColor:
-                                categoryColors[
-                                  (account?.accountCategory ??
-                                    "UNCLASSIFIED") as keyof typeof categoryIcons
-                                ].bg,
-                              color:
-                                categoryColors[
-                                  (account?.accountCategory ??
-                                    "UNCLASSIFIED") as keyof typeof categoryIcons
-                                ].text,
-                              "& .MuiChip-icon": {
+                                "& .MuiChip-icon": {
+                                  color:
+                                    typeColors[
+                                      account.type as keyof typeof typeColors
+                                    ].text,
+                                },
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <StyledChip
+                              icon={
+                                subtypeIcons[
+                                  account.subtype as keyof typeof subtypeIcons
+                                ]
+                              }
+                              label={account.subtype.toUpperCase()}
+                              size="small"
+                              variant="outlined"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <StyledChip
+                              icon={
+                                categoryIcons[
+                                  account.accountCategory as keyof typeof categoryIcons
+                                ]
+                              }
+                              label={account.accountCategory ?? "UNCLASSIFIED"}
+                              size="small"
+                              sx={{
+                                backgroundColor:
+                                  categoryColors[
+                                    (account?.accountCategory ??
+                                      "UNCLASSIFIED") as keyof typeof categoryIcons
+                                  ].bg,
                                 color:
                                   categoryColors[
                                     (account?.accountCategory ??
                                       "UNCLASSIFIED") as keyof typeof categoryIcons
                                   ].text,
-                              },
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          {account.imported ? (
-                            <IconButton disabled>
-                              <CheckCircle
-                                sx={{ color: "#4caf50", width: 16, height: 16 }}
-                              />
-                            </IconButton>
-                          ) : (
-                            <IconButton>
-                              <Download sx={{ width: 16, height: 16 }} />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </StyledTableContainer>
-            </CardContent>
-          </Collapse>
-        </StyledCard>
-      ))}
+                                "& .MuiChip-icon": {
+                                  color:
+                                    categoryColors[
+                                      (account?.accountCategory ??
+                                        "UNCLASSIFIED") as keyof typeof categoryIcons
+                                    ].text,
+                                },
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            {account.imported ? (
+                              <IconButton disabled>
+                                <CheckCircle
+                                  sx={{
+                                    color: "#4caf50",
+                                    width: 16,
+                                    height: 16,
+                                  }}
+                                />
+                              </IconButton>
+                            ) : (
+                              <IconButton>
+                                <Download sx={{ width: 16, height: 16 }} />
+                              </IconButton>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </StyledTableContainer>
+              </CardContent>
+            </Collapse>
+          </StyledCard>
+        ))}
+      </StyledContainer>
     </Box>
   );
 }
