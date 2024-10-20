@@ -2,7 +2,7 @@ import { formatCurrency, toFixed } from "@/app/utils/formatters";
 import { FaCirclePlus } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import CreateCategoryItemModal from "../CreateCategoryItemModal";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EditCategoryItemModal from "../EditCategoryItemModal";
 import DeleteCategoryItemModal from "../DeleteCategoryItemModal";
 import { toast } from "react-toastify";
@@ -90,12 +90,13 @@ const CategoryBlockItem = ({
     return formatCurrency(recommend);
   };
 
-  const totalItemsValue = items?.reduce((p, c) => {
-    if (c[useValueKey]) {
-      return p + c[useValueKey];
-    }
-    return p;
-  }, 0);
+  const totalItemsValue =
+    items?.reduce((p, c) => {
+      if (c[useValueKey]) {
+        return p + c[useValueKey];
+      }
+      return p;
+    }, 0) ?? 0;
 
   const calculateActualPercentage = () => {
     if (useCategories !== undefined) {
@@ -246,16 +247,66 @@ const CategoryBlockItem = ({
     toast.success("Expense deleted");
   };
 
-  const getEmojiFromWord = (word: string) => {
+  const getEmojiFromWord = (_word: string) => {
+    const word = _word.toLowerCase();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const emoji = expenseEmojiMapping[word];
+
     if (emoji) return emoji;
-    emojiNames.forEach((name) => {
-      if (word.includes(name)) {
+
+    for (const name of emojiNames) {
+      if (word?.includes && word?.includes(name)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return expenseEmojiMapping[name];
+      } else if (name?.includes(word)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return expenseEmojiMapping[name];
+      } else {
+        const included = word?.split(" ");
+        // .some((subWord) => name.includes(subWord));
+        for (const subWord of word.split(" ")) {
+          if (expenseEmojiMapping[subWord]) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            return expenseEmojiMapping[subWord];
+          }
+        }
+        // if (included) {
+        //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //   // @ts-ignore
+        //   return expenseEmojiMapping[name];
+        // }
+
+        // const reverseIncluded = name
+        //   ?.split(" ")
+        //   .some((subWord) => word.includes(subWord));
+
+        // if (reverseIncluded) {
+        //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //   // @ts-ignore
+        //   return expenseEmojiMapping[name];
+        // }
       }
-    });
+    }
   };
+
+  console.log(items);
+
+  const itemsWithEmojis = useMemo(() => {
+    return items.map((item) => {
+      console.log(item);
+      console.log(item.name);
+      return {
+        ...item,
+        emoji: getEmojiFromWord(item.name),
+      };
+    });
+  }, [items]);
+
+  console.log(itemsWithEmojis);
 
   return (
     <div className="flex text-base font-medium flex-col rounded-[18px] border border-[#b1b2ff]/80 my-[12px] mx-[14px]">
@@ -298,22 +349,23 @@ const CategoryBlockItem = ({
       <div className="w-[100%] h-[0px] border border-zinc-200"></div>
 
       <div ref={parent}>
-        {items?.map((item, idx) => (
+        {itemsWithEmojis?.map((item, idx) => (
           <div
             key={`${item.name + idx}`}
             onClick={() => onItemClick(item)}
-            className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50"
+            className="flex w-full h-[50px] px-[12px] border-b cursor-pointer hover:bg-slate-50 min-h-fit h-fit"
           >
             <div className="w-2/3 lg:w-5/6 font-normal text-lg flex items-center">
               <RenderEmoji
                 symbol={
-                  item.type
-                    ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      getEmojiFromWord(expenseEmojiMapping[item.type])
-                    : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      expenseEmojiMapping[item.name?.toLowerCase()]
+                  item.emoji
+                  // item.type || item.name
+                  //   ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  //     // @ts-ignore
+                  //     getEmojiFromWord(item.name.toLowerCase())
+                  //   : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  //     // @ts-ignore
+                  //     expenseEmojiMapping[item.name?.toLowerCase()]
                 }
                 label={item.name}
                 fallback={expenseEmojiMapping["default"]}
@@ -322,7 +374,7 @@ const CategoryBlockItem = ({
               />
               {useNameKey ? item[useNameKey] : item.name}
               {/* 0x1F502 */}
-              {item?.recurringExpense === "true" ? (
+              {category !== "assets" && item?.recurringExpense === "true" ? (
                 // <FiRepeat className="text-green-700 pl-[6px]" />
                 <RenderEmoji
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -333,22 +385,8 @@ const CategoryBlockItem = ({
                   className={"ml-[6px]"}
                   type={item?.type}
                 />
-              ) : (
-                // <div
-                //   className="min-w-[12px] min-h-[12px] ml-[12px] bg-blue-200 rounded-full flex
-                //  justify-center items-center"
-                // >
-                //   <p className="text-base/[10px] px-[20px] py-[8px]">1</p>
-                // </div>
-                // <RenderEmoji
-                //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //   // @ts-ignore
-                //   // symbol={"0x1F502"}
-                //   symbol={"0x1F947"}
-                //   label={item.name}
-                //   fallback={expenseEmojiMapping["default"]}
-                //   className={"ml-[6px]"}
-                // />
+              ) : null}
+              {category !== "assets" && item?.recurringExpense === "false" ? (
                 <Image
                   src="/icons/repeat-once.svg"
                   alt="Once"
@@ -356,7 +394,7 @@ const CategoryBlockItem = ({
                   height={34}
                   className="ml-[6px]"
                 />
-              )}
+              ) : null}
             </div>
             <div className="w-1/3 lg:w-1/6 font-medium text-right flex flex-col justify-center">
               <div>{formatCurrency(item[useValueKey])}</div>

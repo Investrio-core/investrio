@@ -3,5 +3,9 @@
 import BudgetTool from "./components/BudgetTool";
 
 export default function BudgetPage() {
-  return <BudgetTool />;
+  return (
+    <>
+      <BudgetTool />
+    </>
+  );
 }

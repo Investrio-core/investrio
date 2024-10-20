@@ -46,6 +46,7 @@ model FinancialRecord {
   id              String            @id @default(cuid())
   title           String
   type            DebitType
+  subtype         String?
   periodicity     Periodicity
   initialBalance  Float             @map("initial_outstanding_balance")
   interestRate    Float             @map("interest_rate")
@@ -57,6 +58,8 @@ model FinancialRecord {
   userId          String?           @map("user_id")
   user            User?             @relation(fields: [userId], references: [id])
   PaymentSchedule PaymentSchedule[]
+  bank            String?
+  accountCategory AccountCategory?
 
   @@unique([title, userId])
 }
@@ -116,6 +119,7 @@ enum DebitType {
   Mortgage
   MedicalLoan
   Taxes
+  BusinessLoan
   Other
 }
 
@@ -127,6 +131,12 @@ enum SubscriptionStatus {
 
 enum Periodicity {
   MONTH
+}
+
+enum AccountCategory {
+  Personal
+  Business
+  Mixed
 }
 
 model BudgetMonth {
@@ -143,4 +153,126 @@ model BudgetMonth {
   userId    String
 
   @@unique([userId, year, month])
+}
+
+model PlaidLink {
+  id                 String         @id @default(cuid())
+  createdAt          DateTime       @default(now()) @map("created_at")
+  userId             String
+  itemId             String
+  accessToken        String
+  institutionName    String
+  institutionID      String
+  status             String?
+  transactionsCursor String?
+  accounts           PlaidAccount[]
+}
+
+// model FinancialRecord {
+//   id              String            @id @default(cuid())
+//   title           String
+//   type            DebitType
+//   subtype         String?
+//   periodicity     Periodicity
+//   initialBalance  Float             @map("initial_outstanding_balance")
+//   interestRate    Float             @map("interest_rate")
+//   minPayAmount    Float             @map("minimum_payment")
+//   payDueDate      DateTime          @map("payment_due_date")
+//   extraPayAmount  Float             @default(0) @map("extra_payment")
+//   createdAt       DateTime          @default(now()) @map("created_at")
+//   updatedAt       DateTime          @updatedAt @map("updated_at")
+//   userId          String?           @map("user_id")
+//   user            User?             @relation(fields: [userId], references: [id])
+//   PaymentSchedule PaymentSchedule[]
+//   bank            String?
+
+//   @@unique([title, userId])
+// }
+
+model PlaidAccount {
+  id                     String             @id @default(cuid())
+  plaidAccountId         String             @unique
+  name                   String
+  mask                   String?
+  officialName           String?
+  currentBalance         Float? //Decimal?  @db.Decimal(28, 10)
+  availableBalance       Float? //Decimal?  @db.Decimal(28, 10)
+  isoCurrencyCode        String?
+  unofficialCurrencyCode String?
+  type                   String
+  subtype                String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  itemId                 String
+  item                   PlaidLink          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  transactions           PlaidTransaction[]
+  accountCategory        AccountCategory?
+  bank                   String?
+  bankId                 String?
+
+  @@map("accounts_table")
+}
+
+model PlaidTransaction {
+  id                     Int              @id @default(autoincrement())
+  plaidTransactionId     String           @unique
+  category               String?
+  subcategory            String?
+  type                   String?
+  subtype                String?
+  name                   String
+  amount                 Float //@db.Decimal(28, 10)
+  isoCurrencyCode        String?
+  unofficialCurrencyCode String?
+  date                   DateTime         @db.Date
+  year                   Int
+  month                  Int
+  pending                Boolean
+  accountOwner           String?
+  createdAt              DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt              DateTime         @updatedAt @db.Timestamptz(6)
+  accountId              String
+  account                PlaidAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountCategory        AccountCategory?
+  logoUrl                String?
+  categoryUrl            String?
+  website                String?
+  bank                   String?
+  // connect to user and item?
+  userId                 String?
+  itemId                 String?
+
+  @@map("transactions")
+}
+
+// The link_events_table is used to log responses from the Plaid API for client requests to the
+// Plaid Link client. This information is useful for troubleshooting.
+model LinkEventsTable {
+  id            Int      @id @default(autoincrement())
+  type          String   @map("type")
+  userId        Int?     @map("user_id")
+  linkSessionId String?  @map("link_session_id")
+  requestId     String   @unique @map("request_id")
+  errorType     String?  @map("error_type")
+  errorCode     String?  @map("error_code")
+  status        String?  @map("status")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("link_events_table")
+}
+
+// The plaid_api_events_table is used to log responses from the Plaid API for server requests to
+// the Plaid client. This information is useful for troubleshooting.
+model PlaidApiEventsTable {
+  id          Int      @id @default(autoincrement())
+  itemId      Int?     @map("item_id")
+  userId      Int?     @map("user_id")
+  plaidMethod String   @map("plaid_method")
+  arguments   String?  @map("arguments")
+  requestId   String   @unique @map("request_id")
+  errorType   String?  @map("error_type")
+  errorCode   String?  @map("error_code")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("plaid_api_events_table")
 }

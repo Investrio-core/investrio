@@ -253,6 +253,10 @@ export const expenseEmojiMapping = {
   // "uber": "0x1F697",            // 🚗
   // "lyft": "0x1F697",            // 🚗
   taxi: "0x1F695", // 🚕
+  flight: "0x2708", // ✈️
+  flights: "0x2708", // ✈️
+  airplane: "0x2708", // ✈️
+  plane: "0x2708", // ✈️
   // "bus": "0x1F68C",             // 🚌
   // "train": "0x1F686",           // 🚆
   // "subway": "0x1F687",          // 🚇
