@@ -59,6 +59,7 @@ interface Item {
   accountCategory?: string;
   createdAt?: string;
   subtype?: string;
+  mask?: string;
 }
 
 const convertAccountToSwipeable = (
@@ -82,6 +83,7 @@ const convertAccountToSwipeable = (
     date: formatDate(date),
     note: "",
     recurring: "",
+    mask: account?.mask,
   };
 };
 
@@ -98,10 +100,16 @@ const selectCategory = (category: "left" | "right" | "MIXED") => {
 interface Props {
   institutionName: string;
   accounts: Item[];
+  isLastAccount: boolean;
 }
 
-function SwipeableAccounts({ institutionName, accounts }: Props) {
+function SwipeableAccounts({
+  institutionName,
+  accounts,
+  isLastAccount,
+}: Props) {
   const { updateAccount } = usePlaidLinks();
+
   const handleSwipeAccount = (
     selectedCategory: "left" | "right" | "MIXED",
     account: Item
@@ -112,20 +120,27 @@ function SwipeableAccounts({ institutionName, accounts }: Props) {
       accountCategory: selectCategory(selectedCategory),
     });
   };
+
+  const itemsToClassify = accounts
+    ?.filter((acc: Item) => acc.accountCategory === null)
+    ?.map((acc: Item) =>
+      convertAccountToSwipeable(
+        institutionName,
+        acc,
+        acc?.createdAt ? new Date(acc.createdAt) : new Date()
+        // date
+      )
+    );
+
+  if (!isLastAccount && itemsToClassify?.length === 0) {
+    return <></>;
+  }
+
   return (
     <ItemSwiper<Item>
       extraCategory={{ label: "Mixed Account", value: "MIXED" }}
       label={institutionName ? `${institutionName} Accounts` : "Accounts"}
-      itemsToClassify={accounts
-        ?.filter((acc: Item) => acc.accountCategory === null)
-        ?.map((acc: Item) =>
-          convertAccountToSwipeable(
-            institutionName,
-            acc,
-            acc?.createdAt ? new Date(acc.createdAt) : new Date()
-            // date
-          )
-        )}
+      itemsToClassify={itemsToClassify}
       persistHandleSwipe={handleSwipeAccount}
       RenderToFront={SwipeableAccountFront}
       //   cardHeight={"390px"}
