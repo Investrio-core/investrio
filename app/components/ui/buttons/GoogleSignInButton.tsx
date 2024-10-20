@@ -8,20 +8,21 @@ const GoogleSignInButton = ({ callToAction }: { callToAction?: string }) => {
 
   const auth = async () => {
     await signIn("google", {
-      callbackUrl: `${process.env.NEXTAUTH_URL}/dashboard?success=true`,
+      // callbackUrl: `${process.env.NEXTAUTH_URL}/dashboard?success=true`,
+      callbackUrl: "/auth/signup/completion"
     });
   };
-  if (session && session.user) {
-    // text-sm md:text-base
-    return (
-      <div className="flex gap-4 ml-auto">
-        <p className="text-sky-600">{session.user.name}</p>
-        <button onClick={() => signOut()} className="text-red-600">
-          Sign Out
-        </button>
-      </div>
-    );
-  }
+  // if (session && session.user) {
+  //   // text-sm md:text-base
+  //   return (
+  //     <div className="flex gap-4 ml-auto">
+  //       <p className="text-sky-600">{session.user.name}</p>
+  //       <button onClick={() => signOut()} className="text-red-600">
+  //         Sign Out
+  //       </button>
+  //     </div>
+  //   );
+  // }
   return (
     <button
       onClick={auth}

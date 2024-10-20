@@ -27,6 +27,8 @@ export async function middleware(request: NextRequest) {
   if (
     !path.startsWith("/auth/login") &&
     !path.startsWith("/auth/signup") &&
+    !path.startsWith("/auth/verification") &&
+    !path.startsWith("/auth/resetPassword") &&
     !sessionToken
   ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
@@ -44,16 +46,26 @@ export async function middleware(request: NextRequest) {
   //   return NextResponse.redirect(new URL('/dashboard/debts/add', request.url));
   // }
 
-  if (
-    (path.startsWith("/auth/login") || path.startsWith("/auth/signup")) &&
-    sessionToken
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  } else {
-    return NextResponse.next();
-  }
+  // if (
+  //   (path.startsWith("/auth/login") || path.startsWith("/auth/signup")) &&
+  //   sessionToken
+  // ) {
+  //   return NextResponse.redirect(new URL("/dashboard", request.url));
+  // } else {
+  //   return NextResponse.next();
+  // }
+
+  // if (path.startsWith("/auth/login") && sessionToken) {
+  //   // return NextResponse.redirect(new URL("/dashboard", request.url));
+  //   // return NextResponse.redirect(new URL("/auth/signup/completion", request.url));
+  //   return NextResponse.next();
+  // } else {
+  //   return NextResponse.next();
+  // }
+  return NextResponse.next();
+
 }
 
 export const config = {
-  matcher: ["/", "/auth/:path*", "/dashboard/:path*", "/budget", "/settings"],
+  matcher: ["/", "/auth/:path*", "/dashboard/:path*", "/budget", "/settings", "/profile"],
 };

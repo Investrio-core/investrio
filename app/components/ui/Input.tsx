@@ -18,13 +18,13 @@ type InputProps = {
   placeholder?: string;
   required?: boolean;
   type?:
-    | "text"
-    | "number"
-    | "date"
-    | "email"
-    | "password"
-    | "percentage"
-    | "currency";
+  | "text"
+  | "number"
+  | "date"
+  | "email"
+  | "password"
+  | "percentage"
+  | "currency";
   inline?: boolean;
   defaultValue?: string | number;
   onBlur?: Function;
@@ -38,7 +38,7 @@ type InputProps = {
 
 const inputClass = (inline?: boolean, error?: boolean): string =>
   twMerge(
-    "focus:border-primary-700 input border-[#EDF2F6] bg-[#F8F8F8] placeholder-[#656565] transition focus:outline-none",
+    "focus:border-primary-700 input border-[#EDF2F6] bg-white placeholder-[#656565] transition focus:outline-none relative w-full h-[70px] rounded-[20px]",
     inline ? "col-span-4" : "",
     error ? "border-red-500" : ""
   );
@@ -59,10 +59,13 @@ const Input: React.FC<InputProps> = (props) => {
     style = {},
   } = props;
   const [error, setError] = useState<string | null>(null);
+  const [isPasswordVisible, setPasswordVisible] = useState<boolean>(false);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(prevState => !prevState);
+  };
   const isNumericField =
     type === "currency" || type === "percentage" || type === "number";
   const ref = useRef(null);
-
   const validateInput = (value: string, maxNumberValue?: number) => {
     if (required && !value.trim()) {
       setError("You need to fill this field!");
@@ -153,9 +156,8 @@ const Input: React.FC<InputProps> = (props) => {
       {label && (
         <label className="text-left">
           <span
-            className={`label-text text-md font-light text-[#747682] ${
-              labelStyles ?? ""
-            }`}
+            className={`label-text text-md font-light text-[#747682] ${labelStyles ?? ""
+              }`}
             style={{ ...style }}
           >
             {label}
@@ -163,21 +165,37 @@ const Input: React.FC<InputProps> = (props) => {
         </label>
       )}
 
-      <input
-        {...(props as InputHTMLAttributes<HTMLInputElement>)}
-        ref={ref}
-        className={inputClass(props.inline, error !== null)}
-        type={inputType}
-        onChange={onChangeInput as any}
-        onFocus={cleanNumber}
-        onBlur={onBlur as any}
-      />
+      <div className="relative w-full">
+        <input
+          {...(props as InputHTMLAttributes<HTMLInputElement>)}
+          ref={ref}
+          className={inputClass(props.inline, error !== null)}
+          type={isPasswordVisible ? 'text' : inputType}
+          onChange={onChangeInput as any}
+          onFocus={cleanNumber}
+          onBlur={onBlur as any}
+        />
 
-      {error && (
-        <small className="ml-2 mt-2 flex items-center text-left text-xs font-semibold text-red-500">
-          <TbAlertHexagon className="text-md" />・{error}
-        </small>
-      )}
+        {(label === 'Create password' || label === 'Password' || label === 'Confirm password') && (
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-3 flex items-center"
+          >
+            <img
+              src={isPasswordVisible ? '/icons/eye.svg' : '/icons/eye-slash.svg'}
+              alt="Toggle password visibility"
+              className="h-6 w-6"
+            />
+          </button>
+        )}
+
+        {error && (
+          <small className="ml-2 mt-2 flex items-center text-left text-xs font-semibold text-red-500">
+            <TbAlertHexagon className="text-md" />・{error}
+          </small>
+        )}
+      </div>
     </div>
   );
 };

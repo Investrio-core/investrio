@@ -8,6 +8,7 @@ import Mixpanel from "@/services/mixpanel";
 import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 import OnboardingIntroSteps from "@/app/components/OnboardingIntro/OnboardingIntroSteps";
+import { useRouter } from "next/navigation";
 import { HOME_DASHBOARD_PAGE } from "@/app/utils/constants";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -16,6 +17,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSteps, setShowSteps] = useState(true);
+  const router = useRouter();
 
   async function onSubmit(data: {
     name: string;
@@ -39,12 +41,24 @@ export default function SignUpPage() {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
+        redirect: false,
         // ## Register callback:
-        callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
+        // callbackUrl: "/dashboard/debts/add",
+        callbackUrl: "/auth/signup/completion",
+        // callbackUrl: HOME_DASHBOARD_PAGE, //"/dashboard/debts/add",
       });
+
+      await axios.post(
+        `${API_URL}/user/send-verification`,
+        { email: data.email, type: "signup" }
+      );
+
+      sessionStorage.setItem('userData', JSON.stringify({ email: data.email, type: "signup" }));
+      router.push(`/auth/verification`);
 
       Mixpanel.getInstance().identify(user.data.id, data.email, data.name);
       Mixpanel.getInstance().track("registration");
+
     } catch (err: AxiosError | any) {
       console.log(err.message);
       setError(err.response.data);
@@ -60,9 +74,17 @@ export default function SignUpPage() {
         alt="Investrio"
         width={225}
         height={53}
-        className={`mx-auto pb-[12px] ${showSteps ? "mt-[0px]" : "mt-[42px]"}`}
+        // className={`mx-auto pb-[12px] ${showSteps ? "mt-[0px]" : "mt-[20px]"}`}
+        className={"mx-auto size-64 mt-[-5rem]"}
       />
-      {showSteps ? (
+
+      <SignupForm
+        isLoading={isLoading}
+        error={error}
+        onSubmit={onSubmit}
+        setShowSteps={setShowSteps}
+      />
+      {/* {showSteps ? (
         <OnboardingIntroSteps
           showSteps={showSteps}
           setShowSteps={setShowSteps}
@@ -74,7 +96,7 @@ export default function SignUpPage() {
           onSubmit={onSubmit}
           setShowSteps={setShowSteps}
         />
-      )}
+      )} */}
     </>
   );
 }

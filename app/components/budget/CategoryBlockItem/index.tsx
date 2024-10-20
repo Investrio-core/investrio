@@ -193,8 +193,6 @@ const CategoryBlockItem = ({
     name: string;
     recurringExpense?: string;
   }) => {
-    console.log("clicked item");
-    console.log(item);
     setSelectedItem(item);
     handleChangeEditCategoryModalOpen();
   };
@@ -315,31 +313,6 @@ const CategoryBlockItem = ({
       <div className="text-slate-950 text-[28px] font-medium capitalize px-[12px] py-4">
         {alternativeLabel ?? name}
       </div>
-
-      {/* <div className="w-[100%] h-[0px] border border-zinc-200"></div> */}
-      {/* <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
-        <div className="lg:w-4/6">CATEGORY</div>
-        <div className="lg:w-1/6 lg:text-right">RECOMMENDED</div>
-        <div className="lg:w-1/6 text-right">ACTUAL</div>
-      </div>
-      <div className="justify-between lg:justify-start bg-indigo-50 flex w-full h-[69px] px-[12px] rounded-[4px] relative">
-        <div className="lg:w-4/6 font-semibold text-[20px] flex items-start capitalize relative top-[10px]">
-          {name}
-        </div>
-        <div className="lg:w-1/6 text-right flex flex-col justify-center relative">
-          <div className="text-lg text-right">{calculateRecommended()}</div>
-          <div className="text-base text-[#8E8ECC] text-right">{percent}%</div>
-        </div>
-        <div className="lg:w-1/6 text-right flex flex-col justify-center">
-          <div className="text-lg">
-            {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
-          </div>
-          <div className="text-base text-[#8E8ECC]">
-            {calculateActualPercentage()}
-          </div>
-        </div>
-      </div> */}
-
       <div className="flex justify-between lg:justify-start text-base font-medium text-gray-1 px-[12px] py-[8px]">
         <div className="w-3/6 lg:w-4/6 text-[#4c5f7f] text-md font-semibold uppercase tracking-tight">
           ACTUAL

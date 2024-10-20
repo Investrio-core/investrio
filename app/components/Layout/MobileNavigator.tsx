@@ -275,6 +275,7 @@ const tabs = [
   },
   {
     name: "Profile",
+    route: "/profile",
     Icon: ProfileSvg,
     subTabs: [],
   },
@@ -309,11 +310,10 @@ export default function MobileNavigator() {
   const BaseTabs = tabs.map(({ name, Icon, route, subTabs, defaultTab }) => {
     return (
       <div
-        className={`${
-          route === asPath
-            ? "bg-violet-100 border border-primary rounded"
-            : "bg-white"
-        } px-[10px] py-[4px]`}
+        className={`${route === asPath
+          ? "bg-violet-100 border border-primary rounded"
+          : "bg-white"
+          } px-[10px] py-[4px]`}
       >
         <motion.div
           animate={tab !== name}
