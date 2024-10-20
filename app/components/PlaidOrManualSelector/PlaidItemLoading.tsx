@@ -38,7 +38,7 @@ export default function PlaidItemLoading({
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentState((prevState) => (prevState + 1) % loadingStates.length);
-    }, 3000); // Change state every 2 seconds
+    }, 2000); // Change state every 2 seconds
 
     return () => clearTimeout(timer);
   }, [currentState]);
