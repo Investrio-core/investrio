@@ -33,6 +33,7 @@ const usePlaidItem = (itemId?: string) => {
   const [loadStepInProgress, setLoadStepInProgress] =
     useState<ValidLoadSteps>();
   const [loadingData, setLoadingData] = useState(false);
+  const [loadedAccounts, setLoadedAccounts] = useState<Set<string>>(new Set());
 
   const session = useSession();
   const userId = session.data?.user?.id; // .email
@@ -46,6 +47,7 @@ const usePlaidItem = (itemId?: string) => {
     //       itemId: itemId ?? null,
     //     }),
     //   });
+
     console.log("making request");
 
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
@@ -108,6 +110,11 @@ const usePlaidItem = (itemId?: string) => {
     //   key: "loadAllDataFromLinkId" as KeyQuery,
     //   itemId,
     // });
+
+    if (linkId === undefined) {
+      return {};
+    }
+
     setLoadingData(true);
 
     setLoadStepInProgress("accounts");
@@ -120,7 +127,19 @@ const usePlaidItem = (itemId?: string) => {
     const transResp = await getTransactions(linkId);
     setLoadingData(false);
 
+    setLoadedAccounts((prevState) => {
+      const newSet = new Set(prevState);
+      newSet.add(linkId);
+      return newSet;
+    });
+
     return { accounts: accResp, debts: debtResp, transactions: transResp };
+  };
+
+  const isAccountLoaded = (itemId: string) => {
+    console.log("TESTING IF ACCOUNT WAS LOADED");
+    console.log(loadedAccounts.has(itemId));
+    return loadedAccounts.has(itemId);
   };
 
   return {
@@ -133,6 +152,7 @@ const usePlaidItem = (itemId?: string) => {
     loadAllDataFromLinkId,
     loadStepInProgress,
     loadingData,
+    isAccountLoaded,
   };
 };
 
