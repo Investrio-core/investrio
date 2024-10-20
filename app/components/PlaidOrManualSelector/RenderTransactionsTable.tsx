@@ -275,7 +275,7 @@ export default function TransactionTable({ transactions }: Props) {
           <Moon size={20} />
         </Box>
         <AnimatePresence>
-          {displayedTransactions.map((transaction) => (
+          {displayedTransactions.map((transaction: PlaidTransaction) => (
             <StyledTransaction
               key={transaction.plaidTransactionId}
               initial={{ opacity: 0, y: 20 }}
