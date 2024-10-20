@@ -304,16 +304,6 @@ export default function BudgetTool() {
 
   const { data: debtsData } = useDebtData();
 
-  // } = useQuery({
-  //   queryKey: ["budget-tool", year, month],
-  //   queryFn: async () => {
-  //     return await axiosAuth.get(`/budget/${year}/${month}`);
-  //   },
-  //   refetchOnMount: true,
-  //   refetchOnWindowFocus: true,
-  //   enabled: !!date,
-  // });
-
   const invalidateBudgetQuery = () =>
     queryClient.invalidateQueries({ queryKey: ["budget-tool", year, month] });
 
@@ -333,10 +323,6 @@ export default function BudgetTool() {
   }, [budgetInfo?.data, year, month]);
 
   useEffect(() => {
-    // if (!firstLoadCompleted && hasBudgetData) {
-    //   setFirstLoadCompleted(true);
-    //   setLatestIncome(budgetInfo?.data?.income);
-    // }
     if (budgetInfo?.data?.income) {
       setLatestIncome(budgetInfo?.data?.income);
     }
@@ -355,10 +341,6 @@ export default function BudgetTool() {
       setFirstLoadCompleted(true);
     }
   }, [isFetched, hasBudgetData, budgetInfo?.data]);
-
-  // useEffect(() => {
-  //   setSubTab(BUDGET_STEP);
-  // }, []);
 
   useEffect(() => {
     if (mixpanelCalled.current) return;
@@ -380,7 +362,7 @@ export default function BudgetTool() {
     setStep(nextStep);
   };
 
-  // combineDebtAndBudgetData = (debtsData, budgetData, sumCategories, summedCategories, incomeAfterExpenses)
+  // Usage: combineDebtAndBudgetData(debtsData, budgetData, sumCategories, summedCategories, incomeAfterExpenses)
   const {
     reshapedDebts,
     reshapedBudgetData,
