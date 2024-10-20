@@ -200,7 +200,7 @@ model PlaidAccount {
   isoCurrencyCode        String?
   unofficialCurrencyCode String?
   type                   String
-  subtype                String
+  subtype                String?
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
   itemId                 String
@@ -231,12 +231,16 @@ model PlaidTransaction {
   accountOwner           String?
   createdAt              DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt              DateTime         @updatedAt @db.Timestamptz(6)
-  accountId              String           @unique
+  accountId              String
   account                PlaidAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountCategory        AccountCategory?
   logoUrl                String?
   categoryUrl            String?
   website                String?
+  bank                   String?
+  // connect to user and item?
+  userId                 String?
+  itemId                 String?
 
   @@map("transactions")
 }
