@@ -380,18 +380,20 @@ export default function ItemSwiper<T>({
       </div>
 
       <div className="flex justify-center gap-[24px] z-399 relative max-w-[100%]">
-        <button
-          className={`border-[#8833ff] border-[1px] shadow-lg h-12 px-4 py-3 bg-[#b9b0e6] bg-black/[0.66] ${
-            noItems ? "/25" : ""
-          } rounded-[100px] justify-start items-center gap-3 inline-flex`}
-          onClick={() => handleSwipe("left", items?.[0])}
-          disabled={noItems}
-        >
-          <SwipeLeftIcon size={16} className="sm:w-5 sm:h-5" />
-          <span className="text-white text-sm font-bold font-['Sora']">
-            Business
-          </span>
-        </button>
+        {!noItems ? (
+          <button
+            className={`border-[#8833ff] border-[1px] shadow-lg h-12 px-4 py-3 bg-[#b9b0e6] bg-black/[0.66] ${
+              noItems ? "/25" : ""
+            } rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            onClick={() => handleSwipe("left", items?.[0])}
+            disabled={noItems}
+          >
+            <SwipeLeftIcon size={16} className="sm:w-5 sm:h-5" />
+            <span className="text-white text-sm font-bold font-['Sora']">
+              Business
+            </span>
+          </button>
+        ) : null}
         {noItems ? (
           <button
             className={`relative top-[-45px] h-12 px-4 py-3 bg-[#b9b0e6] rounded-[100px] justify-start items-center gap-3 inline-flex`}
@@ -426,21 +428,23 @@ export default function ItemSwiper<T>({
             </span>
           </button>
         ) : null}
-        <button
-          className={`border-[#352068] border-[2px] h-12 px-4 py-3 bg-[#b9b0e6] ${
-            noItems ? "/25" : ""
-          } rounded-[100px] justify-start items-center gap-3 inline-flex`}
-          onClick={() => handleSwipe("right", items?.[0])}
-          disabled={noItems}
-          style={{
-            background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
-          }}
-        >
-          <span className="text-white text-sm font-bold font-['Sora']">
-            Personal
-          </span>
-          <SwipeRightIcon size={16} className="sm:w-5 sm:h-5" />
-        </button>
+        {!noItems ? (
+          <button
+            className={`border-[#352068] border-[2px] h-12 px-4 py-3 bg-[#b9b0e6] ${
+              noItems ? "/25" : ""
+            } rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            onClick={() => handleSwipe("right", items?.[0])}
+            disabled={noItems}
+            style={{
+              background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+            }}
+          >
+            <span className="text-white text-sm font-bold font-['Sora']">
+              Personal
+            </span>
+            <SwipeRightIcon size={16} className="sm:w-5 sm:h-5" />
+          </button>
+        ) : null}
       </div>
 
       {/* <nav className="mt-auto flex justify-around py-4">
