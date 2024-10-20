@@ -181,10 +181,11 @@ interface AccountProps {
   type: string;
   category: string;
   subtype: string;
-  balance: number;
+  balance?: number | "N / A";
   currency: string;
   plaidAccountId: string;
   tags?: string[];
+  mask?: string;
 }
 
 export default function SwipeableAccountFront({
@@ -195,7 +196,9 @@ export default function SwipeableAccountFront({
   balance,
   currency,
   plaidAccountId,
+  mask,
   tags,
+  ...rest
 }: AccountProps) {
   const formatBalance = (amount: number, curr: string) => {
     return new Intl.NumberFormat("en-US", {
@@ -208,6 +211,12 @@ export default function SwipeableAccountFront({
     return subtypeIcons(category);
   };
 
+  console.log("should have mask");
+  console.log(mask);
+
+  console.log("else");
+  console.log(rest);
+
   return (
     <StyledCard>
       <CardContent sx={{ pt: 12, pb: 3 }}>
@@ -216,12 +225,12 @@ export default function SwipeableAccountFront({
           {name}
         </AccountName>
         <AccountBalance variant="h4">
-          {balance
-            ? `$ ${formatBalance(balance, currency)}`
-            : `$ ••••••••.••••`}
+          {!balance || balance === "N / A"
+            ? `$ ••••••••.••••`
+            : `$ ${formatBalance(balance, currency)}`}
         </AccountBalance>
         <AccountNumber variant="body2">
-          •••• {plaidAccountId?.slice(-4)}
+          •••• {mask ?? plaidAccountId?.slice(-4)}
         </AccountNumber>
         <div className="flex gap-[8px]">
           <StyledChip label={type.toUpperCase()} size="small" />
