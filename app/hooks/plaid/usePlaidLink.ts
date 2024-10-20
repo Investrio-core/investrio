@@ -65,18 +65,22 @@ const PlaidLink = (itemId?: string, refetchLinks?: Function) => {
         institutionID: metadata.institution?.institution_id,
         accounts: metadata.accounts,
         // account: metadata?.account,
-      })) as { success?: string; error?: string; itemId?: string };
+      })) as { data: { success?: string; error?: string; itemId?: string } };
+
+      console.log("Exchanged public token successfully");
+      console.log(response);
 
       setLinkCreating(false);
+
       refetchLinks && refetchLinks();
-      if (response?.success && response?.itemId) {
+
+      if (response?.data?.success && response?.data?.itemId) {
         setLinkSuccessful(true);
-        setNewLinkItemId(response?.itemId);
+        setNewLinkItemId(response?.data?.itemId);
         console.log("-- exchanged token successful --");
       } else {
         setErrorMessage("Something went wrong linking your account");
       }
-      console.log(response);
     },
     []
   );
