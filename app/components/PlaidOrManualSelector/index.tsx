@@ -11,8 +11,11 @@ import RenderPlaidLinksTable, {
 import SwipeableAccounts from "./SwipeableAccounts";
 import PlaidItemLoading from "./PlaidItemLoading";
 import PlaidOrManualForm from "./PlaidOrManualForm";
+import RenderTransactionsTable from "./RenderTransactionsTable";
+import { link } from "fs";
+import { useEffect } from "react";
 
-const TEST_ID = "cm2bb9mlp00009qw7iltorp6w";
+const TEST_ID = "cm2h4mki200015qng3h44hldb";
 
 interface Item {
   id: string;
@@ -36,15 +39,15 @@ interface Props {
   setShow: Function;
 }
 
-const selectCategory = (category: "left" | "right" | "MIXED") => {
-  if (category === "left") {
-    return "Business";
-  } else if (category === "right") {
-    return "Personal";
-  } else {
-    return "Mixed";
-  }
-};
+// const selectCategory = (category: "left" | "right" | "MIXED") => {
+//   if (category === "left") {
+//     return "Business";
+//   } else if (category === "right") {
+//     return "Personal";
+//   } else {
+//     return "Mixed";
+//   }
+// };
 
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
   const { plaidLinks, refetch: refetchLinks, updateAccount } = usePlaidLinks();
@@ -61,13 +64,29 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     loadAllDataFromLinkId,
     loadStepInProgress,
     loadingData,
-  } = usePlaidItem();
+    isAccountLoaded,
+  } = usePlaidItem(newLinkItemId);
 
-  // console.log("Plaid Links");
-  // console.log(plaidLinks);
+  useEffect(() => {
+    if (
+      linkSuccessful &&
+      newLinkItemId &&
+      !isAccountLoaded(newLinkItemId) &&
+      !loadingData
+      //  &&
+      // !linkCreating &&
+      // !loadingData
+    ) {
+      console.log("-- IN HERE TO LOAD ALL DATA --");
+      loadAllDataFromLinkId(newLinkItemId);
+    }
+  }, [linkSuccessful, newLinkItemId, loadingData]);
 
   console.log("Plaid Links Data Success");
   console.log(plaidLinks?.data?.success);
+
+  console.log("Transactions data success");
+  console.log(transactions);
 
   return (
     <div
@@ -79,77 +98,58 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
       }}
     >
       {/* STEP 1: Form (Choose Manual or Plaid) */}
-      <PlaidOrManualForm
-        title={title}
-        blurb={blurb}
-        open={open}
-        setShow={setShow}
-        ready={ready}
-        key={0}
-      />
-      {/* <div className="text-[#100d40] text-2xl font-semibold leading-[33.60px] mt-[46px] mb-[11px] text-center">
-        {title}
-      </div>
-      <div className="text-[#747682] text-base font-normal mb-[41px] text-center">
-        {blurb}
-      </div>
-      <div className="px-[31px]">
-        <div className="text-[#03091d] text-xl font-medium text-center mb-[34px]">
-          Enter your data:
-        </div>
-        <div className="mb-[80px]">
-          <SimpleButton
-            text="Manual"
-            onClick={() => setShow(false)}
-            className="mb-[8px]"
-            loading={false}
-          />
-          <button
-            style={{
-              width: "100%",
-              paddingLeft: 24,
-              paddingRight: 24,
-              paddingTop: 8,
-              paddingBottom: 8,
-              borderRadius: 8,
-              border: "1px #8833FF solid",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-              display: "inline-flex",
-            }}
-            onClick={() => open()}
-            disabled={!ready}
-          >
-            <div
-              style={{
-                textAlign: "center",
-                color: "#8833FF",
-              }}
-            >
-              {ready ? "Plaid" : "Loading Plaid"}
-            </div>
-          </button> */}
+      {!linkCreating &&
+      !loadingData &&
+      !(plaidLinks?.data?.success?.length > 0) ? (
+        <PlaidOrManualForm
+          title={title}
+          blurb={blurb}
+          open={open}
+          setShow={setShow}
+          ready={ready}
+          key={0}
+          showManualOption={true}
+        />
+      ) : null}
+
       <div className="px-[31px]">
         <div>
-          <div className="mx-[-56px] rounded-[100px]">
-            <PlaidItemLoading
-              linkCreating={linkCreating}
-              linkSuccessful={linkSuccessful}
-              loadStepInProgress={loadStepInProgress}
-              loadingData={loadingData}
-            />
-          </div>
+          {linkCreating || loadingData ? (
+            <div className="mx-[-56px] rounded-[100px]">
+              <PlaidItemLoading
+                linkCreating={linkCreating}
+                linkSuccessful={linkSuccessful}
+                loadStepInProgress={loadStepInProgress}
+                loadingData={loadingData}
+              />
+            </div>
+          ) : null}
 
-          <TestComponent
-            linkSuccessful={linkSuccessful}
-            getAccounts={getAccounts}
-            getDebts={getDebts}
-            getTransactions={getTransactions}
-          />
+          {/* {plaidLinks?.data?.success ? (
+            <SwipeableAccounts
+              institutionName={plaidLinks?.data?.success?.[0]?.institutionName}
+              accounts={plaidLinks?.data?.success?.[0]?.accounts}
+            />
+          ) : null} */}
 
           {plaidLinks?.data?.success ? (
-            <div className="mx-[-55px]">
+            <>
+              {plaidLinks?.data?.success?.map(
+                (nextResult: ConnectedAccounts, idx: number) => (
+                  <SwipeableAccounts
+                    institutionName={nextResult?.institutionName}
+                    accounts={nextResult?.accounts as Item[]}
+                    isLastAccount={
+                      idx === plaidLinks?.data?.success?.length - 1
+                    }
+                  />
+                )
+              )}
+            </>
+          ) : null}
+
+          {plaidLinks?.data?.success?.length > 0 ? (
+            <div className="mx-[-64px]">
               <RenderPlaidLinksTable
                 connectedAccounts={
                   plaidLinks?.data?.success as ConnectedAccounts[]
@@ -158,12 +158,20 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             </div>
           ) : null}
 
-          {plaidLinks?.data?.success ? (
-            <SwipeableAccounts
-              institutionName={plaidLinks?.data?.success?.[0]?.institutionName}
-              accounts={plaidLinks?.data?.success?.[0]?.accounts}
-            />
+          {true ? (
+            <div className="mx-[-55px] mt-[18px]">
+              <RenderTransactionsTable
+                transactions={transactions?.success?.accounts?.added}
+              />
+            </div>
           ) : null}
+
+          <TestComponent
+            linkSuccessful={linkSuccessful}
+            getAccounts={getAccounts}
+            getDebts={getDebts}
+            getTransactions={getTransactions}
+          />
         </div>
       </div>
     </div>
