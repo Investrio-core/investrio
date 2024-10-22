@@ -59,6 +59,7 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     resetAccountCategory,
     resetItemAccountsCategories,
     getAllClassifiedLinkId,
+    linksLoading,
   } = usePlaidLinks();
 
   const { open, ready, token, linkCreating, linkSuccessful, newLinkItemId } =
@@ -222,17 +223,18 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
 
           {/* {plaidLinks?.data?.success?.length > 0 &&
           unclassifiedAccounts?.length === 0 ? ( */}
-          <div className="mx-[-64px]">
-            <RenderPlaidLinksTable
-              connectedAccounts={
-                plaidLinks?.data?.success as ConnectedAccounts[]
-              }
-              resetAccountCategory={resetAccountCategory}
-              resetItemAccountsCategories={resetItemAccountsCategories}
-              // canReset={}
-            />
-          </div>
-          {/* ) : null} */}
+          {!linksLoading ? (
+            <div className="mx-[-64px]">
+              <RenderPlaidLinksTable
+                connectedAccounts={
+                  plaidLinks?.data?.success as ConnectedAccounts[]
+                }
+                resetAccountCategory={resetAccountCategory}
+                resetItemAccountsCategories={resetItemAccountsCategories}
+                // canReset={}
+              />
+            </div>
+          ) : null}
 
           {unclassifiedAccounts?.length === 0 ? (
             <div className="mx-[-55px] mt-[18px]">
