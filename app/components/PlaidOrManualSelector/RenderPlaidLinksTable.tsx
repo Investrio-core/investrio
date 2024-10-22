@@ -43,6 +43,7 @@ import {
   FileText,
   BarChart2,
   Download,
+  Eraser,
   CheckCircle,
   ChevronUp,
   ChevronDown,
@@ -50,6 +51,7 @@ import {
   Shuffle,
   HelpCircle,
 } from "lucide-react";
+import { AxiosResponse } from "axios";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(3),
@@ -125,7 +127,7 @@ const typeIcons = (key: string, color = "black") => {
     brokerage: <BarChart2 size={16} color={color} />,
     other: <Inbox size={16} color={color} />,
   };
-  return icons[key];
+  return icons[key as keyof typeof icons];
 };
 
 // Icon map for account subtypes
@@ -294,6 +296,7 @@ export interface Account {
   subtype: string;
   imported: boolean;
   accountCategory?: string;
+  itemId: string;
 }
 
 export interface ConnectedAccounts {
@@ -303,6 +306,8 @@ export interface ConnectedAccounts {
 }
 
 interface Props {
+  resetAccountCategory: (id: string, itemId: string) => AxiosResponse<any, any>;
+  resetItemAccountsCategories: (itemId: string) => AxiosResponse<any, any>;
   connectedAccounts: {
     institutionName: string;
     accounts: {
@@ -311,7 +316,8 @@ interface Props {
       type: string;
       subtype: string;
       accountCategory?: string;
-      imported: boolean;
+      // imported: boolean;
+      itemId: string;
     }[];
   }[];
 }
@@ -326,7 +332,11 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
 }));
 
-export default function Component({ connectedAccounts }: Props) {
+export default function Component({
+  connectedAccounts,
+  resetAccountCategory,
+  resetItemAccountsCategories,
+}: Props) {
   const [expandedBanks, setExpandedBanks] = useState<{
     [key: string]: boolean;
   }>({});
@@ -398,16 +408,30 @@ export default function Component({ connectedAccounts }: Props) {
                 </Box>
               }
               action={
-                <IconButton
-                  onClick={() => handleExpandClick(institution.institutionName)}
-                  sx={{ color: "white" }}
-                >
-                  {expandedBanks[institution.institutionName] ? (
-                    <ChevronUp size={24} />
-                  ) : (
-                    <ChevronDown size={24} />
-                  )}
-                </IconButton>
+                <div className="flex gap-[8px]">
+                  <IconButton
+                    onClick={() => {
+                      resetItemAccountsCategories(
+                        institution?.itemId ??
+                          institution?.accounts?.[0]?.itemId
+                      );
+                    }}
+                  >
+                    <Eraser sx={{ width: 16, height: 16 }} color="white" />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      handleExpandClick(institution.institutionName)
+                    }
+                    sx={{ color: "white" }}
+                  >
+                    {expandedBanks[institution.institutionName] ? (
+                      <ChevronUp size={24} />
+                    ) : (
+                      <ChevronDown size={24} />
+                    )}
+                  </IconButton>
+                </div>
               }
               title={
                 <Typography variant="h6">
@@ -422,10 +446,10 @@ export default function Component({ connectedAccounts }: Props) {
                     <TableHead>
                       <TableRow>
                         <TableCell>Account Name</TableCell>
+                        <TableCell>Category</TableCell>
                         <TableCell>Type</TableCell>
                         <TableCell>Subtype</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell align="right">Import</TableCell>
+                        <TableCell align="right">Reset</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -444,6 +468,45 @@ export default function Component({ connectedAccounts }: Props) {
                               ] || <Inbox size={16} />}
                               <span>{account.name}</span>
                             </Box>
+                          </TableCell>
+                          <TableCell>
+                            <StyledChip
+                              onClick={() => {
+                                if (account.accountCategory) {
+                                  resetAccountCategory(
+                                    account.id,
+                                    account.itemId
+                                  );
+                                }
+                              }}
+                              icon={
+                                categoryIcons[
+                                  (account.accountCategory as keyof typeof categoryIcons) ??
+                                    "UNCLASSIFIED"
+                                ]
+                              }
+                              label={account.accountCategory ?? "UNCLASSIFIED"}
+                              size="small"
+                              sx={{
+                                backgroundColor:
+                                  categoryColors[
+                                    (account?.accountCategory ??
+                                      "UNCLASSIFIED") as keyof typeof categoryIcons
+                                  ].bg,
+                                color:
+                                  categoryColors[
+                                    (account?.accountCategory ??
+                                      "UNCLASSIFIED") as keyof typeof categoryIcons
+                                  ].text,
+                                "& .MuiChip-icon": {
+                                  color:
+                                    categoryColors[
+                                      (account?.accountCategory ??
+                                        "UNCLASSIFIED") as keyof typeof categoryIcons
+                                    ].text,
+                                },
+                              }}
+                            />
                           </TableCell>
                           <TableCell>
                             <StyledChip
@@ -485,38 +548,9 @@ export default function Component({ connectedAccounts }: Props) {
                               variant="outlined"
                             />
                           </TableCell>
-                          <TableCell>
-                            <StyledChip
-                              icon={
-                                categoryIcons[
-                                  account.accountCategory as keyof typeof categoryIcons
-                                ]
-                              }
-                              label={account.accountCategory ?? "UNCLASSIFIED"}
-                              size="small"
-                              sx={{
-                                backgroundColor:
-                                  categoryColors[
-                                    (account?.accountCategory ??
-                                      "UNCLASSIFIED") as keyof typeof categoryIcons
-                                  ].bg,
-                                color:
-                                  categoryColors[
-                                    (account?.accountCategory ??
-                                      "UNCLASSIFIED") as keyof typeof categoryIcons
-                                  ].text,
-                                "& .MuiChip-icon": {
-                                  color:
-                                    categoryColors[
-                                      (account?.accountCategory ??
-                                        "UNCLASSIFIED") as keyof typeof categoryIcons
-                                    ].text,
-                                },
-                              }}
-                            />
-                          </TableCell>
+
                           <TableCell align="right">
-                            {account.imported ? (
+                            {!account.accountCategory ? (
                               <IconButton disabled>
                                 <CheckCircle
                                   sx={{
@@ -527,8 +561,17 @@ export default function Component({ connectedAccounts }: Props) {
                                 />
                               </IconButton>
                             ) : (
-                              <IconButton>
-                                <Download sx={{ width: 16, height: 16 }} />
+                              <IconButton
+                                onClick={() => {
+                                  if (account.accountCategory) {
+                                    resetAccountCategory(
+                                      account.id,
+                                      account.itemId
+                                    );
+                                  }
+                                }}
+                              >
+                                <Eraser sx={{ width: 16, height: 16 }} />
                               </IconButton>
                             )}
                           </TableCell>
