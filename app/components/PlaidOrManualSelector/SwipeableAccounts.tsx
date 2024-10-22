@@ -2,7 +2,7 @@ import usePlaidLinks from "@/app/hooks/plaid/usePlaidLinks";
 import ItemSwiper from "../ItemSwiper/ItemSwiper";
 import { Account } from "./RenderPlaidLinksTable";
 import SwipeableAccountFront from "./SwipeableAccountFront";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 function getOrdinal(day: number) {
   if (day > 3 && day < 21) return day + "th";
@@ -124,16 +124,26 @@ function SwipeableAccounts({
     });
   };
 
-  const itemsToClassify = accounts
-    ?.filter((acc: Item) => acc.accountCategory === null)
-    ?.map((acc: Item) =>
-      convertAccountToSwipeable(
-        institutionName,
-        acc,
-        acc?.createdAt ? new Date(acc.createdAt) : new Date()
-        // date
-      )
-    );
+  const itemsToClassify = useMemo(
+    () =>
+      accounts
+        ?.filter(
+          (acc: Item) => acc.accountCategory === null
+          //   ||
+          // (acc.accountCategory !== "Mixed" &&
+          //   acc.accountCategory !== "Business" &&
+          //   acc.accountCategory !== "Personal")
+        )
+        ?.map((acc: Item) =>
+          convertAccountToSwipeable(
+            institutionName,
+            acc,
+            acc?.createdAt ? new Date(acc.createdAt) : new Date()
+            // date
+          )
+        ),
+    [accounts]
+  );
 
   if (!isLastAccount && itemsToClassify?.length === 0) {
     return <></>;
@@ -144,6 +154,11 @@ function SwipeableAccounts({
     console.log(accounts);
   }, [accounts]);
 
+  useEffect(() => {
+    console.log("items to classify changed");
+    console.log(itemsToClassify);
+    console.log(itemsToClassify?.length);
+  }, [itemsToClassify]);
   return (
     <ItemSwiper<Item>
       extraCategory={{ label: "Mixed", value: "Mixed" }}
