@@ -113,6 +113,8 @@ const CategoryBlockItem = ({
     return `${toFixed(percentage, 2)}%`;
   };
 
+  console.log("total items value");
+  console.log(totalItemsValue);
   /*
   {
     "name": "Visaz",
@@ -345,7 +347,7 @@ const CategoryBlockItem = ({
           ACTUAL
         </div>
         <div className="w-1/6 mr-[9%] lg:w-1/6 text-left text-[#8e8ecc] font-semibold text-md">
-          {calculateActualPercentage()}
+          {totalItemsValue !== undefined ? calculateActualPercentage() : "0%"}
         </div>
         <div className="w-2/6 lg:w-1/6 lg:text-right text-[#03091d] font-medium text-md">
           {totalItemsValue !== 0 ? formatCurrency(totalItemsValue) : "-"}
