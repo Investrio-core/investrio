@@ -165,6 +165,18 @@ export default function ItemSwiper<T>({
 
   const noItems = items?.length === 0 || items?.[0] === undefined;
 
+  useEffect(() => {
+    console.log("changes received in itemSwiper");
+    console.log("itemsToClassify", itemsToClassify);
+    if (items?.length === 0 && itemsToClassify?.length > 0) {
+      setItems(itemsToClassify);
+    } else if (items?.length !== itemsToClassify?.length) {
+      const ids = items.map((item) => item.id);
+      const filtered = itemsToClassify.filter((item) => !ids.includes(item.id));
+      setItems((prevState) => [...items, ...filtered]);
+    }
+  }, [itemsToClassify]);
+
   return (
     // <div className="min-h-screen bg-gradient-to-b from-[#7F3DFF] via-[#9966FF] to-[#7F3DFF] text-white p-4 sm:p-6 flex flex-col">
     <div
