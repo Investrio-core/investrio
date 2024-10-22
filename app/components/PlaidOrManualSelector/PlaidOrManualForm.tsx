@@ -1,5 +1,7 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import { LightButton, SimpleButton } from "../ui/buttons";
 import PlaidItemLoading from "./PlaidItemLoading";
+import PlaidLogo from "./PlaidLogo";
 
 interface Props {
   title: string;
@@ -18,19 +20,32 @@ export default function PlaidOrManualForm({
   ready,
   showManualOption,
 }: Props) {
+  const plaidButtonStyles = !showManualOption
+    ? { position: "relative", top: "2.05rem" }
+    : {};
   return (
     <>
-      <div className="text-[#100d40] text-2xl font-semibold leading-[33.60px] mt-[46px] mb-[11px] text-center">
-        {title}
-      </div>
-      <div className="text-[#747682] text-base font-normal mb-[41px] text-center">
-        {blurb}
-      </div>
-      <div className="px-[31px]">
-        <div className="text-[#03091d] text-xl font-medium text-center mb-[34px]">
-          Enter your data:
+      {showManualOption ? (
+        <div className="text-[#100d40] text-2xl font-semibold leading-[33.60px] mt-[46px] mb-[11px] text-center">
+          {title}
         </div>
-        <div className="mb-[80px]">
+      ) : null}
+      {showManualOption ? (
+        <div className="text-[#747682] text-base font-normal mb-[41px] text-center">
+          {blurb}
+        </div>
+      ) : null}
+      <div className="px-[31px]">
+        {showManualOption ? (
+          <div className="text-[#03091d] text-xl font-medium text-center mb-[34px]">
+            Enter your data
+          </div>
+        ) : null}
+        <div
+          className={`${
+            showManualOption ? "mb-[80px]" : "mb-[12px] mt-[12px]"
+          }`}
+        >
           {showManualOption ? (
             <SimpleButton
               text="Manual"
@@ -53,6 +68,7 @@ export default function PlaidOrManualForm({
               alignItems: "center",
               gap: 10,
               display: "inline-flex",
+              ...plaidButtonStyles,
             }}
             onClick={() => open()}
             disabled={!ready}
@@ -61,9 +77,29 @@ export default function PlaidOrManualForm({
               style={{
                 textAlign: "center",
                 color: "#8833FF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                justifyItems: "center",
+                gap: 6,
               }}
             >
-              {ready ? "Plaid" : "Loading Plaid"}
+              {/* <PlaidLogo width={22} height={22} /> */}
+
+              {ready ? (
+                <>
+                  <PlaidLogo width={22} height={22} />
+                  <span className="text-black font-bold">
+                    {showManualOption ? "Plaid Connect" : "Add Account"}
+                    {/* Plaid */}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <CircularProgress size="22px" />
+                  <span>Loading Plaid</span>
+                </>
+              )}
             </div>
           </button>
         </div>
