@@ -110,10 +110,13 @@ export default function usePlaidLinks(date?: Date | null) {
         "are all accounts with this itemId classified, itemId: ",
         itemId
       );
+
+      console.log(data?.data?.success);
+
       const currentItemAccounts = data?.data?.success
-        ?.map((dataArr) => dataArr.accounts)
-        .flatMap()
-        .filter((acc: any) => acc.itemId === itemId);
+        // ?.map((dataArr) => dataArr.accounts)
+        ?.flatMap((dataArr) => dataArr.accounts)
+        ?.filter((acc: any) => acc.itemId === itemId);
 
       console.log(currentItemAccounts);
       const allAccountsClassified = currentItemAccounts?.every(
@@ -147,5 +150,6 @@ export default function usePlaidLinks(date?: Date | null) {
     resetAccountCategory,
     resetItemAccountsCategories,
     getAllClassifiedLinkId,
+    linksLoading: isLoading,
   };
 }
