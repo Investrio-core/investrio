@@ -21,7 +21,7 @@ export default function PlaidOrManualForm({
   showManualOption,
 }: Props) {
   const plaidButtonStyles = !showManualOption
-    ? { position: "relative", top: "2.05rem" }
+    ? { position: "relative", top: "1.2rem" }
     : {};
   return (
     <>
