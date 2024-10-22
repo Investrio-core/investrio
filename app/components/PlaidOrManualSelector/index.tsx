@@ -13,7 +13,7 @@ import PlaidItemLoading from "./PlaidItemLoading";
 import PlaidOrManualForm from "./PlaidOrManualForm";
 import RenderTransactionsTable from "./RenderTransactionsTable";
 import { link } from "fs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const TEST_ID = "cm2h4mki200015qng3h44hldb";
 
@@ -50,7 +50,16 @@ interface Props {
 // };
 
 const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
-  const { plaidLinks, refetch: refetchLinks, updateAccount } = usePlaidLinks();
+  const {
+    plaidLinks,
+    refetch: refetchLinks,
+    updateAccount,
+    allAccountsClassified,
+    getUnclassifiedAccounts,
+    resetAccountCategory,
+    resetItemAccountsCategories,
+  } = usePlaidLinks();
+
   const { open, ready, token, linkCreating, linkSuccessful, newLinkItemId } =
     usePlaidLink(undefined, refetchLinks);
 
@@ -67,26 +76,67 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     isAccountLoaded,
   } = usePlaidItem(newLinkItemId);
 
-  useEffect(() => {
-    if (
-      linkSuccessful &&
-      newLinkItemId &&
-      !isAccountLoaded(newLinkItemId) &&
-      !loadingData
-      //  &&
-      // !linkCreating &&
-      // !loadingData
-    ) {
-      console.log("-- IN HERE TO LOAD ALL DATA --");
-      loadAllDataFromLinkId(newLinkItemId);
-    }
-  }, [linkSuccessful, newLinkItemId, loadingData]);
+  // useEffect(() => {
+  //   console.log("all accounts are classfied?");
+  //   if (newLinkItemId) console.log(allAccountsClassified(newLinkItemId));
+
+  //   if (
+  //     linkSuccessful &&
+  //     newLinkItemId &&
+  //     !loadingData &&
+  //     accounts &&
+  //     accounts?.length > 0 &&
+  //     !isAccountLoaded(newLinkItemId) &&
+  //     // allAccountsClassified(newLinkItemId)
+  //     classifiedAccountsMap[newLinkItemId]
+  //     //  &&
+  //     // !linkCreating &&
+  //     // !loadingData
+  //   ) {
+  //     console.log("-- IN HERE TO LOAD ALL DATA --");
+  //     loadAllDataFromLinkId(newLinkItemId);
+  //   }
+  // }, [linkSuccessful, newLinkItemId, loadingData, accounts]);
 
   console.log("Plaid Links Data Success");
   console.log(plaidLinks?.data?.success);
 
   console.log("Transactions data success");
   console.log(transactions);
+
+  const [classifiedAccountsMap, setClassifiedAccountsMap] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [unclassifiedAccounts, setUnclassifiedAccounts] = useState<Item[]>([]);
+
+  useEffect(() => {
+    if (newLinkItemId) {
+      const classified = allAccountsClassified(newLinkItemId);
+      if (classified) {
+        setClassifiedAccountsMap((prevState) => {
+          return {
+            ...prevState,
+            [newLinkItemId]: classified,
+          };
+        });
+      }
+    } else {
+      const unclassifiedAccounts = getUnclassifiedAccounts();
+      console.log("there are unclassified accounts");
+      console.log(unclassifiedAccounts);
+      console.log(unclassifiedAccounts?.length);
+      setUnclassifiedAccounts(unclassifiedAccounts);
+    }
+  }, [plaidLinks?.data?.success, newLinkItemId]);
+
+  const onContinue = async () => {
+    if (newLinkItemId && classifiedAccountsMap[newLinkItemId]) {
+      await loadAllDataFromLinkId(newLinkItemId);
+      setShow(false);
+    } else {
+      setShow(false);
+    }
+  };
 
   return (
     <div
@@ -98,9 +148,8 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
       }}
     >
       {/* STEP 1: Form (Choose Manual or Plaid) */}
-      {!linkCreating &&
-      !loadingData &&
-      !(plaidLinks?.data?.success?.length > 0) ? (
+      {(!linkCreating && !loadingData && unclassifiedAccounts?.length === 0) ||
+      (newLinkItemId && classifiedAccountsMap?.[newLinkItemId]) ? (
         <PlaidOrManualForm
           title={title}
           blurb={blurb}
@@ -108,7 +157,7 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
           setShow={setShow}
           ready={ready}
           key={0}
-          showManualOption={true}
+          showManualOption={!(plaidLinks?.data?.success?.length > 0)}
         />
       ) : null}
 
@@ -142,23 +191,39 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
                     isLastAccount={
                       idx === plaidLinks?.data?.success?.length - 1
                     }
+                    handleProceed={onContinue}
                   />
                 )
               )}
             </>
           ) : null}
 
-          {plaidLinks?.data?.success?.length > 0 ? (
+          {/* {unclassifiedAccounts?.length > 0 ? (
+            <>
+              <SwipeableAccounts
+                institutionName={""}
+                accounts={unclassifiedAccounts as Item[]}
+                isLastAccount={true}
+                handleProceed={onContinue}
+              />
+            </>
+          ) : null} */}
+
+          {plaidLinks?.data?.success?.length > 0 &&
+          unclassifiedAccounts?.length === 0 ? (
             <div className="mx-[-64px]">
               <RenderPlaidLinksTable
                 connectedAccounts={
                   plaidLinks?.data?.success as ConnectedAccounts[]
                 }
+                resetAccountCategory={resetAccountCategory}
+                resetItemAccountsCategories={resetItemAccountsCategories}
+                
               />
             </div>
           ) : null}
 
-          {true ? (
+          {unclassifiedAccounts?.length === 0 ? (
             <div className="mx-[-55px] mt-[18px]">
               <RenderTransactionsTable
                 transactions={transactions?.success?.accounts?.added}
@@ -166,12 +231,15 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             </div>
           ) : null}
 
-          <TestComponent
-            linkSuccessful={linkSuccessful}
-            getAccounts={getAccounts}
-            getDebts={getDebts}
-            getTransactions={getTransactions}
-          />
+          {unclassifiedAccounts?.length === 0 ? (
+            <TestComponent
+              linkSuccessful={linkSuccessful}
+              getAccounts={getAccounts}
+              getDebts={getDebts}
+              getTransactions={getTransactions}
+              id={newLinkItemId ?? plaidLinks?.data?.success?.linkId}
+            />
+          ) : null}
         </div>
       </div>
     </div>
@@ -183,11 +251,13 @@ const TestComponent = ({
   getAccounts,
   getDebts,
   getTransactions,
+  id,
 }: {
   linkSuccessful: boolean;
   getAccounts: Function;
   getDebts: Function;
   getTransactions: Function;
+  id: string;
 }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -208,7 +278,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getAccounts(TEST_ID)}
+          onClick={() => getAccounts(id)}
         >
           <div
             style={{
@@ -236,7 +306,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getDebts(TEST_ID)}
+          onClick={() => getDebts(id)}
         >
           <div
             style={{
@@ -264,7 +334,7 @@ const TestComponent = ({
             marginBottom: "8px",
             display: "inline-flex",
           }}
-          onClick={() => getTransactions(TEST_ID)}
+          onClick={() => getTransactions(id)}
         >
           <div
             style={{
