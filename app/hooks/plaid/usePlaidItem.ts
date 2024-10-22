@@ -1,13 +1,4 @@
-import React, { useCallback, useState } from "react";
-
-import {
-  usePlaidLink,
-  PlaidLinkOnSuccess,
-  PlaidLinkOnEvent,
-  PlaidLinkOnExit,
-  PlaidLinkOptions,
-  PlaidLinkOnSuccessMetadata,
-} from "react-plaid-link";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import useAxiosAuth from "@/app/hooks/useAxiosAuth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,20 +27,14 @@ const usePlaidItem = (itemId?: string) => {
   const [loadedAccounts, setLoadedAccounts] = useState<Set<string>>(new Set());
 
   const session = useSession();
-  const userId = session.data?.user?.id; // .email
+  // const userId = session.data?.user?.id; // .email
 
-  // get a link_token from your API when component mounts
+  // Get the accounts and finish with the classification process before moving on to 
+  // transactions and debts
   const getAccounts = async (linkId: string) => {
-    //   const response = await fetch("/api/plaid/generateToken", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       userId,
-    //       itemId: itemId ?? null,
-    //     }),
-    //   });
-
-    console.log("making request");
-
+    setLoadingData(true);
+    setLoadStepInProgress("accounts");
+    
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getAccounts" as KeyQuery,
       linkId,
@@ -59,19 +44,11 @@ const usePlaidItem = (itemId?: string) => {
     console.log(response?.data);
     setAccounts(response?.data);
     refetchBudget();
+    setLoadingData(false);
     return response;
   };
 
   const getTransactions = async (linkId: string) => {
-    //   const response = await fetch("/api/plaid/generateToken", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       userId,
-    //       itemId: itemId ?? null,
-    //     }),
-    //   });
-    console.log("making request");
-
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getTransactions" as KeyQuery,
       linkId,
@@ -84,15 +61,6 @@ const usePlaidItem = (itemId?: string) => {
   };
 
   const getDebts = async (linkId: string) => {
-    //   const response = await fetch("/api/plaid/generateToken", {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       userId,
-    //       itemId: itemId ?? null,
-    //     }),
-    //   });
-    console.log("making request");
-
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getDebts" as KeyQuery,
       linkId,
@@ -115,10 +83,10 @@ const usePlaidItem = (itemId?: string) => {
       return {};
     }
 
-    setLoadingData(true);
+    // setLoadingData(true);
 
-    setLoadStepInProgress("accounts");
-    const accResp = await getAccounts(linkId);
+    // setLoadStepInProgress("accounts");
+    // const accResp = await getAccounts(linkId);
 
     setLoadStepInProgress("debts");
     const debtResp = await getDebts(linkId);
@@ -133,7 +101,7 @@ const usePlaidItem = (itemId?: string) => {
       return newSet;
     });
 
-    return { accounts: accResp, debts: debtResp, transactions: transResp };
+    return { debts: debtResp, transactions: transResp };
   };
 
   const isAccountLoaded = (itemId: string) => {
