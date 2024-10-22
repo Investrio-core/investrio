@@ -6,15 +6,33 @@ import {
   FiPlusSquare,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  SetStateAction,
+  useState,
+} from "react";
 import { IconType } from "react-icons";
 import Image from "next/image";
 import Divider from "@mui/material/Divider";
+import { LucideProps } from "lucide-react";
 
-export type OptionType = { label: string; icon: IconType; onClick?: Function, addDividerAfter?: boolean }[];
+export type OptionType = {
+  label: string;
+  icon:
+    | IconType
+    | JSX.Element
+    | ForwardRefExoticComponent<
+        Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+      >
+    | (() => JSX.Element);
+  onClick?: Function;
+  addDividerAfter?: boolean;
+}[];
 
 interface Props {
-  options: { label: string; icon: IconType; onClick: Function }[];
+  options: OptionType;
   menuTitle: string;
   menuIcon?: React.ReactElement;
   renderImage: boolean;
@@ -22,6 +40,7 @@ interface Props {
   className?: string;
   outerClassName?: string;
   renderChevron?: boolean;
+  fontSize?: string | number;
 }
 
 const AnimatedDropdownMenu = ({
@@ -33,6 +52,7 @@ const AnimatedDropdownMenu = ({
   className,
   outerClassName,
   renderChevron,
+  fontSize,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -53,8 +73,9 @@ const AnimatedDropdownMenu = ({
       ) : null}
       <div
         className={
-          `${outerClassName} relative flex items-center justify-center` ??
-          "flex items-center justify-center bg-white relative"
+          outerClassName
+            ? `${outerClassName} relative flex items-center justify-center`
+            : "flex items-center justify-center bg-white relative"
         }
       >
         <motion.div animate={open ? "open" : "closed"} className="relative">
@@ -99,8 +120,14 @@ const AnimatedDropdownMenu = ({
           >
             {options.map(({ onClick, label, icon, addDividerAfter }) => (
               <>
-              <Option key={label} onClick={onClick} text={label} Icon={icon} />
-              {addDividerAfter ? <Divider/> : null}
+                <Option
+                  key={label}
+                  onClick={onClick}
+                  text={label}
+                  Icon={icon}
+                  fontSize={fontSize}
+                />
+                {addDividerAfter ? <Divider /> : null}
               </>
             ))}
           </motion.ul>
@@ -112,22 +139,23 @@ const AnimatedDropdownMenu = ({
 
 interface OptionProps {
   text: string;
-  Icon: IconType;
-  onClick: Function;
+  Icon: IconType | JSX.Element;
+  onClick?: Function;
+  fontSize?: string | number;
 }
 
-const Option = ({ text, Icon, onClick }: OptionProps) => {
+const Option = ({ text, Icon, onClick, fontSize }: OptionProps) => {
   return (
     <motion.li
       key={text}
       variants={itemVariants}
-      onClick={() => onClick()}
+      onClick={() => onClick && onClick()}
       className="relative flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap rounded-md hover:bg-indigo-100 text-slate-700 hover:text-indigo-500 transition-colors cursor-pointer"
     >
       <motion.span variants={actionIconVariants}>
         <Icon />
       </motion.span>
-      <span>{text}</span>
+      <span style={{ fontSize }}>{text}</span>
     </motion.li>
   );
 };
