@@ -17,6 +17,19 @@ export default function usePlaidLinks(date?: Date | null) {
   // const year = date?.getFullYear() ?? new Date().getFullYear();
   // const month = date?.getMonth() ?? new Date().getMonth();
 
+  const getAllClassifiedLinkId = () => {
+    const linkIds = data?.data?.success
+      // ?.map((dataArr) => dataArr.accounts))
+      ?.flatMap((dataArr) => dataArr.accounts)
+      ?.map((acc) => acc.itemId);
+
+    for (const linkId of linkIds) {
+      if (allAccountsClassified(linkId)) {
+        return linkId;
+      }
+    }
+  };
+
   const resetItemAccountsCategories = async (itemId: string) => {
     console.log("resetting accounts");
     console.log(itemId);
@@ -64,16 +77,6 @@ export default function usePlaidLinks(date?: Date | null) {
     acc.accountCategory === "Mixed";
 
   const getUnclassifiedAccounts = () => {
-    console.log("accounts");
-    console.log(data);
-    console.log(data?.data?.success);
-    console.log(
-      data?.data?.success
-        // ?.map((dataArr) => dataArr.accounts)
-        ?.flatMap((dataArr) => dataArr.accounts)
-        ?.filter((acc) => !isClassifiedPredicate(acc))
-    );
-
     return (
       data?.data?.success
         // ?.map((dataArr) => dataArr.accounts))
@@ -107,9 +110,11 @@ export default function usePlaidLinks(date?: Date | null) {
         "are all accounts with this itemId classified, itemId: ",
         itemId
       );
-      const currentItemAccounts = data?.data?.success?.accounts?.filter(
-        (acc: any) => acc.itemId === itemId
-      );
+      const currentItemAccounts = data?.data?.success
+        ?.map((dataArr) => dataArr.accounts)
+        .flatMap()
+        .filter((acc: any) => acc.itemId === itemId);
+
       console.log(currentItemAccounts);
       const allAccountsClassified = currentItemAccounts?.every(
         isClassifiedPredicate
@@ -141,5 +146,6 @@ export default function usePlaidLinks(date?: Date | null) {
     getUnclassifiedAccounts,
     resetAccountCategory,
     resetItemAccountsCategories,
+    getAllClassifiedLinkId,
   };
 }
