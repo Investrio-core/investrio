@@ -20,6 +20,10 @@ import confetti from "canvas-confetti";
 import SwipeRightIcon from "@/public/icons/material-symbols_swipe-right.svg";
 import SwipeLeftIcon from "@/public/icons/material-symbols_swipe-left.svg";
 
+// const SWIPE_BUTTON_STYLES = `border-[#8833ff] border-[1px] bg-black/[0.66] shadow-lg h-12 px-4 py-3 bg-[#b9b0e6] bg-black/[0.66] rounded-[100px] justify-start items-center gap-3 inline-flex`;
+const SWIPE_BUTTON_STYLES = `border-[#352068] border-[1px] shadow shadow-lg border-[2px] h-12 px-4 py-3 bg-[#b9b0e6] rounded-[100px] justify-start items-center gap-3 inline-flex`;
+// const SWIPE_BUTTON_STYLES = `absolute top-[-60px] h-12 px-4 py-3 bg-[#b9b0e6] rounded-[100px] justify-start items-center gap-3 inline-flex`
+
 const expenses = [
   {
     id: 1,
@@ -72,6 +76,7 @@ interface Props<T> {
   RenderToBack?: (item: T) => JSX.Element;
   cardHeight?: string | number;
   maxHeight?: string | number;
+  handleProceed: Function;
 }
 
 export default function ItemSwiper<T>({
@@ -83,6 +88,7 @@ export default function ItemSwiper<T>({
   RenderToBack,
   cardHeight,
   maxHeight,
+  handleProceed,
 }: Props<T>) {
   const [items, setItems] = useState(itemsToClassify ?? expenses);
   const [flipped, setFlipped] = useState(false);
@@ -145,7 +151,7 @@ export default function ItemSwiper<T>({
     return { x: 0, rotate: index % 2 === 0 ? -4.453 : 4.782, opacity: 1 };
   };
 
-  const calculateTopPosition = (cardHeight: string | number) => {
+  const calculateTopPosition = (cardHeight?: string | number) => {
     if (cardHeight === undefined) return 0;
     if (typeof cardHeight === "number") {
       return cardHeight / 2;
@@ -203,15 +209,9 @@ export default function ItemSwiper<T>({
       >
         {items.length > 0 ? (
           <div className="mb-6">
-            Swipe Your {label !== undefined ? label : "Accounts"}
+            Swipe To Classify Your {label !== undefined ? label : "Accounts"}
           </div>
-        ) : (
-          <div className="flex items-center justify-center">
-            <div>🎉</div>
-            <div>Classification Complete</div>
-            <div>🎉</div>
-          </div>
-        )}
+        ) : null}
       </p>
 
       <div className="absolute top-[20%] right-0 w-[524px] h-[724px] bg-[#b9b0e6]/75 rounded-full blur-[200px]" />
@@ -223,9 +223,6 @@ export default function ItemSwiper<T>({
         <AnimatePresence mode="popLayout">
           {items.length > 0 ? (
             items.map((item, index) => {
-              // console.log("item");
-              // console.log(item);
-
               const isCurrentItem = index === 0;
               const { x, rotate, opacity } = getMotionValues(index);
               return (
@@ -366,12 +363,21 @@ export default function ItemSwiper<T>({
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl shadow-lg p-6 text-center"
+              className="min-h-[80%] bg-black/[0.66] border-[3px] border-black rounded-3xl shadow-lg p-6 text-center flex flex-col items-between justify-around"
+              // style={{
+              //   maxWidth: 350,
+
+              //   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+              //   //   background: "linear-gradient(135deg, #00b9ff 0%, #00d1c4 100%)",
+              //   //   background: "linear-gradient(135deg, #8833ff 0%,  #00d1c4 100%)",
+              //   background:
+              //     "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+              //   color: "white",
+              // }}
             >
-              <h2 className="text-2xl font-bold text-[#7F3DFF] mb-4">
-                All Done!
-              </h2>
-              <p className="text-gray-600">
+              <h2 className="text-4xl font-bold text-white mb-4">All Done!</h2>
+              <p style={{ fontSize: "6rem" }}>🎉</p>
+              <p className="text-white text-1xl font-bold">
                 You've classified all your {label}.
               </p>
             </motion.div>
@@ -382,11 +388,14 @@ export default function ItemSwiper<T>({
       <div className="flex justify-center gap-[24px] z-399 relative max-w-[100%]">
         {!noItems ? (
           <button
-            className={`border-[#8833ff] border-[1px] shadow-lg h-12 px-4 py-3 bg-[#b9b0e6] bg-black/[0.66] ${
+            className={`${SWIPE_BUTTON_STYLES} ${
               noItems ? "/25" : ""
-            } rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            } bg-[#b9b0e6] bg-black/[0.66]`}
             onClick={() => handleSwipe("left", items?.[0])}
             disabled={noItems}
+            // style={{
+            //   background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+            // }}
           >
             <SwipeLeftIcon size={16} className="sm:w-5 sm:h-5" />
             <span className="text-white text-sm font-bold font-['Sora']">
@@ -396,11 +405,16 @@ export default function ItemSwiper<T>({
         ) : null}
         {noItems ? (
           <button
-            className={`relative top-[-45px] h-12 px-4 py-3 bg-[#b9b0e6] rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            className={`${SWIPE_BUTTON_STYLES} ${
+              noItems ? "" : ""
+            } bg-[#b9b0e6] bg-black/[0.66] `}
             onClick={() =>
-              handleSwipe(undefined, items?.[0], extraCategory.value)
+              // handleSwipe(undefined, items?.[0], extraCategory.value)
+              handleProceed()
             }
-            disabled={noItems}
+            // style={{
+            //   background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+            // }}
           >
             <ArrowBigRightDash
               size={24}
@@ -412,14 +426,41 @@ export default function ItemSwiper<T>({
             </span>
           </button>
         ) : null}
-        {extraCategory && !noItems ? (
+        {/* {noItems ? (
           <button
-            className={`absolute top-[-60px] h-12 px-4 py-3 bg-[#b9b0e6] ${
-              noItems ? "" : ""
-            } rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            className={`${{
+              SWIPE_BUTTON_STYLES,
+            }} relative top-[-45px] bg-[#b9b0e6] bg-black/[0.66]`}
             onClick={() =>
               handleSwipe(undefined, items?.[0], extraCategory.value)
             }
+            // style={{
+            //   background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+            // }}
+          >
+            <ArrowBigRightDash
+              size={24}
+              className="sm:w-5 sm:h-5"
+              color="white"
+            />
+            <span className="text-white text-sm font-bold font-['Sora']">
+              Continue
+            </span>
+          </button>
+        ) : null} */}
+
+        {extraCategory && !noItems ? (
+          <button
+            className={`${SWIPE_BUTTON_STYLES} ${
+              noItems ? "" : ""
+            } absolute top-[-65px] bg-[#b9b0e6] bg-black/[0.66] `}
+            onClick={() =>
+              // handleSwipe(undefined, items?.[0], extraCategory.value)
+              handleProceed()
+            }
+            // style={{
+            //   background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
+            // }}
             disabled={noItems}
           >
             <Merge size={24} className="sm:w-5 sm:h-5" color="white" />
@@ -430,9 +471,7 @@ export default function ItemSwiper<T>({
         ) : null}
         {!noItems ? (
           <button
-            className={`border-[#352068] border-[2px] h-12 px-4 py-3 bg-[#b9b0e6] ${
-              noItems ? "/25" : ""
-            } rounded-[100px] justify-start items-center gap-3 inline-flex`}
+            className={`${SWIPE_BUTTON_STYLES} ${noItems ? "/25" : ""}`}
             onClick={() => handleSwipe("right", items?.[0])}
             disabled={noItems}
             style={{
