@@ -211,12 +211,6 @@ export default function SwipeableAccountFront({
     return subtypeIcons(category);
   };
 
-  console.log("should have mask");
-  console.log(mask);
-
-  console.log("else");
-  console.log(rest);
-
   return (
     <StyledCard>
       <CardContent sx={{ pt: 12, pb: 3 }}>
