@@ -182,16 +182,18 @@ const CategoryBlockCollapsible = ({
       {collapsableCategories.map((category, idx) => {
         console.log(category);
         console.log(combinedCategories);
-        console.log(combinedCategories[category.name]);
-        const items = budgetInfo[category.name];
-        const totalItemsValue = items.reduce((p, c) => {
+        console.log(combinedCategories[category?.name]);
+        const items = budgetInfo?.[category.name];
+        const totalItemsValue = items?.reduce((p, c) => {
           if (c["initialBalance"]) {
             return p + c["initialBalance"];
           }
           return p;
         }, 0);
 
-        const actualPercentage = `${category.percent ?? 0}%`;
+        const actualPercentage = `${
+          category.percent && category.percent !== "NaN" ? category.percent : 0
+        }%`;
 
         return (
           <div
