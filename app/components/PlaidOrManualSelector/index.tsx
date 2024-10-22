@@ -58,6 +58,7 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
     getUnclassifiedAccounts,
     resetAccountCategory,
     resetItemAccountsCategories,
+    getAllClassifiedLinkId,
   } = usePlaidLinks();
 
   const { open, ready, token, linkCreating, linkSuccessful, newLinkItemId } =
@@ -130,8 +131,16 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
   }, [plaidLinks?.data?.success, newLinkItemId]);
 
   const onContinue = async () => {
+    let useThisLinkId: string | undefined;
+    if (!newLinkItemId) {
+      useThisLinkId = getAllClassifiedLinkId();
+    }
+
     if (newLinkItemId && classifiedAccountsMap[newLinkItemId]) {
       await loadAllDataFromLinkId(newLinkItemId);
+      setShow(false);
+    } else if (useThisLinkId) {
+      await loadAllDataFromLinkId(useThisLinkId);
       setShow(false);
     } else {
       setShow(false);
@@ -181,22 +190,24 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             />
           ) : null} */}
 
-          {plaidLinks?.data?.success ? (
-            <>
-              {plaidLinks?.data?.success?.map(
-                (nextResult: ConnectedAccounts, idx: number) => (
-                  <SwipeableAccounts
-                    institutionName={nextResult?.institutionName}
-                    accounts={nextResult?.accounts as Item[]}
-                    isLastAccount={
-                      idx === plaidLinks?.data?.success?.length - 1
-                    }
-                    handleProceed={onContinue}
-                  />
-                )
-              )}
-            </>
-          ) : null}
+          {plaidLinks?.data?.success?.map(
+            (nextResult: ConnectedAccounts, idx: number) => (
+              <SwipeableAccounts
+                institutionName={nextResult?.institutionName}
+                accounts={nextResult?.accounts as Item[]}
+                isLastAccount={idx === plaidLinks?.data?.success?.length - 1}
+                handleProceed={onContinue}
+              />
+            )
+          )}
+          {/*           
+             <SwipeableAccounts
+               institutionName={""}
+               accounts={unclassifiedAccounts as Item[]}
+              isLastAccount={true}
+               handleProceed={onContinue}
+             />
+           )} */}
 
           {/* {unclassifiedAccounts?.length > 0 ? (
             <>
@@ -209,19 +220,19 @@ const PlaidOrManualSelector = ({ title, blurb, setShow }: Props) => {
             </>
           ) : null} */}
 
-          {plaidLinks?.data?.success?.length > 0 &&
-          unclassifiedAccounts?.length === 0 ? (
-            <div className="mx-[-64px]">
-              <RenderPlaidLinksTable
-                connectedAccounts={
-                  plaidLinks?.data?.success as ConnectedAccounts[]
-                }
-                resetAccountCategory={resetAccountCategory}
-                resetItemAccountsCategories={resetItemAccountsCategories}
-                
-              />
-            </div>
-          ) : null}
+          {/* {plaidLinks?.data?.success?.length > 0 &&
+          unclassifiedAccounts?.length === 0 ? ( */}
+          <div className="mx-[-64px]">
+            <RenderPlaidLinksTable
+              connectedAccounts={
+                plaidLinks?.data?.success as ConnectedAccounts[]
+              }
+              resetAccountCategory={resetAccountCategory}
+              resetItemAccountsCategories={resetItemAccountsCategories}
+              // canReset={}
+            />
+          </div>
+          {/* ) : null} */}
 
           {unclassifiedAccounts?.length === 0 ? (
             <div className="mx-[-55px] mt-[18px]">
