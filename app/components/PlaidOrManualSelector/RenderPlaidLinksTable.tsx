@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -306,8 +306,13 @@ export interface ConnectedAccounts {
 }
 
 interface Props {
-  resetAccountCategory: (id: string, itemId: string) => AxiosResponse<any, any>;
-  resetItemAccountsCategories: (itemId: string) => AxiosResponse<any, any>;
+  resetAccountCategory: (
+    id: string,
+    itemId: string
+  ) => Promise<AxiosResponse<any, any>>;
+  resetItemAccountsCategories: (
+    itemId: string
+  ) => Promise<AxiosResponse<any, any>>;
   connectedAccounts: {
     institutionName: string;
     accounts: {
@@ -348,6 +353,12 @@ export default function Component({
     }));
   };
 
+  const hasSetAccounts = useMemo(() => {
+    return connectedAccounts?.some((institution) =>
+      institution.accounts?.some((account) => account.accountCategory !== null)
+    );
+  }, [connectedAccounts]);
+
   return (
     <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 8px" }}>
       <StyledContainer>
@@ -367,7 +378,7 @@ export default function Component({
         >
           Connected Accounts
         </Typography>
-        {connectedAccounts.map((institution) => (
+        {connectedAccounts?.map((institution) => (
           <StyledCard key={institution.institutionName}>
             <StyledCardHeader
               avatar={
@@ -410,6 +421,7 @@ export default function Component({
               action={
                 <div className="flex gap-[8px]">
                   <IconButton
+                    disabled={!hasSetAccounts}
                     onClick={() => {
                       resetItemAccountsCategories(
                         institution?.itemId ??
@@ -417,7 +429,10 @@ export default function Component({
                       );
                     }}
                   >
-                    <Eraser sx={{ width: 16, height: 16 }} color="white" />
+                    <Eraser
+                      sx={{ width: 16, height: 16 }}
+                      color={hasSetAccounts ? "white" : "darkgrey"}
+                    />
                   </IconButton>
                   <IconButton
                     onClick={() =>
