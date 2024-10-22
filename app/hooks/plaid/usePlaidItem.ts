@@ -29,12 +29,12 @@ const usePlaidItem = (itemId?: string) => {
   const session = useSession();
   // const userId = session.data?.user?.id; // .email
 
-  // Get the accounts and finish with the classification process before moving on to 
+  // Get the accounts and finish with the classification process before moving on to
   // transactions and debts
   const getAccounts = async (linkId: string) => {
     setLoadingData(true);
     setLoadStepInProgress("accounts");
-    
+
     const response = await axiosAuth.post(`/plaid/getAccountsData`, {
       key: "getAccounts" as KeyQuery,
       linkId,
@@ -83,25 +83,26 @@ const usePlaidItem = (itemId?: string) => {
       return {};
     }
 
-    // setLoadingData(true);
+    setLoadingData(true);
 
-    // setLoadStepInProgress("accounts");
-    // const accResp = await getAccounts(linkId);
+    setLoadStepInProgress("accounts");
+    const accResp = await getAccounts(linkId);
 
-    setLoadStepInProgress("debts");
-    const debtResp = await getDebts(linkId);
+    // setLoadStepInProgress("debts");
+    // const debtResp = await getDebts(linkId);
 
-    setLoadStepInProgress("transactions");
-    const transResp = await getTransactions(linkId);
-    setLoadingData(false);
+    // setLoadStepInProgress("transactions");
+    // const transResp = await getTransactions(linkId);
+    // setLoadingData(false);
 
     setLoadedAccounts((prevState) => {
       const newSet = new Set(prevState);
       newSet.add(linkId);
       return newSet;
     });
-
-    return { debts: debtResp, transactions: transResp };
+    // return { accounts: accResp, debts: debtResp, transactions: transResp };
+    // return { debts: debtResp, transactions: transResp };
+    return {};
   };
 
   const isAccountLoaded = (itemId: string) => {
