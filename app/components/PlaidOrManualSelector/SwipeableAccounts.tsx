@@ -2,6 +2,7 @@ import usePlaidLinks from "@/app/hooks/plaid/usePlaidLinks";
 import ItemSwiper from "../ItemSwiper/ItemSwiper";
 import { Account } from "./RenderPlaidLinksTable";
 import SwipeableAccountFront from "./SwipeableAccountFront";
+import { useEffect } from "react";
 
 function getOrdinal(day: number) {
   if (day > 3 && day < 21) return day + "th";
@@ -101,12 +102,14 @@ interface Props {
   institutionName: string;
   accounts: Item[];
   isLastAccount: boolean;
+  handleProceed: Function;
 }
 
 function SwipeableAccounts({
   institutionName,
   accounts,
   isLastAccount,
+  handleProceed,
 }: Props) {
   const { updateAccount } = usePlaidLinks();
 
@@ -136,15 +139,21 @@ function SwipeableAccounts({
     return <></>;
   }
 
+  useEffect(() => {
+    console.log("accounts changed");
+    console.log(accounts);
+  }, [accounts]);
+
   return (
     <ItemSwiper<Item>
-      extraCategory={{ label: "Mixed Account", value: "MIXED" }}
+      extraCategory={{ label: "Mixed", value: "Mixed" }}
       label={institutionName ? `${institutionName} Accounts` : "Accounts"}
       itemsToClassify={itemsToClassify}
       persistHandleSwipe={handleSwipeAccount}
       RenderToFront={SwipeableAccountFront}
       //   cardHeight={"390px"}
       maxHeight={"545px"}
+      handleProceed={handleProceed}
     />
   );
 }
