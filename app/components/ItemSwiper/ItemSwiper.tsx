@@ -419,7 +419,7 @@ export default function ItemSwiper<T>({
           <button
             className={`${SWIPE_BUTTON_STYLES} ${
               noItems ? "" : ""
-            } bg-[#b9b0e6] bg-black/[0.66] `}
+            } bg-[#b9b0e6] bg-black/[0.66] border-[3px] w-[100%] flex items-center align-center justify-center`}
             onClick={() =>
               // handleSwipe(undefined, items?.[0], extraCategory.value)
               handleProceed()
@@ -465,10 +465,9 @@ export default function ItemSwiper<T>({
           <button
             className={`${SWIPE_BUTTON_STYLES} ${
               noItems ? "" : ""
-            } absolute top-[-65px] bg-[#b9b0e6] bg-black/[0.66] `}
+            } absolute top-[-65px] bg-[#b9b0e6] bg-black/[0.66] width-[100%]`}
             onClick={() =>
-              // handleSwipe(undefined, items?.[0], extraCategory.value)
-              handleProceed()
+              handleSwipe(undefined, items?.[0], extraCategory.value)
             }
             // style={{
             //   background: "linear-gradient(135deg, #00d1c4 0%,   #8833ff 100%)",
