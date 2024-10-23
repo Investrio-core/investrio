@@ -25,6 +25,8 @@ const TabContextProvider = (props: any) => {
     props: {},
     currentTab: "",
     currentSubTab: "",
+    showPlaidConnect: false,
+    isDarkMode: false,
   });
 
   const value = useMemo(() => [state, dispatch], [state]) as ContextValue;
@@ -59,12 +61,23 @@ function useTabContext() {
     });
   };
 
+  const setShowPlaidConnect = (showPlaidConnect: boolean) => {
+    dispatch({
+      type: "SET_BOOLEAN_FIELD",
+      field: "showPlaidConnect",
+      payload: showPlaidConnect,
+    });
+  };
+
   return {
     state,
     subTab: state.currentSubTab,
     tab: state.currentTab,
+    showPlaidConnect: state.showPlaidConnect,
+    isDarkMode: state.isDarkMode,
     setSubTab,
     setTabs,
+    setShowPlaidConnect,
   };
 }
 
