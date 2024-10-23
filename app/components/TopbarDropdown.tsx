@@ -1,12 +1,21 @@
 import AnimatedDropdownMenu, { OptionType } from "./ui/AnimatedDropdownMenu";
 import { FiFilePlus, FiCalendar, FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
-import { Building, FolderSync, Landmark } from "lucide-react";
+import {
+  Building,
+  DiamondPlus,
+  FolderSync,
+  Landmark,
+  Calendar,
+  LogOut,
+} from "lucide-react";
 import { IconType } from "react-icons";
 import usePlaidLinks from "../hooks/plaid/usePlaidLinks";
 import { useRouter } from "next/navigation";
 interface Props {}
-//React.ComponentType
+import PlaidLogo from "./PlaidOrManualSelector/PlaidLogo";
+import PlaidSvg from "/public/icons/plaid-icon.svg";
+import { useTabContext } from "../context/TabContext/context";
 
 const openLinkNewTab = (url: string) => {
   const newTab = window.open(url, "_blank", "noopener,noreferrer");
@@ -16,10 +25,10 @@ const openLinkNewTab = (url: string) => {
 const OPTIONS: OptionType = [
   {
     label: "Book Consultation",
-    icon: FiCalendar,
+    icon: Calendar,
     onClick: () => openLinkNewTab("https://calendly.com/investrio-joyce"),
   },
-  { label: "Logout", icon: FiLogOut, onClick: () => signOut() },
+  { label: "Logout", icon: LogOut, onClick: () => signOut() },
 ];
 
 interface Props {
@@ -41,9 +50,11 @@ export default function TopbarDropdown({
 }: Props) {
   const { plaidLinks } = usePlaidLinks();
   const { push } = useRouter();
+  const { setShowPlaidConnect } = useTabContext();
 
   let options = OPTIONS;
-  if (plaidLinks?.data?.success) {
+
+  if (plaidLinks?.data?.success?.length > 0) {
     const extraOptionsData = plaidLinks?.data?.success?.map((account) => {
       return {
         label: account.institutionName,
@@ -52,11 +63,16 @@ export default function TopbarDropdown({
     });
     const addAnother = {
       label: "Add Another Account",
-      icon: FiFilePlus,
+      icon: DiamondPlus,
       addDividerAfter: true,
+      onClick: () => setShowPlaidConnect(true),
     };
     options = [
-      { label: "Plaid Connected Accounts", icon: FolderSync },
+      {
+        label: "Plaid Connected Accounts",
+        icon: () => <PlaidLogo width={20} height={20} />,
+        customStyles: "bg-indigo-100 text-indigo-500"
+      },
       ...extraOptionsData,
       addAnother,
       ...OPTIONS,
@@ -64,8 +80,9 @@ export default function TopbarDropdown({
   } else {
     const addAnother = {
       label: "Plaid Connect Account",
-      icon: FiFilePlus,
+      icon: () => <PlaidLogo width={20} height={20} />,
       addDividerAfter: true,
+      onClick: () => setShowPlaidConnect(true),
     };
     options = [addAnother, ...OPTIONS];
   }
@@ -97,6 +114,7 @@ export default function TopbarDropdown({
       className={className}
       outerClassName={outerClassName}
       renderChevron={false}
+      fontSize={"1rem"}
     />
   );
 }
