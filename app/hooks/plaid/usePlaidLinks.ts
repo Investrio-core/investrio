@@ -31,9 +31,6 @@ export default function usePlaidLinks(date?: Date | null) {
   };
 
   const resetItemAccountsCategories = async (itemId: string) => {
-    console.log("resetting accounts");
-    console.log(itemId);
-
     const updatedAccountsResult = await axiosAuth.post(
       "/plaid/updateAccounts",
       {
@@ -41,16 +38,11 @@ export default function usePlaidLinks(date?: Date | null) {
         updatedAccount: { accountCategory: null },
       }
     );
-    console.log("updated accounts result");
-    console.log(updatedAccountsResult);
     queryClient.invalidateQueries({ queryKey: ["plaidLinks"] });
     return updatedAccountsResult;
   };
 
   const resetAccountCategory = async (id: string, itemId: string) => {
-    console.log("-- resetting account --");
-    console.log(id);
-    console.log(itemId);
     const updatedAccountResult = await axiosAuth.post("/plaid/updateAccount", {
       updatedAccount: { id, itemId, accountCategory: null },
     });
