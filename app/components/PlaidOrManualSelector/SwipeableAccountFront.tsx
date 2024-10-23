@@ -200,11 +200,22 @@ export default function SwipeableAccountFront({
   tags,
   ...rest
 }: AccountProps) {
-  const formatBalance = (amount: number, curr: string) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatBalance = (curr: string, amount?: number | "N / A") => {
+    if (!amount || amount === "N / A") {
+      return `$ ••••••••.••••`;
+    }
+    const formattedBalance = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      compactDisplay: "short",
       style: "decimal",
       currency: curr,
     }).format(amount);
+
+    try {
+      formattedBalance.split(".")[0];
+    } catch (e) {
+      return formattedBalance;
+    }
   };
 
   const getSubtypeIcon = (category: string) => {
