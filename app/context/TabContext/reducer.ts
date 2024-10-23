@@ -7,10 +7,13 @@ export interface ContentState {
   currentTab: string;
   currentSubTab: string;
   props: ContentProps;
+  showPlaidConnect: boolean;
+  isDarkMode: boolean;
 }
 
 export type ContentReducerAction =
   | { type: "SET_FIELD"; field: string; payload: number }
+  | { type: "SET_BOOLEAN_FIELD"; field: string; payload: boolean }
   | { type: "MERGE_PAYLOAD"; payload: ContentProps }
   | {
       type: "SET_SUB_TAB";
@@ -28,6 +31,8 @@ export const initialState: ContentState = {
   currentTab: "",
   currentSubTab: "",
   props: {},
+  showPlaidConnect: false,
+  isDarkMode: false,
 };
 
 export function contentReducer(
@@ -35,7 +40,8 @@ export function contentReducer(
   action: ContentReducerAction
 ): ContentState {
   switch (action.type) {
-    case "SET_FIELD": {
+    case "SET_FIELD":
+    case "SET_BOOLEAN_FIELD": {
       return {
         ...state,
         [action.field]: action.payload,
